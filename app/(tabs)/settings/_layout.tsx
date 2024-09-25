@@ -5,12 +5,8 @@ export default function NoteStack() {
     return (
         <Stack>
             <Stack.Screen
-                name="my-notes"  // This refers to "my-notes.tsx" in the notes folder
-                options={{ title: 'My Notes' }}
-            />
-            <Stack.Screen
-                name="add-note"  // This refers to "add-note.tsx" in the notes folder
-                options={{ title: 'Add Note' }}
+                name="index"  // This refers to "my-chores.tsx" in the chores folder
+                options={{ title: 'Settings' }}
             />
         </Stack>
     );

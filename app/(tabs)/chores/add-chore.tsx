@@ -1,3 +1,3 @@
-import AddNoteScreen from '@/screens/AddNoteScreen';
+import AddChoreScreen from '@/screens/AddChoreScreen';
 
-export default AddNoteScreen;
+export default AddChoreScreen;

@@ -1,10 +1,8 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Animated, TextInput, TextInputProps, View } from 'react-native';
+import { Animated, TextInput, TextInputProps, View, Text } from 'react-native';
 import { styled } from 'nativewind';
-import { Colors } from "@/constants/Colors";
-import { useThemeColor } from "@/hooks/themeHooks/useThemeColor";
-import ThemedText from "@/components/themed/ThemedText";
 
+const StyledText = styled(Text);
 const StyledView = styled(View);
 const StyledTextInput = styled(TextInput);
 const StyledAnimatedText = styled(Animated.Text);
@@ -18,14 +16,6 @@ export const ThemedTextInputTypes = {
 interface TextInputFloatingLabelProps extends TextInputProps {
     label: string;
     errorMessage?: string;
-    lightTextColor?: string;
-    darkTextColor?: string;
-    lightBgColor?: string;
-    darkBgColor?: string;
-    labelColor?: string;
-    labelDarkColor?: string;
-    labelColorName?: keyof typeof Colors;
-    textColorName?: keyof typeof Colors;
     hasError?: boolean;
     showError?: boolean;
 }
@@ -34,23 +24,14 @@ const TextInputFloatingLabel: React.FC<TextInputFloatingLabelProps> = ({
                                                                            label,
                                                                            value = '',
                                                                            errorMessage,
-                                                                           lightTextColor,
-                                                                           darkTextColor,
-                                                                           lightBgColor,
-                                                                           darkBgColor,
-                                                                           labelColor,
-                                                                           labelDarkColor,
-                                                                           labelColorName = 'accent',
-                                                                           textColorName = 'text',
                                                                            hasError = false,
                                                                            showError = true,
                                                                            onFocus,
                                                                            onBlur,
                                                                            ...textInputProps
                                                                        }) => {
-    const themeTextColor = useThemeColor({ light: lightTextColor, dark: darkTextColor }, textColorName);
-    const themeLabelColor = useThemeColor({ light: lightTextColor, dark: darkTextColor }, labelColorName);
-    const borderColor = useThemeColor({}, hasError ? 'errorInput' : 'cancelButtonBG');
+
+    const borderColor = hasError ? 'border-red-500' : 'border-gray-600';
 
     const floatingLabelAnimation = useRef(new Animated.Value(value ? 1 : 0)).current;
     const [fontWeight, setFontWeight] = useState<'bold' | 'normal'>('normal'); // Simple fontWeight state
@@ -109,21 +90,21 @@ const TextInputFloatingLabel: React.FC<TextInputFloatingLabelProps> = ({
     };
 
     return (
-        <StyledView className="mt-5 mx-2">
+        <StyledView className="mt-2 mx-2">
             <StyledAnimatedText
                 style={floatingLabelStyle} // Consolidate the styles here
-                className={`absolute ${themeLabelColor}`}
+                className={'absolute text-gray-400'}
             >
                 {label}
             </StyledAnimatedText>
             <StyledTextInput
-                className={`pt-3 pb-1 px-2 border-b ${borderColor} ${themeTextColor} text-lg`}
+                className={`pt-3 pb-1 px-2 border-b ${borderColor} text-lg text-white`}
                 onFocus={handleFocus}
                 onBlur={handleBlur}
                 value={value}
                 {...textInputProps}
             />
-            <ThemedText type='input-error' colorName='errorText' isVisible={showError && hasError}>{errorMessage}</ThemedText>
+            {showError && hasError && <StyledText className='text-red-500'>{errorMessage}</StyledText>}
         </StyledView>
     );
 };

@@ -1,18 +1,19 @@
-import { Text, TouchableOpacity, View} from 'react-native';
+import { Text, View} from 'react-native';
+import {SafeAreaView} from "react-native-safe-area-context";
 import {styled} from "nativewind";
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
-const StyledTouchableOpacity = styled(TouchableOpacity);
+const StyledSafeAreaView = styled(SafeAreaView);
 
-const AddNoteScreen = () => {
+const SettingsScreen = () => {
 
     return (
-        <StyledView className="flex-1 w-100 items-center justify-center">
+        <StyledSafeAreaView className="flex-1 w-100 items-center justify-start">
             <StyledText className="text-3xl font-bold text-center bg-black-400">Add A Note</StyledText>
 
-        </StyledView>
+        </StyledSafeAreaView>
     );
 }
 
-export default AddNoteScreen;
+export default SettingsScreen;
