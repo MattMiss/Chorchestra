@@ -36,18 +36,22 @@ const ScreenNavHeader: React.FC<ScreenNavHeaderProps> = ({
     }, [onOptionsPress]);
 
     return (
-        <StyledView className={`flex-row justify-between items-center h-14 px-5`}>
-            {showNavButton && (
-                <StyledTouchableOpacity onPress={handleBackPress}>
-                    <AntDesign name="arrowleft" size={24} color="white"/>
-                </StyledTouchableOpacity>
-            )}
-            <StyledText className="text-white text-lg font-bold">{title}</StyledText>
-            {showOptions && (
-                <StyledTouchableOpacity onPress={handleOptionsPress}>
-                    <Entypo name="dots-three-horizontal" size={24} color="white"/>
-                </StyledTouchableOpacity>
-            )}
+        <StyledView className={`flex-row justify-between items-center h-14 px-5 `}>
+            <StyledView className='flex-shrink min-w-[40] items-start'>
+                {showNavButton && (
+                    <StyledTouchableOpacity onPress={handleBackPress}>
+                        <AntDesign name="arrowleft" size={24} color="white"/>
+                    </StyledTouchableOpacity>
+                )}
+            </StyledView>
+            <StyledText className="flex-grow text-center text-white text-lg font-bold">{title}</StyledText>
+            <StyledView className='flex-shrink min-w-[40] items-end'>
+                {showOptions && (
+                    <StyledTouchableOpacity onPress={handleOptionsPress}>
+                        <Entypo name="dots-three-horizontal" size={24} color="white"/>
+                    </StyledTouchableOpacity>
+                )}
+            </StyledView>
         </StyledView>
     );
 };

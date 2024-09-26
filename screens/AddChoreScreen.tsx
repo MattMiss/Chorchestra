@@ -13,13 +13,12 @@ import {AntDesign} from "@expo/vector-icons";
 import PrioritySelector from "@/components/PrioritySelector";
 import FrequencySelector from "@/components/FrequencySelector";
 import TagModal from "@/components/modals/TagModal";
-import {SQLRows} from "@/database/types";
-import {getAllTags} from "@/database/database";
+import {useDataContext} from "@/context/DataContext";
+
 
 const StyledView = styled(View);
 const StyledScrollView = styled(ScrollView);
 const StyledText = styled(Text);
-const StyledTextInput = styled(TextInput);
 const StyledTouchableOpacity = styled(TouchableOpacity);
 
 const AddChoreScreen = () => {
@@ -38,27 +37,21 @@ const AddChoreScreen = () => {
     const [modalAddText, setModalAddText] = useState('');
     const [modalItems, setModalItems] = useState<DraggableListItem[]>([]); // Holds instructions or itemsNeeded
     const [modalItemKey, setModalItemKey] = useState<string>('instructions');
+    const [isSaving, setIsSaving] = useState(false);
 
     const router = useRouter();  // Using Expo Router for navigation
 
+    const {tags,chores, setChores} = useDataContext();
+
     useEffect(() => {
-        void fetchTags();
-    }, []);
+        if (tags){
+            void setAvailableTags(tags);
+        }
+    }, [tags]);
 
     useEffect(() => {
         console.log('Selected Tags: ', selectedTags);
     }, [selectedTags]);
-
-    const fetchTags = async () => {
-        const tags: SQLRows = await getAllTags();
-        console.log("Tags: ", tags);
-        setAvailableTags(
-            tags.map((tag) => ({
-                id: tag.id,
-                title: tag.name || '', // Ensure title is always a string, fallback to empty string
-            }))
-        );
-    };
 
     // Open the modal for either Instructions or Items Needed
     const openModal = (key: string, title: string, addText: string, items: DraggableListItem[]) => {
@@ -101,23 +94,122 @@ const AddChoreScreen = () => {
         setModalItems(modalItems.filter(item => item.id !== id));
     };
 
-    const handleSaveChore = () => {
-        if (name.trim() === '' || description.trim() === '') return;
-        // Save chore logic goes here (you can send data to an API or storage)
-        router.back();  // Use router to go back after saving
+    const handleSaveChore = async () => {
+
+        const newChore = {
+            id: Date.now(),
+            name: name.trim(),
+            description: description.trim(),
+            frequency,
+            frequencyType,
+            status: 'active',
+            priority,
+            instructions: instructions.map((item: DraggableListItem) => item.text),
+            itemsNeeded: itemsNeeded.map((item: DraggableListItem) => item.text),
+            tagIds: selectedTags.map((tag: Tag) => tag.id)
+        };
+
+        if (newChore){
+            setChores((prevState) => [...prevState, newChore]);
+        }
+        // // Validate required fields
+        // if (name.trim() === '' || description.trim() === '') {
+        //     alert("Please fill in all required fields (Name and Description).");
+        //     return;
+        // }
+        //
+        // // Transform instructions and itemsNeeded from DraggableListItem[] to string[]
+        // const instructionsText = instructions.map(item => item.text.trim()).filter(text => text !== '');
+        // const itemsNeededText = itemsNeeded.map(item => item.text.trim()).filter(text => text !== '');
+        //
+        // // Extract tag IDs from selectedTags
+        // const tagIds = selectedTags.map(tag => tag.id);
+        //
+        // setIsSaving(true);
+        // try {
+        //     console.log(name.trim(), description.trim(), instructionsText, itemsNeededText, frequency, frequencyType, 'active', priority, tagIds);
+        //     // Call the database function to insert the chore
+        //     const result = await insertChoreWithTags(
+        //         name.trim(),
+        //         description.trim(),
+        //         instructionsText,
+        //         itemsNeededText,
+        //         frequency,
+        //         frequencyType,
+        //         'active',       // Status can be 'active' by default
+        //         priority,       // Assuming priority maps directly to importance
+        //         tagIds
+        //     );
+        //
+        //     // Check if the insertion was successful
+        //     if (result.changes > 0 || result.lastInsertRowId) {
+        //         alert("Chore saved successfully!");
+        //         router.back(); // Navigate back to the previous screen
+        //     } else {
+        //         // Handle unexpected success response
+        //         console.error("Unexpected response:", result);
+        //         alert("Chore saved, but received an unexpected response.");
+        //     }
+        // } catch (error) {
+        //     // Log the error for debugging
+        //     console.error("Error saving chore:", error);
+        //     alert("Failed to save chore. Please try again.");
+        // }
     };
 
+
     const handleTagAdded = (newTag: Tag) => {
-        if (!selectedTags.some(tag => tag.id === newTag.id)) {
-            setSelectedTags([...selectedTags, newTag]);
-        } else {
-            alert(`${newTag.title} already exists`);
-        }
+        // if (!selectedTags.some(tag => tag.id === newTag.id)) {
+        //     setSelectedTags([...selectedTags, newTag]);
+        // } else {
+        //     alert(`${newTag.title} already exists`);
+        // }
         setIsTagModalVisible(false);
     };
 
     const handleRemoveTag = (tagId: number) => {
         setSelectedTags((prev) => prev.filter((tag) => tag.id !== tagId));
+    };
+
+
+    // Example Test Function
+    const testInsertChore = async () => {
+
+        const newChore = {
+            id: Date.now(),
+            name: 'Test Chore 2',
+            description: 'Test Description 2',
+            frequency: 1,
+            frequencyType: 'month' as FrequencyType,
+            status: 'active',
+            priority: 2 as PriorityLevel,
+            instructions: ['another first instruction', 'this is a second instruction', 'now a third one'],
+            itemsNeeded: [],
+            tagIds: []
+        };
+
+        if (newChore){
+            setChores((prevChores) => [...prevChores, newChore]);
+        }
+
+        // try {
+        //     const result = await insertChoreWithTags(
+        //         db,
+        //         "Test Chore",
+        //         "Test Description",
+        //         ["Test Instruction 1", "Test Instruction 2"],
+        //         ["Test Item 1", "Test Item 2"],
+        //         3,
+        //         "week",
+        //         "active",
+        //         1,
+        //         [1, 2] // Ensure these tag IDs exist
+        //     );
+        //     console.log("Test Insert Result:", result);
+        // } catch (error: any) {
+        //     console.error("Test Insert Error:", error);
+        //     alert (`Test Insert Error: ${error.message}`);
+        // }
     };
 
     return (
@@ -192,7 +284,7 @@ const AddChoreScreen = () => {
                                     key={item.id}
                                     className="flex-row items-center bg-blue-200 px-2 py-1 mr-2 mb-2 rounded"
                                 >
-                                    <StyledText className="mr-2">{item.title}</StyledText>
+                                    <StyledText className="mr-2">{item.name}</StyledText>
                                     <StyledTouchableOpacity onPress={() => handleRemoveTag(item.id)}>
                                         <StyledText className="text-red-500">x</StyledText>
                                     </StyledTouchableOpacity>
@@ -215,6 +307,13 @@ const AddChoreScreen = () => {
                     {/* Save Button */}
                     <StyledTouchableOpacity onPress={handleSaveChore} className="bg-blue-500 my-4 p-3 rounded-lg">
                         <StyledText className="text-white text-center">Save Chore</StyledText>
+                    </StyledTouchableOpacity>
+                </StyledView>
+
+                <StyledView className="mb-10">
+                    {/* Save Button */}
+                    <StyledTouchableOpacity onPress={testInsertChore} className="bg-blue-500 my-4 p-3 rounded-lg">
+                        <StyledText className="text-white text-center">Save Test Chore</StyledText>
                     </StyledTouchableOpacity>
                 </StyledView>
 

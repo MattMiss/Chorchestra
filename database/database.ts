@@ -1,135 +1,196 @@
-import { openDatabaseAsync } from 'expo-sqlite';
-import { SQLRunResult, SQLRow, SQLRows } from './types';
-import {FrequencyType} from "@/types";
+/*
+// database.ts
 
-// Open or create the database asynchronously
-const openDb = async () => {
-    return await openDatabaseAsync('chores.db');
+import { Alert } from 'react-native';
+import * as SQLite from 'expo-sqlite';
+import { SQLiteDatabase } from "expo-sqlite";
+import {Chore, FrequencyType, Tag} from "@/types"; // Ensure you're using a version that supports async methods
+
+export interface SQLRunResult {
+    lastInsertRowId?: number; // The ID of the last inserted row (if applicable)
+    changes: number; // Number of rows affected by the query
+}
+
+export interface SQLRow {
+    [column: string]: any;
+}
+
+export type SQLRows = SQLRow[];
+
+/!* ============================
+   === Execution Helpers =======
+   ============================ *!/
+
+/!**
+ * Executes a single SQL statement with parameters asynchronously.
+ * @param db The SQLite database instance.
+ * @param sql The SQL query string.
+ * @param params The parameters for the SQL query.
+ * @returns The result of the SQL execution.
+ *!/
+export const runAsync = async (
+    db: SQLiteDatabase,
+    sql: string,
+    params: any[] = []
+): Promise<SQLRunResult> => {
+    try {
+        const result = await db.runAsync(sql, params);
+        console.log(`Executed SQL: ${sql} with params: ${JSON.stringify(params)}`);
+        return result;
+    } catch (error) {
+        console.error(`Error executing SQL: ${sql} with params: ${JSON.stringify(params)} -`, error);
+        throw error;
+    }
 };
 
-// should be able to delete this function once its working for sure
-export const migrateAddFrequencyType = async (): Promise<void> => {
-    const db = await openDb();
-    // Check if frequency_type column exists
-    const result = await db.getFirstAsync(`
-        PRAGMA table_info(chores);
-    `);
+/!**
+ * Executes multiple SQL statements asynchronously.
+ * @param db The SQLite database instance.
+ * @param sql The SQL query string containing multiple statements.
+ *!/
+export const execAsync = async (
+    db: SQLiteDatabase,
+    sql: string
+): Promise<void> => {
+    try {
+        await db.execAsync(sql);
+        console.log(`Executed SQL commands: ${sql}`);
+    } catch (error) {
+        console.error(`Error executing SQL commands: ${sql} -`, error);
+        throw error;
+    }
+};
 
-    const columns = await db.getAllAsync(`
-        PRAGMA table_info(chores);
-    `);
+/!* ============================
+   === Table Creation Scripts ==
+   ============================ *!/
 
-    const hasFrequencyType = columns.some((column: any) => column.name === 'frequency_type');
+/!**
+ * Creates necessary tables for Chores and Notes.
+ * @param db The SQLite database instance.
+ *!/
+export const createTables = async (db: SQLiteDatabase): Promise<void> => {
+    try {
+        await execAsync(db, `
+            PRAGMA journal_mode = WAL;
 
-    if (!hasFrequencyType) {
-        await db.execAsync(`
-            ALTER TABLE chores ADD COLUMN frequency_type TEXT NOT NULL DEFAULT 'day';
+            /!* Chores Tables *!/
+            CREATE TABLE IF NOT EXISTS chores (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                description TEXT,
+                frequency INTEGER,
+                frequencyType TEXT DEFAULT 'day',
+                status TEXT DEFAULT 'active',
+                importance INTEGER
+            );
+
+            CREATE TABLE IF NOT EXISTS tags (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL UNIQUE
+            );
+
+            CREATE TABLE IF NOT EXISTS chore_tags (
+                chore_id INTEGER,
+                tag_id INTEGER,
+                FOREIGN KEY(chore_id) REFERENCES chores(id) ON DELETE CASCADE,
+                FOREIGN KEY(tag_id) REFERENCES tags(id) ON DELETE CASCADE,
+                PRIMARY KEY (chore_id, tag_id)
+            );
+
+            CREATE TABLE IF NOT EXISTS instructions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                chore_id INTEGER,
+                text TEXT,
+                FOREIGN KEY(chore_id) REFERENCES chores(id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS items_needed (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                chore_id INTEGER,
+                text TEXT,
+                FOREIGN KEY(chore_id) REFERENCES chores(id) ON DELETE CASCADE
+            );
+
+            /!* Notes Tables *!/
+            CREATE TABLE IF NOT EXISTS notes (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title TEXT NOT NULL,
+                content TEXT,
+                created_at INTEGER NOT NULL,
+                updated_at INTEGER NOT NULL,
+                status TEXT DEFAULT 'active'
+            );
+
+            CREATE TABLE IF NOT EXISTS note_tags (
+                note_id INTEGER,
+                tag_id INTEGER,
+                FOREIGN KEY (note_id) REFERENCES notes (id) ON DELETE CASCADE,
+                FOREIGN KEY (tag_id) REFERENCES tags (id) ON DELETE CASCADE,
+                PRIMARY KEY (note_id, tag_id)
+            );
+
+            /!* Indexes for Performance *!/
+            CREATE INDEX IF NOT EXISTS idx_notes_created_at ON notes(created_at);
+            CREATE INDEX IF NOT EXISTS idx_notes_updated_at ON notes(updated_at);
+            CREATE INDEX IF NOT EXISTS idx_tags_name ON tags(name);
+            CREATE INDEX IF NOT EXISTS idx_chore_tags_chore_id ON chore_tags(chore_id);
+            CREATE INDEX IF NOT EXISTS idx_chore_tags_tag_id ON chore_tags(tag_id);
+            CREATE INDEX IF NOT EXISTS idx_note_tags_note_id ON note_tags(note_id);
+            CREATE INDEX IF NOT EXISTS idx_note_tags_tag_id ON note_tags(tag_id);
         `);
+        console.log("All tables created successfully.");
+    } catch (error) {
+        console.error("Error creating tables:", error);
+        Alert.alert("Database Error", "Failed to create tables.");
+        throw error;
     }
 };
 
-// Function to create the necessary tables
-export const createTables = async (): Promise<void> => {
-    const db = await openDb();
+/!* ============================
+   === Migration Functions ===
+   ============================ *!/
 
-    await db.execAsync(`
-    PRAGMA journal_mode = WAL;
-
-    CREATE TABLE IF NOT EXISTS chores (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL,
-      description TEXT,
-      instructions TEXT,  -- JSON array to store ordered list of strings
-      items_needed TEXT,  -- JSON array to store array of strings
-      status TEXT DEFAULT 'active', -- active or not
-      frequency INTEGER NOT NULL, -- number of days between completions
-      importance INTEGER DEFAULT 0 -- integer importance level
-    );
-
-    CREATE TABLE IF NOT EXISTS entries (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      chore_id INTEGER NOT NULL,
-      date_completed INTEGER NOT NULL,
-      FOREIGN KEY (chore_id) REFERENCES chores (id) ON DELETE CASCADE
-    );
-
-    CREATE TABLE IF NOT EXISTS tags (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL UNIQUE
-    );
-
-    CREATE TABLE IF NOT EXISTS chore_tags (
-      chore_id INTEGER,
-      tag_id INTEGER,
-      FOREIGN KEY (chore_id) REFERENCES chores (id) ON DELETE CASCADE,
-      FOREIGN KEY (tag_id) REFERENCES tags (id) ON DELETE CASCADE,
-      PRIMARY KEY (chore_id, tag_id)
-    );
-
-    CREATE INDEX IF NOT EXISTS idx_chores_frequency ON chores(frequency);
-    CREATE INDEX IF NOT EXISTS idx_chores_importance ON chores(importance);
-    CREATE INDEX IF NOT EXISTS idx_entries_date_completed ON entries(date_completed);
-    CREATE INDEX IF NOT EXISTS idx_tags_name ON tags(name);
-    CREATE INDEX IF NOT EXISTS idx_chore_tags_chore_id ON chore_tags(chore_id);
-    CREATE INDEX IF NOT EXISTS idx_chore_tags_tag_id ON chore_tags(tag_id);
-  `);
+/!**
+ * Migration to add 'frequencyType' column to 'chores' table if it doesn't exist.
+ * @param db The SQLite database instance.
+ *!/
+export const migrateAddFrequencyType = async (db: SQLiteDatabase): Promise<void> => {
+    try {
+        await runAsync(db, `ALTER TABLE chores ADD COLUMN frequencyType TEXT DEFAULT 'day';`);
+        console.log("'frequencyType' column added successfully to chores.");
+    } catch (error: any) {
+        if (error.message.includes("duplicate column name") || error.message.includes("duplicate column")) {
+            // Column already exists, safe to ignore
+            console.log("'frequencyType' column already exists in chores.");
+        } else {
+            console.error("Error adding 'frequencyType' column to chores:", error);
+            Alert.alert("Database Error", "Failed to add 'frequencyType' column to chores.");
+            throw error;
+        }
+    }
 };
 
-// Function to retrieve chores with advanced sorting and filtering
-export const getFilteredSortedChores = async (
-    sortBy: 'days_left' | 'importance' | 'name',
-    sortOrder: 'ASC' | 'DESC',
-    tagIds: number[] = [],
-    minImportance: number = 0,
-    maxImportance: number = Infinity,
-    nameFilter: string = ''
-): Promise<SQLRows> => {
-    const db = await openDb();
+/!* ============================
+   === Chores Functions ========
+   ============================ *!/
 
-    let query = `
-        SELECT c.*, IFNULL(MAX(e.date_completed), 0) AS last_completed,
-            julianday(
-                CASE
-                    WHEN c.frequency_type = 'day' THEN datetime(IFNULL(MAX(e.date_completed), 0), 'unixepoch', '+' || c.frequency || ' day')
-                    WHEN c.frequency_type = 'week' THEN datetime(IFNULL(MAX(e.date_completed), 0), 'unixepoch', '+' || (c.frequency * 7) || ' day')
-                    WHEN c.frequency_type = 'month' THEN datetime(IFNULL(MAX(e.date_completed), 0), 'unixepoch', '+' || c.frequency || ' month')
-                    WHEN c.frequency_type = 'year' THEN datetime(IFNULL(MAX(e.date_completed), 0), 'unixepoch', '+' || c.frequency || ' year')
-                    ELSE datetime(IFNULL(MAX(e.date_completed), 0), 'unixepoch')
-                END
-            ) - julianday('now') AS days_left
-        FROM chores c
-        LEFT JOIN entries e ON c.id = e.chore_id
-        LEFT JOIN chore_tags ct ON c.id = ct.chore_id
-        WHERE c.importance BETWEEN ? AND ?
-    `;
-
-    const params: (number | string)[] = [minImportance, maxImportance];
-
-    if (tagIds.length > 0) {
-        const placeholders = tagIds.map(() => '?').join(',');
-        query += ` AND ct.tag_id IN (${placeholders})`;
-        params.push(...tagIds);
-    }
-
-    if (nameFilter) {
-        query += ` AND c.name LIKE ?`;
-        params.push(`%${nameFilter}%`);
-    }
-
-    query += `
-        GROUP BY c.id
-        ORDER BY 
-            ${sortBy === 'days_left' ? 'days_left' : `c.${sortBy}`} ${sortOrder},
-            c.importance ${sortOrder},
-            c.name ${sortOrder};
-    `;
-
-    return await db.getAllAsync(query, ...params);
-};
-
-
-// Function to insert a new chore with tags
+/!**
+ * Inserts a new chore with associated instructions, items needed, and tags.
+ * @param db The SQLite database instance.
+ * @param name The name of the chore.
+ * @param description The description of the chore.
+ * @param instructions An array of instruction texts.
+ * @param itemsNeeded An array of items needed texts.
+ * @param frequency The frequency value.
+ * @param frequencyType The type of frequency ('day', 'week', 'month').
+ * @param status The status of the chore.
+ * @param importance The importance level of the chore.
+ * @param tagIds An array of tag IDs to associate with the chore.
+ * @returns The result of the insert operation.
+ *!/
 export const insertChoreWithTags = async (
+    db: SQLiteDatabase,
     name: string,
     description: string,
     instructions: string[],
@@ -140,153 +201,458 @@ export const insertChoreWithTags = async (
     importance: number = 0,
     tagIds: number[] = []
 ): Promise<SQLRunResult> => {
-    const db = await openDb();
+    try {
+        console.log("Inserting chore:", { name, description, frequency, frequencyType, status, importance, tagIds });
 
-    const result: SQLRunResult = await db.runAsync(
-        'INSERT INTO chores (name, description, instructions, items_needed, status, frequency, frequency_type, importance) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-        name,
-        description,
-        JSON.stringify(instructions),
-        JSON.stringify(itemsNeeded),
-        status,
-        frequency,
-        frequencyType,
-        importance
-    );
-
-    if (tagIds.length > 0) {
-        for (const tagId of tagIds) {
-            await addTagToChore(result.lastInsertRowId!, tagId);
+        // Insert into 'chores' table
+        const choreResult = await runAsync(
+            db,
+            `INSERT INTO chores (name, description, frequency, frequencyType, status, importance) VALUES (?, ?, ?, ?, ?, ?);`,
+            [name, description, frequency, frequencyType, status, importance]
+        );
+        const choreId = choreResult.lastInsertRowId;
+        if (!choreId) {
+            throw new Error("Failed to retrieve the inserted chore ID.");
         }
+        console.log("Chore inserted with ID:", choreId);
+
+        // Insert instructions
+        for (const instruction of instructions) {
+            console.log("Inserting instruction:", instruction);
+            await runAsync(
+                db,
+                `INSERT INTO instructions (chore_id, text) VALUES (?, ?);`,
+                [choreId, instruction]
+            );
+        }
+
+        // Insert items needed
+        for (const item of itemsNeeded) {
+            console.log("Inserting item needed:", item);
+            await runAsync(
+                db,
+                `INSERT INTO items_needed (chore_id, text) VALUES (?, ?);`,
+                [choreId, item]
+            );
+        }
+
+        // Insert into 'chore_tags'
+        for (const tagId of tagIds) {
+            console.log("Associating tag ID:", tagId, "with chore ID:", choreId);
+            await runAsync(
+                db,
+                `INSERT INTO chore_tags (chore_id, tag_id) VALUES (?, ?);`,
+                [choreId, tagId]
+            );
+        }
+
+        console.log("Chore and associated data inserted successfully.");
+        return { lastInsertRowId: choreId, changes: choreResult.changes };
+    } catch (error: any) {
+        console.error("Error inserting chore with tags:", error);
+        Alert.alert("Database Error", "Failed to insert chore.");
+        throw error;
     }
-
-    return result;
 };
 
-// Function to retrieve all chores
-export const getAllChores = async (): Promise<SQLRows> => {
-    const db = await openDb();
-    return await db.getAllAsync('SELECT * FROM chores');
+/!**
+ * Retrieves all chores from the database.
+ * @param db The SQLite database instance.
+ * @returns An array of chores.
+ *!/
+// database.ts
+
+
+export const getAllChores = async (db: SQLiteDatabase): Promise<Chore[]> => {
+    try {
+        const chores: SQLRow[] = await db.getAllAsync(
+            `
+                SELECT
+                    chores.id,
+                    chores.name,
+                    chores.description,
+                    chores.frequency,
+                    chores.frequencyType,
+                    chores.status,
+                    chores.importance,
+                    GROUP_CONCAT(DISTINCT instructions.text) AS instructions,
+                    GROUP_CONCAT(DISTINCT items_needed.text) AS items_needed
+                FROM chores
+                         LEFT JOIN instructions ON chores.id = instructions.chore_id
+                         LEFT JOIN items_needed ON chores.id = items_needed.chore_id
+                GROUP BY chores.id
+                ORDER BY chores.id ASC
+            `,
+            []
+        );
+        console.log("Fetched chores with instructions and items needed:", chores);
+
+        const choreList: Chore[] = chores.map((row) => ({
+            id: row.id,
+            name: row.name,
+            description: row.description,
+            frequency: row.frequency,
+            frequencyType: row.frequencyType as FrequencyType,
+            status: row.status,
+            importance: row.importance,
+            instructions: row.instructions ? row.instructions.split('||') : [],
+            items_needed: row.items_needed ? row.items_needed.split('||') : [],
+        }));
+
+        return choreList;
+    } catch (error) {
+        console.error("Error fetching chores with instructions and items needed:", error);
+        Alert.alert("Database Error", "Failed to fetch chores.");
+        throw error;
+    }
 };
 
 
-// Function to retrieve a single chore
-export const getFirstChore = async (id: number): Promise<SQLRow | null> => {
-    const db = await openDb();
-    return await db.getFirstAsync('SELECT * FROM chores WHERE id = ?', id);
+/!**
+ * Retrieves a single chore by its ID.
+ * @param db The SQLite database instance.
+ * @param id The ID of the chore.
+ * @returns The chore object or null if not found.
+ *!/
+export const getChoreById = async (db: SQLiteDatabase, id: number): Promise<SQLRow | null> => {
+    try {
+        const chore: SQLRow | null = await db.getFirstAsync(
+            `SELECT * FROM chores WHERE id = ?;`,
+            [id]
+        );
+        console.log(`Fetched chore with ID ${id}:`, chore);
+        return chore;
+    } catch (error) {
+        console.error(`Error fetching chore with ID ${id}:`, error);
+        Alert.alert("Database Error", "Failed to fetch chore.");
+        throw error;
+    }
 };
 
-// Function to update a chore
+/!**
+ * Updates a chore's details.
+ * @param db The SQLite database instance.
+ * @param id The ID of the chore to update.
+ * @param updatedFields An object containing the fields to update.
+ *!/
 export const updateChore = async (
+    db: SQLiteDatabase,
     id: number,
-    name: string,
-    description: string,
-    instructions: string[],
-    itemsNeeded: string[],
-    status: string,
-    frequency: number,
-    frequencyType: FrequencyType,
-    importance: number
+    updatedFields: {
+        name?: string;
+        description?: string;
+        frequency?: number;
+        frequencyType?: FrequencyType;
+        status?: string;
+        importance?: number;
+    }
 ): Promise<void> => {
-    const db = await openDb();
+    try {
+        const fields = [];
+        const params: any[] = [];
 
-    await db.runAsync(
-        'UPDATE chores SET name = ?, description = ?, instructions = ?, items_needed = ?, status = ?, frequency = ?, frequency_type = ?, importance = ? WHERE id = ?',
-        name,
-        description,
-        JSON.stringify(instructions),
-        JSON.stringify(itemsNeeded),
-        status,
-        frequency,
-        frequencyType,
-        importance,
-        id
-    );
-};
+        if (updatedFields.name !== undefined) {
+            fields.push("name = ?");
+            params.push(updatedFields.name);
+        }
+        if (updatedFields.description !== undefined) {
+            fields.push("description = ?");
+            params.push(updatedFields.description);
+        }
+        if (updatedFields.frequency !== undefined) {
+            fields.push("frequency = ?");
+            params.push(updatedFields.frequency);
+        }
+        if (updatedFields.frequencyType !== undefined) {
+            fields.push("frequencyType = ?");
+            params.push(updatedFields.frequencyType);
+        }
+        if (updatedFields.status !== undefined) {
+            fields.push("status = ?");
+            params.push(updatedFields.status);
+        }
+        if (updatedFields.importance !== undefined) {
+            fields.push("importance = ?");
+            params.push(updatedFields.importance);
+        }
 
+        if (fields.length === 0) {
+            console.log("No fields to update for chore ID:", id);
+            return;
+        }
 
-// Function to delete a chore
-export const deleteChore = async (id: number): Promise<void> => {
-    const db = await openDb();
-    await db.runAsync('DELETE FROM chores WHERE id = ?', id);
-};
+        params.push(id);
 
-// Function to insert a new entry for a chore
-export const insertEntry = async (choreId: number, dateCompleted: number): Promise<SQLRunResult> => {
-    const db = await openDb();
-    return await db.runAsync(
-        'INSERT INTO entries (chore_id, date_completed) VALUES (?, ?)',
-        choreId, dateCompleted
-    );
-};
+        const sql = `UPDATE chores SET ${fields.join(', ')} WHERE id = ?;`;
 
-// Function to get all entries for a specific chore
-export const getEntriesForChore = async (choreId: number): Promise<SQLRows> => {
-    const db = await openDb();
-    return await db.getAllAsync('SELECT * FROM entries WHERE chore_id = ?', choreId);
-};
-
-// Function to delete all entries for a chore
-export const deleteEntriesForChore = async (choreId: number): Promise<void> => {
-    const db = await openDb();
-    await db.runAsync('DELETE FROM entries WHERE chore_id = ?', choreId);
-};
-
-// Function to get all tags
-export const getAllTags = async (): Promise<SQLRows> => {
-    const db = await openDb();
-    return await db.getAllAsync('SELECT * FROM tags');
-};
-
-// Function to get a tag by name
-export const getTagByName = async (name: string): Promise<SQLRow | null> => {
-    const db = await openDb();
-    return await db.getFirstAsync('SELECT * FROM tags WHERE name = ?', name);
-};
-
-// Function to create a new tag
-export const createTag = async (name: string): Promise<SQLRunResult> => {
-    const db = await openDb();
-    console.log("Creating Tag: ", name);
-    return await db.runAsync('INSERT INTO tags (name) VALUES (?)', name);
-};
-
-// Function to update a tag
-export const updateTag = async (id: number, name: string): Promise<void> => {
-    const db = await openDb();
-    await db.runAsync('UPDATE tags SET name = ? WHERE id = ?', name, id);
-};
-
-// Function to delete a tag
-export const deleteTag = async (id: number): Promise<void> => {
-    const db = await openDb();
-    await db.runAsync('DELETE FROM tags WHERE id = ?', id);
-};
-
-// Function to add a tag to a chore
-export const addTagToChore = async (choreId: number, tagId: number): Promise<void> => {
-    const db = await openDb();
-    await db.runAsync('INSERT INTO chore_tags (chore_id, tag_id) VALUES (?, ?)', choreId, tagId);
-};
-
-// Function to update tags for a chore
-export const updateTagsForChore = async (choreId: number, newTagIds: number[]): Promise<void> => {
-    const db = await openDb();
-    await db.runAsync('DELETE FROM chore_tags WHERE chore_id = ?', choreId);
-
-    for (const tagId of newTagIds) {
-        await addTagToChore(choreId, tagId);
+        await runAsync(db, sql, params);
+        console.log(`Chore with ID ${id} updated successfully.`);
+    } catch (error) {
+        console.error(`Error updating chore with ID ${id}:`, error);
+        Alert.alert("Database Error", "Failed to update chore.");
+        throw error;
     }
 };
 
-// Function to remove a tag from a chore
-export const removeTagFromChore = async (choreId: number, tagId: number): Promise<void> => {
-    const db = await openDb();
-    await db.runAsync('DELETE FROM chore_tags WHERE chore_id = ? AND tag_id = ?', choreId, tagId);
+/!**
+ * Deletes a chore by its ID.
+ * @param db The SQLite database instance.
+ * @param id The ID of the chore to delete.
+ *!/
+export const deleteChore = async (db: SQLiteDatabase, id: number): Promise<void> => {
+    try {
+        await runAsync(db, 'DELETE FROM chores WHERE id = ?;', [id]);
+        console.log(`Chore with ID ${id} deleted successfully.`);
+    } catch (error) {
+        console.error(`Error deleting chore with ID ${id}:`, error);
+        Alert.alert("Database Error", "Failed to delete chore.");
+        throw error;
+    }
 };
 
-// Function to delete all tags for a chore
-export const deleteTagsForChore = async (choreId: number): Promise<void> => {
-    const db = await openDb();
-    await db.runAsync('DELETE FROM chore_tags WHERE chore_id = ?', choreId);
+/!* ============================
+   === Tags Functions =========
+   ============================ *!/
+
+/!**
+ * Retrieves all tags from the 'tags' table.
+ * @param db The SQLite database instance.
+ * @returns An array of tags.
+ *!/
+export const getAllTags = async (db: SQLiteDatabase): Promise<Tag[]> => {
+    try {
+        const tagsResult: Tag[] = await db.getAllAsync(
+            `SELECT * FROM tags;`,
+            []
+        );
+        console.log("Fetched tags:", tagsResult);
+        return tagsResult;
+    } catch (error) {
+        console.error("Error fetching tags:", error);
+        Alert.alert("Database Error", "Failed to fetch tags.");
+        throw error;
+    }
 };
+
+/!**
+ * Retrieves a tag by its name.
+ * @param db The SQLite database instance.
+ * @param name The name of the tag to retrieve.
+ * @returns The tag object or null if not found.
+ *!/
+export const getTagByName = async (db: SQLiteDatabase, name: string): Promise<SQLRow | null> => {
+    try {
+        const tag: SQLRow | null = await db.getFirstAsync(
+            'SELECT * FROM tags WHERE name = ?;',
+            [name]
+        );
+        console.log(`Fetched tag with name '${name}':`, tag);
+        return tag;
+    } catch (error) {
+        console.error(`Error fetching tag with name '${name}':`, error);
+        Alert.alert("Database Error", "Failed to fetch tag.");
+        throw error;
+    }
+};
+
+/!**
+ * Creates a new tag.
+ * @param db The SQLite database instance.
+ * @param name The name of the tag to create.
+ * @returns The result of the insert operation.
+ *!/
+export const createTag = async (db: SQLiteDatabase, name: string): Promise<SQLRunResult> => {
+    try {
+        const result: SQLRunResult = await runAsync(
+            db,
+            'INSERT INTO tags (name) VALUES (?);',
+            [name]
+        );
+        console.log(`Tag '${name}' created with ID: ${result.lastInsertRowId}`);
+        return result;
+    } catch (error) {
+        console.error(`Error creating tag '${name}':`, error);
+        Alert.alert("Database Error", "Failed to create tag.");
+        throw error;
+    }
+};
+
+/!**
+ * Updates a tag's name.
+ * @param db The SQLite database instance.
+ * @param id The ID of the tag to update.
+ * @param name The new name for the tag.
+ *!/
+export const updateTag = async (db: SQLiteDatabase, id: number, name: string): Promise<void> => {
+    try {
+        await runAsync(
+            db,
+            'UPDATE tags SET name = ? WHERE id = ?;',
+            [name, id]
+        );
+        console.log(`Tag with ID ${id} updated to name '${name}'.`);
+    } catch (error) {
+        console.error(`Error updating tag with ID ${id}:`, error);
+        Alert.alert("Database Error", "Failed to update tag.");
+        throw error;
+    }
+};
+
+/!**
+ * Deletes a tag by its ID.
+ * @param db The SQLite database instance.
+ * @param id The ID of the tag to delete.
+ *!/
+export const deleteTag = async (db: SQLiteDatabase, id: number): Promise<void> => {
+    try {
+        await runAsync(db, 'DELETE FROM tags WHERE id = ?;', [id]);
+        console.log(`Tag with ID ${id} deleted successfully.`);
+    } catch (error) {
+        console.error(`Error deleting tag with ID ${id}:`, error);
+        Alert.alert("Database Error", "Failed to delete tag.");
+        throw error;
+    }
+};
+
+/!* ============================
+   === Chore-Tags Association ==
+   ============================ *!/
+
+/!**
+ * Adds a tag to a chore.
+ * @param db The SQLite database instance.
+ * @param choreId The ID of the chore.
+ * @param tagId The ID of the tag to associate.
+ *!/
+export const addTagToChore = async (db: SQLiteDatabase, choreId: number, tagId: number): Promise<void> => {
+    try {
+        await runAsync(
+            db,
+            'INSERT INTO chore_tags (chore_id, tag_id) VALUES (?, ?);',
+            [choreId, tagId]
+        );
+        console.log(`Tag ID ${tagId} associated with Chore ID ${choreId}.`);
+    } catch (error) {
+        console.error(`Error associating Tag ID ${tagId} with Chore ID ${choreId}:`, error);
+        Alert.alert("Database Error", "Failed to associate tag with chore.");
+        throw error;
+    }
+};
+
+/!**
+ * Removes a tag from a chore.
+ * @param db The SQLite database instance.
+ * @param choreId The ID of the chore.
+ * @param tagId The ID of the tag to remove.
+ *!/
+export const removeTagFromChore = async (db: SQLiteDatabase, choreId: number, tagId: number): Promise<void> => {
+    try {
+        await runAsync(
+            db,
+            'DELETE FROM chore_tags WHERE chore_id = ? AND tag_id = ?;',
+            [choreId, tagId]
+        );
+        console.log(`Tag ID ${tagId} removed from Chore ID ${choreId}.`);
+    } catch (error) {
+        console.error(`Error removing Tag ID ${tagId} from Chore ID ${choreId}:`, error);
+        Alert.alert("Database Error", "Failed to remove tag from chore.");
+        throw error;
+    }
+};
+
+/!**
+ * Updates tags for a chore by replacing existing tags with new ones.
+ * @param db The SQLite database instance.
+ * @param choreId The ID of the chore.
+ * @param newTagIds An array of new tag IDs to associate with the chore.
+ *!/
+export const updateTagsForChore = async (db: SQLiteDatabase, choreId: number, newTagIds: number[]): Promise<void> => {
+    try {
+        // First, remove all existing tags for the chore
+        await runAsync(db, 'DELETE FROM chore_tags WHERE chore_id = ?;', [choreId]);
+        console.log(`All existing tags removed from Chore ID ${choreId}.`);
+
+        // Add the new tags using parameterized queries
+        for (const tagId of newTagIds) {
+            await addTagToChore(db, choreId, tagId);
+        }
+
+        console.log(`Tags updated for Chore ID ${choreId}.`);
+    } catch (error) {
+        console.error(`Error updating tags for Chore ID ${choreId}:`, error);
+        Alert.alert("Database Error", "Failed to update chore tags.");
+        throw error;
+    }
+};
+
+/!* ============================
+   === Note-Tags Association ==
+   ============================ *!/
+
+/!**
+ * Adds a tag to a note.
+ * @param db The SQLite database instance.
+ * @param noteId The ID of the note.
+ * @param tagId The ID of the tag to associate.
+ *!/
+export const addTagToNote = async (db: SQLiteDatabase, noteId: number, tagId: number): Promise<void> => {
+    try {
+        await runAsync(
+            db,
+            'INSERT INTO note_tags (note_id, tag_id) VALUES (?, ?);',
+            [noteId, tagId]
+        );
+        console.log(`Tag ID ${tagId} associated with Note ID ${noteId}.`);
+    } catch (error) {
+        console.error(`Error associating Tag ID ${tagId} with Note ID ${noteId}:`, error);
+        Alert.alert("Database Error", "Failed to associate tag with note.");
+        throw error;
+    }
+};
+
+/!**
+ * Removes a tag from a note.
+ * @param db The SQLite database instance.
+ * @param noteId The ID of the note.
+ * @param tagId The ID of the tag to remove.
+ *!/
+export const removeTagFromNote = async (db: SQLiteDatabase, noteId: number, tagId: number): Promise<void> => {
+    try {
+        await runAsync(
+            db,
+            'DELETE FROM note_tags WHERE note_id = ? AND tag_id = ?;',
+            [noteId, tagId]
+        );
+        console.log(`Tag ID ${tagId} removed from Note ID ${noteId}.`);
+    } catch (error) {
+        console.error(`Error removing Tag ID ${tagId} from Note ID ${noteId}:`, error);
+        Alert.alert("Database Error", "Failed to remove tag from note.");
+        throw error;
+    }
+};
+
+/!**
+ * Updates tags for a note by replacing existing tags with new ones.
+ * @param db The SQLite database instance.
+ * @param noteId The ID of the note.
+ * @param newTagIds An array of new tag IDs to associate with the note.
+ *!/
+export const updateTagsForNote = async (db: SQLiteDatabase, noteId: number, newTagIds: number[]): Promise<void> => {
+    try {
+        // First, remove all existing tags for the note
+        await runAsync(db, 'DELETE FROM note_tags WHERE note_id = ?;', [noteId]);
+        console.log(`All existing tags removed from Note ID ${noteId}.`);
+
+        // Add the new tags using parameterized queries
+        for (const tagId of newTagIds) {
+            await addTagToNote(db, noteId, tagId);
+        }
+
+        console.log(`Tags updated for Note ID ${noteId}.`);
+    } catch (error) {
+        console.error(`Error updating tags for Note ID ${noteId}:`, error);
+        Alert.alert("Database Error", "Failed to update note tags.");
+        throw error;
+    }
+};
+*/

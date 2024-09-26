@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import ScreenNavHeader from "@/components/ScreenNavHeader";
 import {router} from "expo-router";
 import {KeyboardAvoidingView, View, ScrollView} from "react-native";
+import {StatusBar} from "expo-status-bar";
 
 // Define the type for the props to include children
 interface ThemedScreenProps {
@@ -48,7 +49,8 @@ const ThemedScreen: React.FC<ThemedScreenProps> = ({
     }, [onHeaderNavOptionsPress]);
 
     return (
-        <StyledSafeAreaView className='flex-1 '>
+        <SafeAreaView style={{flex: 1}}>
+            <StatusBar style={'light'} backgroundColor="#000000"/>
             <StyledView className='flex-1 bg-gray-900'>
                 <ScreenNavHeader
                     showNavButton={showHeaderNavButton}
@@ -61,7 +63,7 @@ const ThemedScreen: React.FC<ThemedScreenProps> = ({
                     {children}
                 </StyledView>
             </StyledView>
-        </StyledSafeAreaView>
+        </SafeAreaView>
     );
 };
 

@@ -1,15 +1,5 @@
 // types/index.ts
 
-export interface Tag {
-    id: number;
-    title: string;
-}
-
-export interface DraggableListItem {
-    id: string;
-    text: string;
-}
-
 export type FrequencyType = 'day' | 'week' | 'month' | 'year';
 
 export const frequencyOptions: FrequencyType[] = ['day', 'week', 'month', 'year'];
@@ -22,14 +12,31 @@ export const priorityOptions = [
     { label: 'Low', value: 1 },
 ];
 
+export interface Tag {
+    id: number;
+    name: string;
+}
+
 export interface Chore {
     id: number;
     name: string;
     description: string;
-    instructions: string[];
-    items_needed: string[];
-    status: string;
     frequency: number;
-    frequency_type: FrequencyType;
-    importance: number;
+    frequencyType: FrequencyType;
+    status: string;
+    priority: PriorityLevel;
+    instructions: string[];
+    itemsNeeded: string[];
+    tagIds: number[];
+}
+
+export interface Entry {
+    id: number;
+    choreId: number;
+    dateCompleted: string; // ISO date string
+}
+
+export interface DraggableListItem {
+    id: string;
+    text: string;
 }
