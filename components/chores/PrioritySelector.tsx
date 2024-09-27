@@ -3,16 +3,11 @@ import { View, Text } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { styled } from 'nativewind';
 import { PriorityLevel, priorityOptions } from '@/types';
+import {getPriorityLevelColor} from "@/utils/helpers";
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledPicker = styled(Picker);
-
-const priorityColors: Record<PriorityLevel, string> = {
-    3: "#a42b2b", // Example color for high priority
-    2: "#b7b72d", // Example color for medium priority
-    1: "#26c526", // Example color for low priority
-};
 
 const PrioritySelector = ({
                               priority,
@@ -21,7 +16,7 @@ const PrioritySelector = ({
     priority: PriorityLevel;
     setPriority: (value: PriorityLevel) => void;
 }) => {
-    const selectedTextColor = priorityColors[priority];
+    const selectedTextColor = getPriorityLevelColor(priority);
     return (
         <StyledView className="flex-row items-center justify-between py-1">
             {/* Label */}
@@ -40,7 +35,6 @@ const PrioritySelector = ({
                     }}
                 >
                     {priorityOptions.map((option) => {
-                        const pickerTextColor = priorityColors[option.value as PriorityLevel];
                         return (
                             <Picker.Item
                                 key={option.value}
@@ -48,7 +42,7 @@ const PrioritySelector = ({
                                 value={option.value}
                                 style={{
                                     backgroundColor: '#030712',
-                                    color: pickerTextColor,
+                                    color: option.color,
                                     fontSize: 20,
                                 }}
                             />

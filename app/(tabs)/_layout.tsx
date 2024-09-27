@@ -14,14 +14,14 @@ export default function TabLayout() {
                     elevation: 0,  // Remove shadow on Android
                     shadowOpacity: 0,  // Remove shadow on iOS
                 },
-                headerShown: false,  // Hide the header
+                headerShown: false,
                 tabBarHideOnKeyboard: true,
             }}
         >
             <Tabs.Screen
                 name="chores"
                 options={{
-                    title: 'Notes',
+                    title: 'Chores',
                     tabBarIcon: ({ color, focused }) => (
                         <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
                     ),

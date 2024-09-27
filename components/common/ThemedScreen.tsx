@@ -1,9 +1,9 @@
 import React, {ReactNode, useCallback} from "react";
 import { styled, useColorScheme } from "nativewind";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import ScreenNavHeader from "@/components/ScreenNavHeader";
+import ScreenNavHeader from "@/components/common/ScreenNavHeader";
 import {router} from "expo-router";
-import {KeyboardAvoidingView, View, ScrollView} from "react-native";
+import { View } from "react-native";
 import {StatusBar} from "expo-status-bar";
 
 // Define the type for the props to include children
@@ -17,10 +17,7 @@ interface ThemedScreenProps {
 }
 
 // Create a styled version of SafeAreaView using NativeWind
-const StyledSafeAreaView = styled(SafeAreaView);
 const StyledView = styled(View);
-const StyledScrollView = styled(ScrollView);
-const StyledKeyboardAvoidingView = styled(KeyboardAvoidingView);
 
 const ThemedScreen: React.FC<ThemedScreenProps> = ({
                                                        children,
@@ -30,7 +27,7 @@ const ThemedScreen: React.FC<ThemedScreenProps> = ({
                                                        onHeaderNavBackPress,
                                                        onHeaderNavOptionsPress
                                                    }) => {
-    const { colorScheme } = useColorScheme();
+    //const { colorScheme } = useColorScheme();
 
     // Memoize the onHeaderNavBackPress and onHeaderNavOptionsPress callbacks
     const handleBackPress = useCallback(() => {

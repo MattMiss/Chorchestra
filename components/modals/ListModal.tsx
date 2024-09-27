@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import Modal from 'react-native-modal';
 import { styled } from 'nativewind';
-import DraggableList from '@/components/DraggableList';
+import DraggableList from '@/components/common/DraggableList';
 import { DraggableListItem } from '@/types';
 import { AntDesign } from '@expo/vector-icons';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -38,8 +38,6 @@ const ListModal: React.FC<ListModalProps> = ({
         <Modal
             isVisible={visible}
             onBackdropPress={onClose}
-
-            // Remove the customBackdrop prop
         >
 
             <StyledView className="w-full p-4 bg-gray-900 min-h-[500]">

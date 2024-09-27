@@ -1,17 +1,17 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, TextInput, TouchableOpacity, FlatList, ScrollView} from 'react-native';
+import {View, Text, TouchableOpacity, FlatList, ScrollView} from 'react-native';
 import { styled } from 'nativewind';
-import { useRouter } from 'expo-router';  // Import useRouter from Expo Router
-import TextInputFloatingLabel from "@/components/TextInputFloatingLabel";
-import Container from '@/components/Container';
+import { useRouter } from 'expo-router';
+import TextInputFloatingLabel from "@/components/common/TextInputFloatingLabel";
+import Container from '@/components/common/Container';
 import ListModal from "@/components/modals/ListModal";
-import {DraggableListItem, FrequencyType, PriorityLevel, priorityOptions, Tag} from '@/types';
-import ThemedScreen from "@/components/ThemedScreen";
+import {DraggableListItem, FrequencyType, PriorityLevel, Tag} from '@/types';
+import ThemedScreen from "@/components/common/ThemedScreen";
 import 'react-native-get-random-values';
 import { v4 as getRandomId } from 'uuid';
 import {AntDesign} from "@expo/vector-icons";
-import PrioritySelector from "@/components/PrioritySelector";
-import FrequencySelector from "@/components/FrequencySelector";
+import PrioritySelector from "@/components/chores/PrioritySelector";
+import FrequencySelector from "@/components/chores/FrequencySelector";
 import TagModal from "@/components/modals/TagModal";
 import {useDataContext} from "@/context/DataContext";
 
@@ -95,6 +95,20 @@ const AddChoreScreen = () => {
     };
 
     const handleSaveChore = async () => {
+        // Validate required fields
+        if (name.trim() === '' || description.trim() === '') {
+            alert("Please fill in all required fields (Name and Description).");
+            return;
+        }
+
+        // Transform instructions and itemsNeeded from DraggableListItem[] to string[]
+        const instructionsText = instructions.map(item => item.text.trim()).filter(text => text !== '');
+        const itemsNeededText = itemsNeeded.map(item => item.text.trim()).filter(text => text !== '');
+
+        // Extract tag IDs from selectedTags
+        const tagIds = selectedTags.map(tag => tag.id);
+
+        setIsSaving(true);
 
         const newChore = {
             id: Date.now(),
@@ -104,66 +118,27 @@ const AddChoreScreen = () => {
             frequencyType,
             status: 'active',
             priority,
-            instructions: instructions.map((item: DraggableListItem) => item.text),
-            itemsNeeded: itemsNeeded.map((item: DraggableListItem) => item.text),
-            tagIds: selectedTags.map((tag: Tag) => tag.id)
+            instructions: instructionsText,
+            itemsNeeded: itemsNeededText,
+            tagIds: tagIds
         };
+
+        console.log(JSON.stringify(newChore, null, 2));
 
         if (newChore){
             setChores((prevState) => [...prevState, newChore]);
         }
-        // // Validate required fields
-        // if (name.trim() === '' || description.trim() === '') {
-        //     alert("Please fill in all required fields (Name and Description).");
-        //     return;
-        // }
-        //
-        // // Transform instructions and itemsNeeded from DraggableListItem[] to string[]
-        // const instructionsText = instructions.map(item => item.text.trim()).filter(text => text !== '');
-        // const itemsNeededText = itemsNeeded.map(item => item.text.trim()).filter(text => text !== '');
-        //
-        // // Extract tag IDs from selectedTags
-        // const tagIds = selectedTags.map(tag => tag.id);
-        //
-        // setIsSaving(true);
-        // try {
-        //     console.log(name.trim(), description.trim(), instructionsText, itemsNeededText, frequency, frequencyType, 'active', priority, tagIds);
-        //     // Call the database function to insert the chore
-        //     const result = await insertChoreWithTags(
-        //         name.trim(),
-        //         description.trim(),
-        //         instructionsText,
-        //         itemsNeededText,
-        //         frequency,
-        //         frequencyType,
-        //         'active',       // Status can be 'active' by default
-        //         priority,       // Assuming priority maps directly to importance
-        //         tagIds
-        //     );
-        //
-        //     // Check if the insertion was successful
-        //     if (result.changes > 0 || result.lastInsertRowId) {
-        //         alert("Chore saved successfully!");
-        //         router.back(); // Navigate back to the previous screen
-        //     } else {
-        //         // Handle unexpected success response
-        //         console.error("Unexpected response:", result);
-        //         alert("Chore saved, but received an unexpected response.");
-        //     }
-        // } catch (error) {
-        //     // Log the error for debugging
-        //     console.error("Error saving chore:", error);
-        //     alert("Failed to save chore. Please try again.");
-        // }
+
+        router.back(); // Navigate back to the previous screen
     };
 
 
     const handleTagAdded = (newTag: Tag) => {
-        // if (!selectedTags.some(tag => tag.id === newTag.id)) {
-        //     setSelectedTags([...selectedTags, newTag]);
-        // } else {
-        //     alert(`${newTag.title} already exists`);
-        // }
+        if (!selectedTags.some(tag => tag.id === newTag.id)) {
+            setSelectedTags([...selectedTags, newTag]);
+        } else {
+            alert(`${newTag.name} already exists`);
+        }
         setIsTagModalVisible(false);
     };
 
@@ -191,25 +166,6 @@ const AddChoreScreen = () => {
         if (newChore){
             setChores((prevChores) => [...prevChores, newChore]);
         }
-
-        // try {
-        //     const result = await insertChoreWithTags(
-        //         db,
-        //         "Test Chore",
-        //         "Test Description",
-        //         ["Test Instruction 1", "Test Instruction 2"],
-        //         ["Test Item 1", "Test Item 2"],
-        //         3,
-        //         "week",
-        //         "active",
-        //         1,
-        //         [1, 2] // Ensure these tag IDs exist
-        //     );
-        //     console.log("Test Insert Result:", result);
-        // } catch (error: any) {
-        //     console.error("Test Insert Error:", error);
-        //     alert (`Test Insert Error: ${error.message}`);
-        // }
     };
 
     return (
@@ -295,7 +251,7 @@ const AddChoreScreen = () => {
                     </StyledView>
                 )}
 
-                {/* Add Tag Button */}
+                {/* Add TagItem Button */}
                 <StyledTouchableOpacity
                     className="p-2 bg-gray-200 rounded mb-4 w-full"
                     onPress={() => setIsTagModalVisible(true)} // Open the tag modal

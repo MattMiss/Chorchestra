@@ -18,12 +18,7 @@ interface ListItemProps {
     onUpdate: (id: string, text: string) => void; // Prop for handling item text update
 }
 
-const listStyle = {
-    active: 'bg-blue-200',
-    inactive: 'bg-gray-400'
-}
-
-const ListItem = forwardRef<View, ListItemProps>(({ item, drag, isActive, index, onDelete, onUpdate }, ref) => {
+const ListItemWithInput = forwardRef<View, ListItemProps>(({ item, drag, isActive, index, onDelete, onUpdate }, ref) => {
     const [currentText, setCurrentText] = useState(item.text);  // Track current input value
 
     useEffect(() => {
@@ -74,6 +69,6 @@ const ListItem = forwardRef<View, ListItemProps>(({ item, drag, isActive, index,
     );
 });
 
-ListItem.displayName = 'ListItem';
+ListItemWithInput.displayName = 'ListItemWithInput';
 
-export default ListItem;
+export default ListItemWithInput;

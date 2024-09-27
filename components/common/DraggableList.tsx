@@ -1,7 +1,6 @@
 import React from 'react';
-import { SafeAreaView } from 'react-native';
 import DraggableFlatList, { RenderItemParams } from 'react-native-draggable-flatlist';
-import ListItem from './ListItem';
+import ListItemWithInput from './ListItemWithInput';
 import { DraggableListItem } from '@/types';
 
 type DraggableListProps = {
@@ -16,7 +15,7 @@ const DraggableList: React.FC<DraggableListProps> = ({ items, onReorder, onDelet
 
         const index = getIndex();
         return (
-            <ListItem
+            <ListItemWithInput
                 item={item}
                 drag={drag}
                 isActive={isActive}

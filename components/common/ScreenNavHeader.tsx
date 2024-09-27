@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import {Platform, Text, TouchableOpacity, View} from 'react-native';
+import { Text, TouchableOpacity, View} from 'react-native';
 import { styled } from 'nativewind';
 import { router } from "expo-router";
 import {AntDesign, Entypo} from "@expo/vector-icons";

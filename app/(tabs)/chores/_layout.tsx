@@ -9,8 +9,8 @@ export default function NoteStack() {
                 options={{ title: 'My Chores' }}
             />
             <Stack.Screen
-                name="add-chore"  // This refers to "add-chore.tsx" in the chores folder
-                options={{ title: 'Add Chore' }}
+                name="add-edit-chore"  // This refers to "add-edit-chore.tsx" in the chores folder
+                options={{ title: 'Add or Edit Chore' }}
             />
         </Stack>
     );

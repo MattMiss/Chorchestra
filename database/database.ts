@@ -4,7 +4,7 @@
 import { Alert } from 'react-native';
 import * as SQLite from 'expo-sqlite';
 import { SQLiteDatabase } from "expo-sqlite";
-import {Chore, FrequencyType, Tag} from "@/types"; // Ensure you're using a version that supports async methods
+import {Chore, FrequencyType, TagItem} from "@/types"; // Ensure you're using a version that supports async methods
 
 export interface SQLRunResult {
     lastInsertRowId?: number; // The ID of the last inserted row (if applicable)
@@ -419,9 +419,9 @@ export const deleteChore = async (db: SQLiteDatabase, id: number): Promise<void>
  * @param db The SQLite database instance.
  * @returns An array of tags.
  *!/
-export const getAllTags = async (db: SQLiteDatabase): Promise<Tag[]> => {
+export const getAllTags = async (db: SQLiteDatabase): Promise<TagItem[]> => {
     try {
-        const tagsResult: Tag[] = await db.getAllAsync(
+        const tagsResult: TagItem[] = await db.getAllAsync(
             `SELECT * FROM tags;`,
             []
         );
@@ -468,7 +468,7 @@ export const createTag = async (db: SQLiteDatabase, name: string): Promise<SQLRu
             'INSERT INTO tags (name) VALUES (?);',
             [name]
         );
-        console.log(`Tag '${name}' created with ID: ${result.lastInsertRowId}`);
+        console.log(`TagItem '${name}' created with ID: ${result.lastInsertRowId}`);
         return result;
     } catch (error) {
         console.error(`Error creating tag '${name}':`, error);
@@ -490,7 +490,7 @@ export const updateTag = async (db: SQLiteDatabase, id: number, name: string): P
             'UPDATE tags SET name = ? WHERE id = ?;',
             [name, id]
         );
-        console.log(`Tag with ID ${id} updated to name '${name}'.`);
+        console.log(`TagItem with ID ${id} updated to name '${name}'.`);
     } catch (error) {
         console.error(`Error updating tag with ID ${id}:`, error);
         Alert.alert("Database Error", "Failed to update tag.");
@@ -506,7 +506,7 @@ export const updateTag = async (db: SQLiteDatabase, id: number, name: string): P
 export const deleteTag = async (db: SQLiteDatabase, id: number): Promise<void> => {
     try {
         await runAsync(db, 'DELETE FROM tags WHERE id = ?;', [id]);
-        console.log(`Tag with ID ${id} deleted successfully.`);
+        console.log(`TagItem with ID ${id} deleted successfully.`);
     } catch (error) {
         console.error(`Error deleting tag with ID ${id}:`, error);
         Alert.alert("Database Error", "Failed to delete tag.");
@@ -531,9 +531,9 @@ export const addTagToChore = async (db: SQLiteDatabase, choreId: number, tagId: 
             'INSERT INTO chore_tags (chore_id, tag_id) VALUES (?, ?);',
             [choreId, tagId]
         );
-        console.log(`Tag ID ${tagId} associated with Chore ID ${choreId}.`);
+        console.log(`TagItem ID ${tagId} associated with Chore ID ${choreId}.`);
     } catch (error) {
-        console.error(`Error associating Tag ID ${tagId} with Chore ID ${choreId}:`, error);
+        console.error(`Error associating TagItem ID ${tagId} with Chore ID ${choreId}:`, error);
         Alert.alert("Database Error", "Failed to associate tag with chore.");
         throw error;
     }
@@ -552,9 +552,9 @@ export const removeTagFromChore = async (db: SQLiteDatabase, choreId: number, ta
             'DELETE FROM chore_tags WHERE chore_id = ? AND tag_id = ?;',
             [choreId, tagId]
         );
-        console.log(`Tag ID ${tagId} removed from Chore ID ${choreId}.`);
+        console.log(`TagItem ID ${tagId} removed from Chore ID ${choreId}.`);
     } catch (error) {
-        console.error(`Error removing Tag ID ${tagId} from Chore ID ${choreId}:`, error);
+        console.error(`Error removing TagItem ID ${tagId} from Chore ID ${choreId}:`, error);
         Alert.alert("Database Error", "Failed to remove tag from chore.");
         throw error;
     }
@@ -602,9 +602,9 @@ export const addTagToNote = async (db: SQLiteDatabase, noteId: number, tagId: nu
             'INSERT INTO note_tags (note_id, tag_id) VALUES (?, ?);',
             [noteId, tagId]
         );
-        console.log(`Tag ID ${tagId} associated with Note ID ${noteId}.`);
+        console.log(`TagItem ID ${tagId} associated with Note ID ${noteId}.`);
     } catch (error) {
-        console.error(`Error associating Tag ID ${tagId} with Note ID ${noteId}:`, error);
+        console.error(`Error associating TagItem ID ${tagId} with Note ID ${noteId}:`, error);
         Alert.alert("Database Error", "Failed to associate tag with note.");
         throw error;
     }
@@ -623,9 +623,9 @@ export const removeTagFromNote = async (db: SQLiteDatabase, noteId: number, tagI
             'DELETE FROM note_tags WHERE note_id = ? AND tag_id = ?;',
             [noteId, tagId]
         );
-        console.log(`Tag ID ${tagId} removed from Note ID ${noteId}.`);
+        console.log(`TagItem ID ${tagId} removed from Note ID ${noteId}.`);
     } catch (error) {
-        console.error(`Error removing Tag ID ${tagId} from Note ID ${noteId}:`, error);
+        console.error(`Error removing TagItem ID ${tagId} from Note ID ${noteId}:`, error);
         Alert.alert("Database Error", "Failed to remove tag from note.");
         throw error;
     }

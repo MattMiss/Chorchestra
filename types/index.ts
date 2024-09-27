@@ -7,14 +7,15 @@ export const frequencyOptions: FrequencyType[] = ['day', 'week', 'month', 'year'
 export type PriorityLevel = 1 | 2 | 3;
 
 export const priorityOptions = [
-    { label: 'High', value: 3 },
-    { label: 'Medium', value: 2 },
-    { label: 'Low', value: 1 },
+    { label: 'High', value: 3, color: '#a42b2b' },
+    { label: 'Medium', value: 2, color: '#b7b72d' },
+    { label: 'Low', value: 1, color: '#26c526' },
 ];
 
 export interface Tag {
     id: number;
     name: string;
+    color?: string;
 }
 
 export interface Chore {
