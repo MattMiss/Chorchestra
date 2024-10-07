@@ -1,18 +1,21 @@
 import { Tabs } from 'expo-router';
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import React from 'react';
+import {FontAwesome} from "@expo/vector-icons";
 
 export default function TabLayout() {
     return (
         <Tabs
             screenOptions={{
-                tabBarActiveTintColor: '#FFFFFF',  // White for active icons/text
-                tabBarInactiveTintColor: '#808080', // Grey for inactive icons/text
+                tabBarActiveTintColor: '#F7FAFF',  // White for active icons/text
+                tabBarInactiveTintColor: '#858E9F', // Grey for inactive icons/text
                 tabBarStyle: {
-                    backgroundColor: '#000000',  // Black background for tab bar
+                    backgroundColor: '#1C1F26',  // Black background for tab bar
                     borderTopWidth: 0,  // Remove the border line
                     elevation: 0,  // Remove shadow on Android
                     shadowOpacity: 0,  // Remove shadow on iOS
+                },
+                tabBarItemStyle:{
+                    padding: 4
                 },
                 headerShown: false,
                 tabBarHideOnKeyboard: true,
@@ -23,7 +26,7 @@ export default function TabLayout() {
                 options={{
                     title: 'Chores',
                     tabBarIcon: ({ color, focused }) => (
-                        <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
+                        <FontAwesome name="tasks" size={24} color={color} />
                     ),
                 }}
             />
@@ -32,7 +35,7 @@ export default function TabLayout() {
                 options={{
                     title: 'Settings',
                     tabBarIcon: ({ color, focused }) => (
-                        <TabBarIcon name={focused ? 'settings' : 'settings-outline'} color={color} />
+                        <FontAwesome name="cog" size={24} color={color} />
                     ),
                 }}
             />

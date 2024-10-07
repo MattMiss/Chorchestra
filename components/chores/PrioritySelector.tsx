@@ -41,7 +41,7 @@ const PrioritySelector = ({
                                 label={option.label}
                                 value={option.value}
                                 style={{
-                                    backgroundColor: '#030712',
+                                    backgroundColor: '#1C1F26',
                                     color: option.color,
                                     fontSize: 20,
                                 }}

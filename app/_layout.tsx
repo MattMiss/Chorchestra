@@ -1,7 +1,11 @@
 import { Stack } from "expo-router";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import {StatusBar} from "expo-status-bar";
 import {DataProvider} from "@/context/DataContext";
+import { NativeWindStyleSheet } from "nativewind";
+
+NativeWindStyleSheet.setOutput({
+    default: "native",
+});
 
 export default function RootLayout() {
   return (

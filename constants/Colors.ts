@@ -24,3 +24,26 @@ export const Colors = {
     tabIconSelected: tintColorDark,
   },
 };
+
+export const COLOR_PALETTE: string[][] = [
+  // Red Shades
+  ['#FFE5E5', '#FFB3B3', '#FF6666', '#FF3333', '#CC0000'],
+
+  // Green Shades
+  ['#E5FFE5', '#B3FFB3', '#66FF66', '#33FF33', '#00CC00'],
+
+  // Blue Shades
+  ['#E5F0FF', '#B3D1FF', '#66A3FF', '#3385FF', '#0052CC'],
+
+  // Purple Shades
+  ['#F0E5FF', '#D1B3FF', '#A366FF', '#8533FF', '#6600CC'],
+
+  // Yellow Shades
+  ['#FFFFE5', '#FFFFB3', '#FFFF66', '#FFFF33', '#CCCC00'],
+
+  // Orange Shades
+  ['#FFE5CC', '#FFCC99', '#FF9933', '#FF6600', '#CC5200'],
+
+  // Black Shades
+  ['#F2F2F2', '#D9D9D9', '#BFBFBF', '#A6A6A6', '#808080'],
+];

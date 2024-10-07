@@ -8,6 +8,10 @@ export default function NoteStack() {
                 name="index"
                 options={{ title: 'Settings' }}
             />
+            <Stack.Screen
+                name="tag-manager"
+                options={{ title: 'Tag Manager' }}
+            />
         </Stack>
     );
 }

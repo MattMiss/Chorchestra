@@ -19,14 +19,12 @@ const TagSelector = ({
     onToggleModal: (showModal: boolean) => void;
 }) => {
     return (
-        <StyledView className="flex-grow py-1">
+        <StyledView className="flex-grow ">
             {/* Label */}
-            <StyledView className="flex-row justify-between">
-                <StyledText className="text-xl text-gray-400">Tags</StyledText>
-            </StyledView>
+            <StyledText className="text-xl text-[#858e9F] mb-2">Tags</StyledText>
 
             {/* Tag Container */}
-            <StyledView className="flex-grow p-1">
+            <StyledView className="flex-grow">
                 <TagListHorizontal
                     canRemoveTags={canRemoveTags}
                     tags={selectedTags}

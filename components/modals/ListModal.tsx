@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, ModalProps } from 'react-native';
 import Modal from 'react-native-modal';
 import { styled } from 'nativewind';
 import DraggableList from '@/components/common/DraggableList';
@@ -11,7 +11,7 @@ const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledTouchableOpacity = styled(TouchableOpacity);
 
-interface ListModalProps {
+interface ListModalProps extends ModalProps  {
     visible: boolean;
     onClose: () => void;
     title: string;
@@ -33,11 +33,14 @@ const ListModal: React.FC<ListModalProps> = ({
                                                  onUpdateItem,
                                                  onReorderItems,
                                                  onDeleteItem,
+                                                 ...rest
                                              }) => {
     return (
+        // @ts-ignore
         <Modal
             isVisible={visible}
             onBackdropPress={onClose}
+            {...rest}
         >
 
             <StyledView className="w-full p-4 bg-gray-900 min-h-[500]">

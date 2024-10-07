@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { FlatList, TouchableOpacity, View, Text } from 'react-native';
+import { TouchableOpacity, View, Text } from 'react-native';
 import { styled } from 'nativewind';
 import { Tag } from '@/types';
 import TagItem from '@/components/tags/TagItem';
@@ -27,30 +27,27 @@ const TagList: React.FC<TagListProps> = ({ tags, canRemoveTags = false, onRemove
     //console.log('Tags to Show:', tagsToShow);
 
     return (
-        <StyledView className="mt-3 flex-row flex-wrap">
-            <FlatList
-                data={tagsToShow}
-                horizontal
-                renderItem={({ item }) => {
-                    if (item.id === -1) {
-                        return (
-                            <StyledTouchableOpacity
-                                className="flex-row items-center px-2 py-1 rounded-xl mr-2 mb-2"
-                                onPress={onAddTag}
-                            >
-                                <AntDesign name="plus" size={16} color="white" />
-                                <StyledText className="ml-1 text-white">Tag</StyledText>
-                            </StyledTouchableOpacity>
-                        );
-                    } else {
-                        return (
+        <StyledView className="flex-row flex-wrap">
+            {tagsToShow.map((item) => {
+                if (item.id === -1) {
+                    return (
+                        <StyledTouchableOpacity
+                            key={item.id}
+                            className="flex-row items-center rounded-xl pt-2"
+                            onPress={onAddTag}
+                        >
+                            <AntDesign name="plus" size={16} color="white" />
+                            <StyledText className="ml-1 text-white">Tag</StyledText>
+                        </StyledTouchableOpacity>
+                    );
+                } else {
+                    return (
+                        <StyledView key={item.id} className={`mb-1 ${canRemoveTags ? 'mt-3 mr-2' : ''}`}>
                             <TagItem tag={item} isRemovable={canRemoveTags} onRemove={onRemoveTag} />
-                        );
-                    }
-                }}
-                keyExtractor={(item) => item.id.toString()}
-                extraData={tagsToShow} // Force re-render when tagsToShow changes
-            />
+                        </StyledView>
+                    );
+                }
+            })}
         </StyledView>
     );
 };

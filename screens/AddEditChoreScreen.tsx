@@ -5,16 +5,17 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import TextInputFloatingLabel from "@/components/common/TextInputFloatingLabel";
 import Container from '@/components/common/Container';
 import ListModal from "@/components/modals/ListModal";
-import { DraggableListItem, FrequencyType, PriorityLevel, Tag } from '@/types';
+import {DraggableListItem, EstTimeType, FrequencyType, PriorityLevel, Tag} from '@/types';
 import ThemedScreen from "@/components/common/ThemedScreen";
 import 'react-native-get-random-values';
 import { v4 as getRandomId } from 'uuid';
 import { AntDesign } from "@expo/vector-icons";
 import PrioritySelector from "@/components/chores/PrioritySelector";
 import FrequencySelector from "@/components/chores/FrequencySelector";
-import TagModal from "@/components/modals/TagModal";
 import { useDataContext } from "@/context/DataContext";
 import TagSelector from "@/components/chores/TagSelector";
+import EditTagsModal from "@/components/modals/EditTagsModal";
+import EstTimeSelector from "@/components/chores/EstTimeSelector";
 
 const StyledView = styled(View);
 const StyledScrollView = styled(ScrollView);
@@ -26,6 +27,8 @@ const AddEditChoreScreen = () => {
     const [description, setDescription] = useState('');
     const [instructions, setInstructions] = useState<DraggableListItem[]>([]);
     const [itemsNeeded, setItemsNeeded] = useState<DraggableListItem[]>([]);
+    const [estTime, setEstTime] = useState<number>(1);
+    const [estTimeType, setEstTimeType] = useState<EstTimeType>('minute');
     const [frequency, setFrequency] = useState<number>(1);
     const [frequencyType, setFrequencyType] = useState<FrequencyType>('day');
     const [priority, setPriority] = useState<PriorityLevel>(1);
@@ -62,6 +65,8 @@ const AddEditChoreScreen = () => {
                 setDescription(choreToEdit.description);
                 setInstructions(choreToEdit.instructions.map((text) => ({ id: getRandomId(), text })));
                 setItemsNeeded(choreToEdit.itemsNeeded.map((text) => ({ id: getRandomId(), text })));
+                setEstTime(choreToEdit.estTime);
+                setEstTimeType(choreToEdit.estTimeType);
                 setFrequency(choreToEdit.frequency);
                 setFrequencyType(choreToEdit.frequencyType);
                 setPriority(choreToEdit.priority);
@@ -69,7 +74,7 @@ const AddEditChoreScreen = () => {
                 setIsEditing(true);
             }
         }
-    }, [choreId, chores, tags]);
+    }, [choreId, chores]);
 
     const openModal = (key: string, title: string, addText: string, items: DraggableListItem[]) => {
         setModalItemKey(key);
@@ -126,6 +131,8 @@ const AddEditChoreScreen = () => {
             id: isEditing && choreId ? Number(choreId) : Date.now(), // Keep the same ID if editing
             name: name.trim(),
             description: description.trim(),
+            estTime,
+            estTimeType,
             frequency,
             frequencyType,
             status: 'active',
@@ -153,11 +160,18 @@ const AddEditChoreScreen = () => {
     }
 
     const handleTagAdded = (newTag: Tag) => {
+        // Check if the tag already exists in selectedTags
         if (!selectedTags.some((tag) => tag.id === newTag.id)) {
-            setSelectedTags([...selectedTags, newTag]);
+            setSelectedTags((prevSelectedTags) => {
+                const updatedTags = [...prevSelectedTags, newTag];
+                console.log("Updated selectedTags: ", updatedTags); // Log to verify the update
+                return updatedTags;
+            });
         } else {
-            alert(`${newTag.name} already exists`);
+            alert(`${newTag.name} is already selected`);
         }
+
+        // After adding the tag, close the modal
         toggleTagModal(false);
     };
 
@@ -206,6 +220,7 @@ const AddEditChoreScreen = () => {
                 </Container>
 
                 <Container>
+                    <EstTimeSelector estTime={estTime} setEstTime={setEstTime} timeType={estTimeType} setTimeType={setEstTimeType} />
                     <FrequencySelector frequencyNumber={frequency} setFrequencyNumber={setFrequency} frequencyType={frequencyType} setFrequencyType={setFrequencyType} />
                     <PrioritySelector priority={priority} setPriority={setPriority} />
                 </Container>
@@ -224,7 +239,7 @@ const AddEditChoreScreen = () => {
             </StyledScrollView>
 
             <ListModal visible={isListModalVisible} onClose={handleModalClose} title={modalTitle} addText={modalAddText} items={modalItems} onAddNewItem={handleAddNewItem} onUpdateItem={handleItemsUpdate} onReorderItems={handleItemsReorder} onDeleteItem={handleItemsDelete} />
-            <TagModal visible={isTagModalVisible} onClose={() => toggleTagModal(false)} onTagAdded={handleTagAdded} availableTags={availableTags} />
+            <EditTagsModal visible={isTagModalVisible} onClose={() => toggleTagModal(false)} onTagAdded={handleTagAdded} selectedTags={selectedTags} availableTags={availableTags} />
         </ThemedScreen>
     );
 };

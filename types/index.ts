@@ -4,6 +4,11 @@ export type FrequencyType = 'day' | 'week' | 'month' | 'year';
 
 export const frequencyOptions: FrequencyType[] = ['day', 'week', 'month', 'year'];
 
+export type EstTimeType = 'second' | 'minute' | 'hour' | 'day';
+
+export const estTimeTypeOptions: EstTimeType[] = ['second', 'minute', 'hour', 'day'];
+
+
 export type PriorityLevel = 1 | 2 | 3;
 
 export const priorityOptions = [
@@ -22,6 +27,8 @@ export interface Chore {
     id: number;
     name: string;
     description: string;
+    estTime: number;
+    estTimeType: EstTimeType;
     frequency: number;
     frequencyType: FrequencyType;
     status: string;

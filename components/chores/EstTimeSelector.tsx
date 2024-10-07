@@ -4,46 +4,46 @@ import React from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { styled } from 'nativewind';
-import { FrequencyType, frequencyOptions } from '@/types';
+import { EstTimeType, estTimeTypeOptions } from '@/types';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledPicker = styled(Picker);
 const StyledInput = styled(TextInput);
 
-interface FrequencySelectorProps {
-    frequencyNumber: number;
-    setFrequencyNumber: (value: number) => void;
-    frequencyType: FrequencyType;
-    setFrequencyType: (value: FrequencyType) => void;
+interface EstTimeSelectorProps {
+    estTime: number;
+    setEstTime: (value: number) => void;
+    timeType: EstTimeType;
+    setTimeType: (value: EstTimeType) => void;
 }
 
-const FrequencySelector: React.FC<FrequencySelectorProps> = ({
-                                                                 frequencyNumber,
-                                                                 setFrequencyNumber,
-                                                                 frequencyType,
-                                                                 setFrequencyType,
+const EstTimeSelector: React.FC<EstTimeSelectorProps> = ({
+                                                             estTime,
+                                                             setEstTime,
+                                                             timeType,
+                                                             setTimeType,
                                                              }) => {
     return (
         <StyledView className="flex-row items-center justify-between py-1">
             {/* Label */}
-            <StyledText className=" text-xl text-[#858E9F]">Frequency</StyledText>
+            <StyledText className=" text-xl text-[#858E9F]">Est Time</StyledText>
             <StyledView className="flex-1 flex-row items-center ml-5">
                 {/* Number Input */}
                 <StyledView className="flex-[35%] items-center">
                     <StyledInput
                         className={`pt-1  px-2 border-b border-gray-600 text-3xl text-white`}
                         keyboardType="number-pad"
-                        value={frequencyNumber.toString()}
+                        value={estTime.toString()}
                         onChangeText={(text) => {
                             const num = parseInt(text, 10);
                             if (isNaN(num)) {
-                                setFrequencyNumber(0);
+                                setEstTime(0);
                             }else if (num < 0) {
-                                setFrequencyNumber(1);
+                                setEstTime(1);
                             }
                             else {
-                                setFrequencyNumber(num);
+                                setEstTime(num);
                             }
                         }}
                         placeholder="1"
@@ -57,18 +57,18 @@ const FrequencySelector: React.FC<FrequencySelectorProps> = ({
                 {/* Picker Container */}
                 <StyledView className="flex-[65%] bg-[#1C1F26]">
                     <StyledPicker
-                        selectedValue={frequencyType}
-                        onValueChange={(value) => setFrequencyType(value as FrequencyType)}
+                        selectedValue={timeType}
+                        onValueChange={(value) => setTimeType(value as EstTimeType)}
                         mode={'dropdown'}
                         dropdownIconColor="white"
                         style={styles.picker}
                     >
-                        {frequencyOptions.map((option) => {
+                        {estTimeTypeOptions.map((option) => {
                             const label = option.charAt(0).toUpperCase() + option.slice(1);
                             return (
                                 <Picker.Item
                                     key={option}
-                                    label={frequencyNumber > 1 ? `${label}s` : label}
+                                    label={estTime > 1 ? `${label}s` : label}
                                     value={option}
                                     style={styles.pickerItem}
                                 />
@@ -115,4 +115,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default FrequencySelector;
+export default EstTimeSelector;

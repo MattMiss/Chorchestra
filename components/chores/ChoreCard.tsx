@@ -21,19 +21,27 @@ const ChoreCard: React.FC<ChoreCardProps> = ({ chore, onPress, tags }) => {
 
     return (
         <StyledTouchableOpacity
-            className="bg-white p-4 rounded-lg shadow-sm my-2 mx-4"
+            className="bg-[#1C1F26] p-4 rounded-3xl shadow-sm my-2 mx-4"
             onPress={onPress}
         >
             {/* Chore Name */}
-            <StyledText className="text-lg font-bold text-black">{chore.name}</StyledText>
+            <StyledText className="text-lg font-bold text-[#F7FAFF]">{chore.name}</StyledText>
 
             {/* Chore Description */}
-            <StyledText className="text-gray-600 text-sm">{chore.description}</StyledText>
+            <StyledText className="text-[#858E9F] text-sm">{chore.description}</StyledText>
+
+            {/* Est Time */}
+            <StyledView className='flex-row'>
+                <StyledText className="text-[#14A8CC] text-sm">{'Est Time:'}</StyledText>
+                <StyledText className="text-[#858E9F] text-sm">{` ${chore.estTime} ${chore.estTimeType}${chore.estTime > 1 ? 's' : ''}`}</StyledText>
+            </StyledView>
 
             {/* Frequency */}
-            <StyledText className="text-gray-500 text-sm">
-                {`Frequency: ${chore.frequency} ${chore.frequencyType}`}
-            </StyledText>
+            <StyledView className='flex-row'>
+                <StyledText className="text-[#14A8CC] text-sm">{'Frequency:'}</StyledText>
+                <StyledText className="text-[#858E9F] text-sm">{` ${chore.frequency} ${chore.frequencyType}${chore.frequency > 1 ? 's' : ''}`}</StyledText>
+            </StyledView>
+
 
             {/* Priority */}
             <StyledText className={"text-sm"} style={{color: getPriorityLevelColor(chore.priority)}}>

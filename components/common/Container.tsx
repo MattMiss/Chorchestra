@@ -10,7 +10,7 @@ interface ContainerProps extends ViewProps {
 
 const Container: React.FC<ContainerProps> = ({ children, ...rest }) => {
     return (
-        <StyledView className="flex w-full bg-gray-950 p-4 mb-4 rounded-lg" {...rest}>
+        <StyledView className="flex w-full bg-[#1C1F26] p-4 mb-4 rounded-lg" {...rest}>
             {children}
         </StyledView>
     );

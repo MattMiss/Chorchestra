@@ -61,7 +61,7 @@ const ChoresScreen = () => {
             headerTitle={"Chores"}
         >
             <StyledView
-                className="p-2 flex-grow"
+                className="p-1 flex-grow"
             >
                 {/* Check if there are any chores to display */}
                 {chores.length > 0 ? (
@@ -78,10 +78,10 @@ const ChoresScreen = () => {
             </StyledView>
             <StyledView className='absolute right-4 bottom-4'>
                 <StyledTouchableOpacity
-                    className="items-center justify-center m-auto w-14 h-14 bg-blue-500 rounded-full "
+                    className="items-center justify-center m-auto w-14 h-14 bg-[#F5103B] rounded-full "
                     onPress={() => router.push('/chores/add-edit-chore')}
                 >
-                    <AntDesign name="plus" size={40} color="white" />
+                    <AntDesign name="plus" size={30} color="white" />
                 </StyledTouchableOpacity>
             </StyledView>
         </ThemedScreen>
