@@ -23,6 +23,19 @@ export const Colors = {
     tabIconDefault: '#9BA1A6',
     tabIconSelected: tintColorDark,
   },
+  textPrimary: '#F7FAFF',
+  textSecondary: '#858E9F',
+  accent:'#14A8CC',
+  tabIconDefault: '',
+  tabIconSelected: '',
+  backgroundDark: '#121315',
+  backgroundMedium: '#1C1F26',
+  backgroundPopup: '#28282c',
+  backgroundStatusBar: '#0B0B0D',
+  buttonPrimary: '#14A8CC',
+  buttonSecondary: '#6d767c',
+  buttonAlternative: '#F5103B',
+  defaultTagColor: '#7e7e7e'
 };
 
 export const COLOR_PALETTE: string[][] = [

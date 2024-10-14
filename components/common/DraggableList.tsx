@@ -7,7 +7,7 @@ type DraggableListProps = {
     items: DraggableListItem[];
     onReorder: (newData: DraggableListItem[]) => void;
     onDelete: (id: string) => void;
-    onUpdate: (id: string, newText: string) => void;  // New prop to handle item text updates
+    onUpdate: (id: string, newText: string) => void;
 };
 
 const DraggableList: React.FC<DraggableListProps> = ({ items, onReorder, onDelete, onUpdate }) => {

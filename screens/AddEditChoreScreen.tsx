@@ -16,6 +16,7 @@ import { useDataContext } from "@/context/DataContext";
 import TagSelector from "@/components/chores/TagSelector";
 import EditTagsModal from "@/components/modals/EditTagsModal";
 import EstTimeSelector from "@/components/chores/EstTimeSelector";
+import {Colors} from "@/constants/Colors";
 
 const StyledView = styled(View);
 const StyledScrollView = styled(ScrollView);
@@ -196,7 +197,7 @@ const AddEditChoreScreen = () => {
                         className="flex-row items-center min-h-[50]"
                         onPress={() => openModal('instructions', 'Instructions', 'Instruction', instructions)}
                     >
-                        <StyledText className="flex-grow text-xl text-gray-400">
+                        <StyledText className={`flex-grow text-xl text-[${Colors.textSecondary}]`}>
                             {instructions.length > 0 ? instructions.length : 'No'} Instructions
                         </StyledText>
                         <StyledView className="py-1 pl-5 pr-2">
@@ -210,7 +211,7 @@ const AddEditChoreScreen = () => {
                         className="flex-row items-center min-h-[50]"
                         onPress={() => openModal('items', 'Items Needed', 'Item', itemsNeeded)}
                     >
-                        <StyledText className="flex-grow text-xl text-gray-400">
+                        <StyledText className={`flex-grow text-xl text-[${Colors.textSecondary}]`}>
                             {itemsNeeded.length > 0 ? itemsNeeded.length : 'No'} Items Needed
                         </StyledText>
                         <StyledView className="py-1 pl-5 pr-2">
@@ -220,8 +221,12 @@ const AddEditChoreScreen = () => {
                 </Container>
 
                 <Container>
-                    <EstTimeSelector estTime={estTime} setEstTime={setEstTime} timeType={estTimeType} setTimeType={setEstTimeType} />
-                    <FrequencySelector frequencyNumber={frequency} setFrequencyNumber={setFrequency} frequencyType={frequencyType} setFrequencyType={setFrequencyType} />
+                    <StyledView className='py-2'>
+                        <EstTimeSelector estTime={estTime} setEstTime={setEstTime} timeType={estTimeType} setTimeType={setEstTimeType} />
+                    </StyledView>
+                    <StyledView className='pt-1'>
+                        <FrequencySelector frequencyNumber={frequency} setFrequencyNumber={setFrequency} frequencyType={frequencyType} setFrequencyType={setFrequencyType} />
+                    </StyledView>
                     <PrioritySelector priority={priority} setPriority={setPriority} />
                 </Container>
 
@@ -230,8 +235,12 @@ const AddEditChoreScreen = () => {
                 </Container>
 
                 <StyledView className="mb-10">
-                    <StyledTouchableOpacity onPress={handleSaveChore} className="bg-blue-500 my-4 p-3 rounded-lg">
-                        <StyledText className="text-white text-center">
+                    <StyledTouchableOpacity
+                        onPress={handleSaveChore}
+                        className="my-4 p-3 rounded-lg"
+                        style={{backgroundColor: Colors.buttonPrimary}}
+                    >
+                        <StyledText className={`text-center text-[${Colors.textPrimary}]`}>
                             {isEditing ? 'Save Changes' : 'Save Chore'}
                         </StyledText>
                     </StyledTouchableOpacity>

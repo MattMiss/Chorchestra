@@ -20,7 +20,10 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": ["INTERNET"]
+      "permissions": [
+        "INTERNET"
+      ],
+      "package": "com.mattwm.Chorechesrta"
     },
     "web": {
       "bundler": "metro",
@@ -32,6 +35,11 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "96a96229-1b41-4e6e-9c60-adf1224d193d"
+      }
     }
   }
 }

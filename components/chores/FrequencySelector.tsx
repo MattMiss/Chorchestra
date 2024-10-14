@@ -5,6 +5,7 @@ import { View, Text, TextInput, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { styled } from 'nativewind';
 import { FrequencyType, frequencyOptions } from '@/types';
+import {Colors} from "@/constants/Colors";
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -27,12 +28,12 @@ const FrequencySelector: React.FC<FrequencySelectorProps> = ({
     return (
         <StyledView className="flex-row items-center justify-between py-1">
             {/* Label */}
-            <StyledText className=" text-xl text-[#858E9F]">Frequency</StyledText>
-            <StyledView className="flex-1 flex-row items-center ml-5">
+            <StyledText className={`min-w-[100] text-xl text-[${Colors.textSecondary}]`}>Frequency</StyledText>
+            <StyledView className="flex-1 flex-row items-center ml-2">
                 {/* Number Input */}
                 <StyledView className="flex-[35%] items-center">
                     <StyledInput
-                        className={`pt-1  px-2 border-b border-gray-600 text-3xl text-white`}
+                        className={`pt-1 px-2 border-b border-gray-600 text-3xl text-[${Colors.textPrimary}]`}
                         keyboardType="number-pad"
                         value={frequencyNumber.toString()}
                         onChangeText={(text) => {
@@ -49,13 +50,10 @@ const FrequencySelector: React.FC<FrequencySelectorProps> = ({
                         placeholder="1"
                         maxLength={3} // Limit to 3 digits (1-999)
                     />
-                    {/*<Text style={styles.frequencyLabel}>*/}
-                    {/*    {frequencyNumber > 1 ? `${frequencyType}s` : frequencyType}*/}
-                    {/*</Text>*/}
                 </StyledView>
 
                 {/* Picker Container */}
-                <StyledView className="flex-[65%] bg-[#1C1F26]">
+                <StyledView className="flex-[65%]">
                     <StyledPicker
                         selectedValue={frequencyType}
                         onValueChange={(value) => setFrequencyType(value as FrequencyType)}
@@ -84,33 +82,14 @@ const FrequencySelector: React.FC<FrequencySelectorProps> = ({
 };
 
 const styles = StyleSheet.create({
-    numberInput: {
-        height: 40,
-        borderColor: '#374151',
-        borderWidth: 1,
-        borderRadius: 8,
-        paddingHorizontal: 10,
-        color: '#fff',
-        backgroundColor: '#374151',
-        width: 60,
-        textAlign: 'center',
-        fontSize: 20,
-    },
-    frequencyLabel: {
-        marginLeft: 10,
-        fontSize: 18,
-        color: '#fff',
-        textAlign: 'left',
-    },
     picker: {
         height: 40,
-        color: '#fff',
-        backgroundColor: '#1C1F26',
-        borderRadius: 8,
+        color: Colors.textPrimary,
+        backgroundColor: Colors.backgroundMedium,
     },
     pickerItem: {
-        backgroundColor: '#1C1F26',
-        color: '#fff',
+        color: Colors.textPrimary,
+        backgroundColor: Colors.backgroundMedium,
         fontSize: 18,
     },
 });

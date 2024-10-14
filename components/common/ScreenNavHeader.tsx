@@ -36,7 +36,7 @@ const ScreenNavHeader: React.FC<ScreenNavHeaderProps> = ({
     }, [onOptionsPress]);
 
     return (
-        <StyledView className={`flex-row justify-between items-center h-14 px-5 `}>
+        <StyledView className={`flex-row justify-between items-center h-14 px-5`}>
             <StyledView className='flex-shrink min-w-[40] items-start'>
                 {showNavButton && (
                     <StyledTouchableOpacity onPress={handleBackPress}>

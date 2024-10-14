@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import {View, Text} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { styled } from 'nativewind';
 import { PriorityLevel, priorityOptions } from '@/types';
 import {getPriorityLevelColor} from "@/utils/helpers";
+import {Colors} from "@/constants/Colors";
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -20,18 +21,19 @@ const PrioritySelector = ({
     return (
         <StyledView className="flex-row items-center justify-between py-1">
             {/* Label */}
-            <StyledText className="flex-1 text-xl text-gray-400">Priority</StyledText>
+            <StyledText className="min-w-[100] text-xl text-gray-400">Priority</StyledText>
+            <StyledView className='flex-[35%]'></StyledView>
 
             {/* Picker Container */}
-            <StyledView className="flex-1 p-1">
+            <StyledView className="flex-[65%] pl-1">
                 <StyledPicker
-                    className="rounded-lg"
+                    className=""
                     selectedValue={priority}
                     onValueChange={(value) => setPriority(value as PriorityLevel)}
                     mode={'dropdown'}
                     dropdownIconColor="white"
                     style={{
-                        color: selectedTextColor,
+                        color: selectedTextColor
                     }}
                 >
                     {priorityOptions.map((option) => {
@@ -41,9 +43,9 @@ const PrioritySelector = ({
                                 label={option.label}
                                 value={option.value}
                                 style={{
-                                    backgroundColor: '#1C1F26',
+                                    backgroundColor: Colors.backgroundMedium,
                                     color: option.color,
-                                    fontSize: 20,
+                                    fontSize: 18,
                                 }}
                             />
                         );

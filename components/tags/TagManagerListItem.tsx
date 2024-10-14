@@ -1,11 +1,12 @@
 // src/components/tags/TagListItem.tsx
 
 import React from 'react';
-import { TouchableOpacity, View, Text } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import { Tag } from '@/types';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { styled } from 'nativewind';
 import TagItem from './TagItem';
+import {Colors} from "@/constants/Colors";
 
 interface TagManagerListItemProps {
     tag: Tag;
@@ -19,7 +20,6 @@ interface TagManagerHiddenListItemProps {
 }
 
 const StyledView = styled(View);
-const StyledText = styled(Text);
 const StyledTouchableOpacity = styled(TouchableOpacity);
 
 export const TagManagerListItem: React.FC<TagManagerListItemProps> = ({ tag, onEdit, onPickColor }) => {
@@ -28,7 +28,7 @@ export const TagManagerListItem: React.FC<TagManagerListItemProps> = ({ tag, onE
             className={`flex-row justify-between items-center p-4 my-1 rounded-full`}
             onPress={() => onEdit(tag)}
             style={{
-                backgroundColor: tag.color
+                backgroundColor: tag.color || Colors.defaultTagColor
             }}
             activeOpacity={1} // Prevent opacity change on press
         >

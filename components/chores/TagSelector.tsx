@@ -3,6 +3,7 @@ import { View, Text } from 'react-native';
 import { styled } from 'nativewind';
 import { Tag } from '@/types';
 import TagListHorizontal from "@/components/tags/TagListHorizontal";
+import {Colors} from "@/constants/Colors";
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -21,7 +22,7 @@ const TagSelector = ({
     return (
         <StyledView className="flex-grow ">
             {/* Label */}
-            <StyledText className="text-xl text-[#858e9F] mb-2">Tags</StyledText>
+            <StyledText className={`mb-2 text-xl text-[${Colors.textSecondary}]`}>Tags</StyledText>
 
             {/* Tag Container */}
             <StyledView className="flex-grow">

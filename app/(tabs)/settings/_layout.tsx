@@ -12,6 +12,10 @@ export default function NoteStack() {
                 name="tag-manager"
                 options={{ title: 'Tag Manager' }}
             />
+            <Stack.Screen
+                name="import-export-data"
+                options={{ title: 'Import/Export Data' }}
+            />
         </Stack>
     );
 }

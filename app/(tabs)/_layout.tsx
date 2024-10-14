@@ -22,6 +22,15 @@ export default function TabLayout() {
             }}
         >
             <Tabs.Screen
+                name="entries"
+                options={{
+                    title: 'Entries',
+                    tabBarIcon: ({ color, focused }) => (
+                        <FontAwesome name="cog" size={24} color={color} />
+                    ),
+                }}
+            />
+            <Tabs.Screen
                 name="chores"
                 options={{
                     title: 'Chores',

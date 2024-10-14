@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Animated, TextInput, TextInputProps, View, Text } from 'react-native';
 import { styled } from 'nativewind';
+import {Colors} from "@/constants/Colors";
 
 const StyledText = styled(Text);
 const StyledView = styled(View);
@@ -93,12 +94,12 @@ const TextInputFloatingLabel: React.FC<TextInputFloatingLabelProps> = ({
         <StyledView className="mt-2 mx-2">
             <StyledAnimatedText
                 style={floatingLabelStyle} // Consolidate the styles here
-                className={'absolute text-gray-400'}
+                className={`absolute text-[${Colors.textSecondary}]`}
             >
                 {label}
             </StyledAnimatedText>
             <StyledTextInput
-                className={`pt-3 pb-1 px-2 border-b ${borderColor} text-lg text-white`}
+                className={`pt-3 pb-1 px-2 border-b ${borderColor} text-lg text-[${Colors.textPrimary}]`}
                 onFocus={handleFocus}
                 onBlur={handleBlur}
                 value={value}

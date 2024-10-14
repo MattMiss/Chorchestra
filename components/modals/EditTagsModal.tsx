@@ -1,11 +1,13 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Modal, TouchableWithoutFeedback, TextInput, FlatList } from 'react-native';
+import { View, TouchableOpacity, Modal, TouchableWithoutFeedback, FlatList } from 'react-native';
 import { styled } from 'nativewind';
 import { Tag } from '@/types';
 import { debounce } from 'lodash';
 import { useDataContext } from "@/context/DataContext";
 import TagSearchResultItem from "@/components/tags/TagSearchResultItem";
 import { sortTagsByName } from '@/utils/helpers';
+import {Colors} from "@/constants/Colors";
+import TextInputFloatingLabel from "@/components/common/TextInputFloatingLabel";
 
 // New Interface extending Tag with `isAvailable` field
 interface TagWithAvailability extends Tag {
@@ -13,9 +15,6 @@ interface TagWithAvailability extends Tag {
 }
 
 const StyledView = styled(View);
-const StyledText = styled(Text);
-const StyledTextInput = styled(TextInput);
-const StyledTouchableOpacity = styled(TouchableOpacity);
 
 interface TagModalProps {
     visible: boolean;
@@ -26,7 +25,6 @@ interface TagModalProps {
 }
 
 const EditTagsModal = ({ visible, onClose, onTagAdded, selectedTags, availableTags }: TagModalProps) => {
-    const [tagToAdd, setTagToAdd] = useState<Tag | null>(null);
     const [tagInput, setTagInput] = useState('');
     const [suggestionsList, setSuggestionsList] = useState<TagWithAvailability[]>([]); // Use TagWithAvailability array for suggestions
     const [loading, setLoading] = useState(false);
@@ -82,7 +80,6 @@ const EditTagsModal = ({ visible, onClose, onTagAdded, selectedTags, availableTa
     }, [debouncedGetTagSuggestions]);
 
     const handleClearTag = useCallback(() => {
-        setTagToAdd(null);
         setTagInput('');
         setSuggestionsList(createTagWithAvailabilityList(availableTags)); // Create the suggestions list with availability check
     }, [availableTags, selectedTags]);
@@ -116,38 +113,34 @@ const EditTagsModal = ({ visible, onClose, onTagAdded, selectedTags, availableTa
                 activeOpacity={1}
                 onPressOut={onClose} // This only triggers when clicking outside the modal content
             >
-                <StyledView className="flex-1 justify-center items-center bg-transparent-70 p-8">
-                    {/* Add TouchableWithoutFeedback to prevent propagation when clicking inside the modal */}
-                    <TouchableWithoutFeedback>
-                        <StyledView className="h-[500] bg-gray-700 rounded-xl w-11/12">
-                            <StyledView className="flex-1">
-                                <StyledView className="w-full p-3">
-                                    <StyledTextInput
-                                        className="h-10 border border-gray-300 rounded px-2 mb-2"
-                                        placeholder={'Search for a tag'}
-                                        value={tagInput}
-                                        onChangeText={handleInputChange}
-                                    />
-                                </StyledView>
+                <TouchableWithoutFeedback onPress={onClose}>
+                    <StyledView className="flex-1 justify-end items-center bg-transparent-70">
+                        <TouchableWithoutFeedback>
+                            <StyledView className={`p-4 w-full max-w-md min-h-[75%] rounded-t-3xl bg-[${Colors.backgroundMedium}]`}>
+                                <StyledView className="flex-1">
+                                    <StyledView className="w-full p-3">
+                                        <TextInputFloatingLabel label='Search for a tag' value={tagInput} onChangeText={handleInputChange} />
+                                    </StyledView>
 
-                                <StyledView className="px-2">
-                                    <FlatList<TagWithAvailability>
-                                        data={memoizedSuggestionsList}
-                                        renderItem={({ item }) => (
-                                            <TagSearchResultItem
-                                                tag={item}
-                                                isAvailable={item.isAvailable}
-                                                onTagSelected={handleTagSelected}
-                                            />
-                                        )}
-                                        keyExtractor={(item) => item.id.toString()}
-                                        style={{ marginBottom: 10 }}
-                                    />
+                                    <StyledView className="px-2">
+                                        <FlatList<TagWithAvailability>
+                                            data={memoizedSuggestionsList}
+                                            renderItem={({ item }) => (
+                                                <TagSearchResultItem
+                                                    tag={item}
+                                                    isAvailable={item.isAvailable}
+                                                    onTagSelected={handleTagSelected}
+                                                />
+                                            )}
+                                            keyExtractor={(item) => item.id.toString()}
+                                            style={{ marginBottom: 10 }}
+                                        />
+                                    </StyledView>
                                 </StyledView>
                             </StyledView>
-                        </StyledView>
-                    </TouchableWithoutFeedback>
-                </StyledView>
+                        </TouchableWithoutFeedback>
+                    </StyledView>
+                </TouchableWithoutFeedback>
             </TouchableOpacity>
         </Modal>
     );

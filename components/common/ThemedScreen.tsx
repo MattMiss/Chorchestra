@@ -1,10 +1,11 @@
 import React, {ReactNode, useCallback} from "react";
-import { styled, useColorScheme } from "nativewind";
+import { styled } from "nativewind";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ScreenNavHeader from "@/components/common/ScreenNavHeader";
 import {router} from "expo-router";
 import { View } from "react-native";
 import {StatusBar} from "expo-status-bar";
+import {Colors} from "@/constants/Colors";
 
 // Define the type for the props to include children
 interface ThemedScreenProps {
@@ -47,8 +48,8 @@ const ThemedScreen: React.FC<ThemedScreenProps> = ({
 
     return (
         <SafeAreaView style={{flex: 1}}>
-            <StatusBar style={'light'} backgroundColor="#0B0B0D"/>
-            <StyledView className='flex-1 bg-[#121315]'>
+            <StatusBar style={'light'} backgroundColor={Colors.backgroundStatusBar}/>
+            <StyledView className={`flex-1 bg-[${Colors.backgroundDark}]`}>
                 <ScreenNavHeader
                     showNavButton={showHeaderNavButton}
                     showOptions={showHeaderNavOptionButton}

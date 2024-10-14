@@ -1,4 +1,8 @@
-import {PriorityLevel, priorityOptions, Tag} from "@/types";
+// src/utils/helpers.ts
+
+import {PriorityLevel, priorityOptions, Tag, Chore, FrequencyType} from "@/types";
+import { Dayjs } from 'dayjs';
+import dayjs from '@/utils/dayjsConfig'
 
 // Function to get a tag by its ID
 export const getTagById = (tags: Tag[], id: number): Tag | undefined => {
@@ -10,13 +14,23 @@ export const getTagIdsFromTags = (tags: Tag[]): number[] => {
     return tags.map((tag) => tag.id);
 };
 
+// Function to get a chore by its ID
+export const getChoreById = (chores: Chore[], id: number): Chore | undefined => {
+    return chores.find((chore) => chore.id === id);
+};
+
+// Function to get a chore name by its ID
+export const getChoreNameById = (chores: Chore[], id: number): string | undefined => {
+    return chores.find((chore) => chore.id === id)?.name;
+};
+
 export const getPriorityLevelColor = (pLevel: PriorityLevel): string => {
-    const color = priorityOptions.find(p => {return p.value === pLevel})?.color;
+    const color = priorityOptions.find(p => p.value === pLevel)?.color;
     return color || '#7a7a7a';
 }
 
 export const getPriorityLevelLabel = (pLevel: PriorityLevel): string | undefined => {
-    return priorityOptions.find(p => {return p.value === pLevel})?.label;
+    return priorityOptions.find(p => p.value === pLevel)?.label;
 }
 
 /**
@@ -78,7 +92,6 @@ export const hexToRgb = (hex: string): { r: number; g: number; b: number } | nul
     return { r, g, b };
 };
 
-
 /**
  * Determines whether to use black or white text based on the background color.
  * @param backgroundColor - The background color in HEX format (e.g., '#FF5733').
@@ -97,4 +110,49 @@ export const getContrastingTextColor = (backgroundColor: string): 'black' | 'whi
     const yiq = (r * 299 + g * 587 + b * 114) / 1000;
 
     return yiq >= 128 ? 'black' : 'white';
+};
+
+// Get the last completion date for a chore
+export const getLastCompletionDate = (
+    choreId: number,
+    entries: { choreId: number; dateCompleted: string }[]
+): Dayjs | null => {
+    const choreEntries = entries
+        .filter(entry => entry.choreId === choreId)
+        .map(entry => dayjs(entry.dateCompleted))
+        .sort((a, b) => b.valueOf() - a.valueOf());
+
+    return choreEntries.length > 0 ? choreEntries[0] : null;
+};
+
+/**
+ * Calculates the next due date for a chore based on the last completion date, frequency, and frequency type.
+ *
+ * @param lastDate - The last completion date of the chore.
+ * @param frequency - How often the chore should be completed.
+ * @param frequencyType - The unit of frequency ('day', 'week', 'month', 'year').
+ * @returns The next due date as a Dayjs object.
+ */
+export const getNextDueDate = (
+    lastDate: Dayjs | null,
+    frequency: number,
+    frequencyType: FrequencyType
+): Dayjs => {
+    if (lastDate) {
+        return lastDate.add(frequency, frequencyType);
+    }
+    // If never completed, set due date as now
+    return dayjs();
+};
+
+// Get the time left until the next due date
+export const getTimeLeft = (nextDueDate: Dayjs): string => {
+    const now = dayjs();
+    const diff = nextDueDate.diff(now, 'second');
+
+    if (diff <= 0) {
+        return 'Due now';
+    }
+
+    return nextDueDate.fromNow(); // e.g., 'in 3 days', 'in a week'
 };

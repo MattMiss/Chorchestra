@@ -1,10 +1,11 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Modal } from 'react-native';
+import {View, Text, TouchableOpacity, Modal, TouchableWithoutFeedback} from 'react-native';
 import { styled } from 'nativewind';
 import { Tag } from '@/types';
 import {useDataContext} from "@/context/DataContext";
 import TextInputFloatingLabel from "@/components/common/TextInputFloatingLabel";
 import {sortTagsByName} from "@/utils/helpers";
+import {Colors} from "@/constants/Colors";
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -20,7 +21,7 @@ interface TagModalProps {
 const AddEditTagModal = ({ selectedTag, visible, onClose, availableTags }: TagModalProps) => {
     const [tagInput, setTagInput] = useState('');
 
-    const {setTags, isLoading} = useDataContext();
+    const {setTags} = useDataContext();
 
     useEffect(() => {
         handleClearTag();
@@ -88,19 +89,26 @@ const AddEditTagModal = ({ selectedTag, visible, onClose, availableTags }: TagMo
                     activeOpacity={1}
                     onPressOut={onClose}
                 >
-                    <StyledView className="flex-1 justify-center items-center bg-transparent-70 p-8">
-                        <StyledView className='rounded-xl w-full bg-gray-800 p-3'>
-                            <TextInputFloatingLabel label="Enter Tag" value={tagInput} onChangeText={setTagInput} />
-                            <StyledView className="mt-6">
-                                <StyledTouchableOpacity onPress={handleSaveNewTag} className="bg-blue-500 my-4 p-3 rounded-lg">
-                                    <StyledText className="text-white text-center">
-                                        {selectedTag ? 'Save' : 'Add Tag'}
-                                    </StyledText>
-                                </StyledTouchableOpacity>
-                            </StyledView>
+                    <TouchableWithoutFeedback onPress={onClose}>
+                        <StyledView className="flex-1 justify-end items-center bg-transparent-70">
+                            <TouchableWithoutFeedback>
+                                <StyledView className={`p-4 w-full max-w-md min-h-[240] rounded-t-3xl bg-[${Colors.backgroundMedium}]`}>
+                                    <TextInputFloatingLabel label="Tag Name" value={tagInput} onChangeText={setTagInput} />
+                                    <StyledView className="mt-6">
+                                        <StyledTouchableOpacity
+                                            onPress={handleSaveNewTag}
+                                            className="my-4 p-3 rounded-lg"
+                                            style={{backgroundColor: Colors.buttonPrimary}}
+                                        >
+                                            <StyledText className="text-white text-center">
+                                                {selectedTag ? 'Save' : 'Add Tag'}
+                                            </StyledText>
+                                        </StyledTouchableOpacity>
+                                    </StyledView>
+                                </StyledView>
+                            </TouchableWithoutFeedback>
                         </StyledView>
-
-                    </StyledView>
+                    </TouchableWithoutFeedback>
                 </TouchableOpacity>
         </Modal>
     );

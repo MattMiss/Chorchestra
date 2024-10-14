@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { styled } from 'nativewind';
-import { Text, View, ActivityIndicator, Alert } from "react-native";
+import { View, ActivityIndicator, Alert } from "react-native";
 import { router } from "expo-router";
-
+import {Colors} from "@/constants/Colors";
+import ThemedScreen from "@/components/common/ThemedScreen";
 
 const StyledView = styled(View);
-const StyledText = styled(Text);
 
 const App = () => {
     const [isInitializing, setIsInitializing] = useState(true);
@@ -13,15 +13,6 @@ const App = () => {
     useEffect(() => {
         const initializeDatabase = async () => {
             try {
-                // // Step 1: Create necessary tables
-                // await createTables(db);
-                // console.log('Tables created successfully');
-                //
-                // // Step 2: Apply migrations
-                // //await migrateAddFrequencyType(db);
-                // console.log('Migrations applied successfully');
-
-                // Step 3: Navigate to the main screen
                 router.replace('/chores/my-chores');
             } catch (error) {
                 console.error('Error initializing database:', error);
@@ -40,18 +31,27 @@ const App = () => {
 
     if (isInitializing) {
         return (
-            <StyledView className="flex-1 justify-center items-center">
-                <ActivityIndicator size="large" color="#0000ff" />
-                <StyledText className="text-xl mt-4">Initializing App...</StyledText>
-            </StyledView>
+            <ThemedScreen
+                showHeaderNavButton={false}
+                showHeaderNavOptionButton={false}
+            >
+                <StyledView className="p-2 flex-grow">
+                    <ActivityIndicator size="large" color={Colors.accent} />
+                </StyledView>
+            </ThemedScreen>
         );
     }
 
     // Optionally, you can render nothing or a fallback UI here
     return (
-        <StyledView className="flex-1 justify-center items-center">
-            <StyledText className="text-xl">Chores Tracking App</StyledText>
-        </StyledView>
+        <ThemedScreen
+            showHeaderNavButton={false}
+            showHeaderNavOptionButton={false}
+        >
+            <StyledView className="p-2 flex-grow">
+                <ActivityIndicator size="large" color={Colors.accent} />
+            </StyledView>
+        </ThemedScreen>
     );
 };
 

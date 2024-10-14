@@ -1,25 +1,25 @@
-import {useCallback, useState} from "react";
-import {FlatList, TouchableOpacity, View, Text} from "react-native";
+import React, { useState} from "react";
+import {TouchableOpacity, View, Text} from "react-native";
 import ThemedScreen from "@/components/common/ThemedScreen";
-import TagItem from "@/components/tags/TagItem";
 import ColorPickerModal from "@/components/modals/ColorPickerModal";
 import {useDataContext} from "@/context/DataContext";
 import {styled} from "nativewind";
-import {AntDesign, FontAwesome} from "@expo/vector-icons";
+import {AntDesign} from "@expo/vector-icons";
 import AddEditTagModal from "@/components/modals/AddEditTagModal";
 import {Tag} from "@/types";
 import {sortTagsByName} from "@/utils/helpers";
 import {TagManagerListItem, TagManagerHiddenListItem} from "@/components/tags/TagManagerListItem";
-import SwipeableTagListItem from "@/components/tags/SwipeableTagListItem";
 import {SwipeListView} from "react-native-swipe-list-view";
+import {Colors} from "@/constants/Colors";
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledTouchableOpacity = styled(TouchableOpacity);
+
 const TagManagerScreen = () => {
     const [isColorModalVisible, setIsColorModalVisible] = useState(false);
     const [isAddEditTagModalVisible, setIsAddEditTagModalVisible] = useState(false);
-    const [currentTagId, setCurrentTagId] = useState<number | null>(null);
+    const [setCurrentTagId] = useState<number | null>(null);
     const [selectedTag, setSelectedTag] = useState<Tag | null>(null);
 
     const {tags, setTags} = useDataContext();
@@ -63,7 +63,6 @@ const TagManagerScreen = () => {
         setTags((prevTags) => prevTags.filter(tag => tag.id !== tagToDelete.id));
     };
 
-
     // Sort tags before rendering
     const sortedTags = sortTagsByName(tags);
 
@@ -72,8 +71,6 @@ const TagManagerScreen = () => {
         ...tag,
         key: tag.id.toString(), // Ensure key is a string
     }));
-
-
 
     return (
         <ThemedScreen
@@ -98,7 +95,7 @@ const TagManagerScreen = () => {
                     // Add a ListEmptyComponent if desired
                     ListEmptyComponent={
                         <StyledView className="flex-1 justify-center items-center">
-                            <StyledText className="text-gray-500">No tags available.</StyledText>
+                            <StyledText className={`text-[${Colors.textSecondary}]`}>No tags available.</StyledText>
                         </StyledView>
                     }
                 />
@@ -118,12 +115,17 @@ const TagManagerScreen = () => {
                     selectedTag={selectedTag}
                 />
             </StyledView>
-            <StyledTouchableOpacity
-                className="w-12 h-12 absolute right-10 bottom-10 bg-red-500 p-2 rounded-full justify-center items-center"
-                onPress={handleOpenTagModal}
-            >
-                <AntDesign name='plus' size={24} color='white'/>
-            </StyledTouchableOpacity>
+            <StyledView className='absolute right-4 bottom-4'>
+                <StyledTouchableOpacity
+                    className="items-center justify-center m-auto w-14 h-14 rounded-full"
+                    onPress={handleOpenTagModal}
+                    activeOpacity={0.7}
+                    accessibilityLabel="Add new entry"
+                    style={{backgroundColor: Colors.buttonAlternative}}
+                >
+                    <AntDesign name="plus" size={30} color="white" />
+                </StyledTouchableOpacity>
+            </StyledView>
         </ThemedScreen>
     )
 }

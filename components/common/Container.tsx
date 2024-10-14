@@ -1,16 +1,17 @@
 import React from 'react';
 import { View, ViewProps } from 'react-native';
 import { styled } from 'nativewind';
+import {Colors} from "@/constants/Colors";
 
 const StyledView = styled(View);
 
 interface ContainerProps extends ViewProps {
-    children: React.ReactNode; // Allow child components to be passed
+    children: React.ReactNode;
 }
 
 const Container: React.FC<ContainerProps> = ({ children, ...rest }) => {
     return (
-        <StyledView className="flex w-full bg-[#1C1F26] p-4 mb-4 rounded-lg" {...rest}>
+        <StyledView className={`flex w-full p-4 mb-4 rounded-lg bg-[${Colors.backgroundMedium}]`} {...rest}>
             {children}
         </StyledView>
     );

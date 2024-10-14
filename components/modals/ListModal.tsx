@@ -6,6 +6,7 @@ import DraggableList from '@/components/common/DraggableList';
 import { DraggableListItem } from '@/types';
 import { AntDesign } from '@expo/vector-icons';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import {Colors} from "@/constants/Colors";
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -43,10 +44,10 @@ const ListModal: React.FC<ListModalProps> = ({
             {...rest}
         >
 
-            <StyledView className="w-full p-4 bg-gray-900 min-h-[500]">
+            <StyledView className={`p-4 w-full min-h-[500] bg-[${Colors.backgroundMedium}]`}>
                 <GestureHandlerRootView style={{ flex: 1 }}>
                     {/* Title */}
-                    <StyledText className="text-3xl text-gray-500">{title}</StyledText>
+                    <StyledText className={`text-3xl text-[${Colors.textSecondary}]`}>{title}</StyledText>
 
                     {/* Draggable List */}
                     <DraggableList
@@ -59,7 +60,7 @@ const ListModal: React.FC<ListModalProps> = ({
                     {/* Add New Item Button */}
                     <StyledTouchableOpacity onPress={onAddNewItem} className="flex flex-row items-center mt-4 pl-6">
                         <AntDesign name="plus" size={20} color="white" />
-                        <StyledText className="text-white ml-4">{`Add ${addText}`}</StyledText>
+                        <StyledText className={`ml-4 text-[${Colors.textPrimary}]`}>{`Add ${addText}`}</StyledText>
                     </StyledTouchableOpacity>
                 </GestureHandlerRootView>
             </StyledView>

@@ -3,6 +3,7 @@ import React from "react";
 import {styled} from 'nativewind';
 import {TouchableOpacity, View, Text} from 'react-native';
 import TagItem from "@/components/tags/TagItem";
+import {Colors} from "@/constants/Colors";
 
 const StyledText = styled(Text);
 const StyledTouchableOpacity = styled(TouchableOpacity);
@@ -17,7 +18,7 @@ interface TagSearchResultItemProps {
 const TagSearchResultItem: React.FC<TagSearchResultItemProps> = ({tag,isAvailable = false,  onTagSelected}) => {
     return(
         <StyledTouchableOpacity
-            className="w-full items-start p-3 border-b border-gray-200"
+            className="w-full items-start p-3"
             onPress={() => {
                 onTagSelected(tag);
             }}
@@ -25,7 +26,7 @@ const TagSearchResultItem: React.FC<TagSearchResultItemProps> = ({tag,isAvailabl
         >
             <StyledView>
                 {tag.id === -1 ? (
-                    <StyledText>{`Create and add "${tag.name}"`}</StyledText>
+                    <StyledText className={`text-[${Colors.textPrimary}]`}>{`Create and add "${tag.name}"`}</StyledText>
                 ) : (
                     <StyledView className="flex-row items-center">
                         <TagItem tag={tag} isAvailable={isAvailable} isRemovable={false} />

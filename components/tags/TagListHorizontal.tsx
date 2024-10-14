@@ -4,6 +4,7 @@ import { styled } from 'nativewind';
 import { Tag } from '@/types';
 import TagItem from '@/components/tags/TagItem';
 import {AntDesign} from "@expo/vector-icons";
+import {Colors} from "@/constants/Colors";
 
 interface TagListProps {
     tags: Tag[];
@@ -37,7 +38,7 @@ const TagList: React.FC<TagListProps> = ({ tags, canRemoveTags = false, onRemove
                             onPress={onAddTag}
                         >
                             <AntDesign name="plus" size={16} color="white" />
-                            <StyledText className="ml-1 text-white">Tag</StyledText>
+                            <StyledText className={`ml-1 text-[${Colors.textPrimary}]`}>Tag</StyledText>
                         </StyledTouchableOpacity>
                     );
                 } else {

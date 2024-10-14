@@ -1,4 +1,5 @@
 // types/index.ts
+import { Dayjs } from 'dayjs';
 
 export type FrequencyType = 'day' | 'week' | 'month' | 'year';
 
@@ -38,6 +39,13 @@ export interface Chore {
     tagIds: number[];
 }
 
+export interface ProcessedChore extends Chore {
+    lastCompletedDisplay: string;
+    nextDueDate: Dayjs;
+    timeLeft: string;
+    isOverdue: boolean;
+}
+
 export interface Entry {
     id: number;
     choreId: number;
@@ -47,4 +55,10 @@ export interface Entry {
 export interface DraggableListItem {
     id: string;
     text: string;
+}
+
+export interface BackupData {
+    chores: Chore[];
+    tags: Tag[];
+    entries: Entry[];
 }
