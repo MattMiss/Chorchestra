@@ -19,7 +19,6 @@ const StyledTouchableOpacity = styled(TouchableOpacity);
 const TagManagerScreen = () => {
     const [isColorModalVisible, setIsColorModalVisible] = useState(false);
     const [isAddEditTagModalVisible, setIsAddEditTagModalVisible] = useState(false);
-    const [setCurrentTagId] = useState<number | null>(null);
     const [selectedTag, setSelectedTag] = useState<Tag | null>(null);
 
     const {tags, setTags} = useDataContext();
@@ -31,7 +30,6 @@ const TagManagerScreen = () => {
     };
 
     const handleClosePickColor = () => {
-        setCurrentTagId(null);
         setIsColorModalVisible(false);
     };
 
