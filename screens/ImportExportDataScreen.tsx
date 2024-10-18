@@ -53,7 +53,7 @@ const ImportExportDataScreen = () => {
                         className="flex-row items-center min-h-[50]"
                         onPress={handleImportData}
                     >
-                        <StyledText className={`flex-grow text-xl text-[${Colors.textPrimary}]`}>
+                        <StyledText className={`flex-grow text-xl text-primary`}>
                             Import Data
                         </StyledText>
                         <StyledView className="pr-2">
@@ -68,7 +68,7 @@ const ImportExportDataScreen = () => {
                         className="flex-row items-center min-h-[50]"
                         onPress={handleExportData}
                     >
-                        <StyledText className={`flex-grow text-xl text-[${Colors.textPrimary}]`}>
+                        <StyledText className={`flex-grow text-xl text-primary`}>
                             Export Data
                         </StyledText>
                         <StyledView className="">

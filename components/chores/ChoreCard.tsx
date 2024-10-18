@@ -32,7 +32,7 @@ const ChoreCard: React.FC<ChoreCardProps> = ({ chore, tags, onCompletedPress, on
 
     return (
         <StyledView
-            className={`bg-[${Colors.backgroundMedium}] shadow-md rounded-lg p-4 mb-3 ${isOverdue ? 'border border-red-500' : ''}`}
+            className={`bg-medium shadow-md rounded-lg p-4 mb-3 ${isOverdue ? 'border border-red-500' : ''}`}
             accessibilityLabel={`Chore: ${chore.name}`}
         >
 
@@ -40,13 +40,13 @@ const ChoreCard: React.FC<ChoreCardProps> = ({ chore, tags, onCompletedPress, on
                 {/* Last Completed Date and Time */}
                 <StyledView className="flex-row items-center flex-1">
                     <AntDesign name="calendar" size={20} color="white" />
-                    <StyledText className={`ml-2 text-[${Colors.textSecondary}]`}>{lastCompleted}</StyledText>
+                    <StyledText className={`ml-2 text-secondary`}>{lastCompleted}</StyledText>
                 </StyledView>
 
                 {/* Relative Time */}
                 <StyledView className="flex-row items-center flex-1 justify-end">
                     <AntDesign name="clockcircleo" size={20} color="white" />
-                    <StyledText className={`ml-2 text-[${Colors.textSecondary}]`}>{timeLeft}</StyledText>
+                    <StyledText className={`ml-2 text-secondary`}>{timeLeft}</StyledText>
                 </StyledView>
 
                 <StyledView className='ml-4'>
@@ -62,7 +62,7 @@ const ChoreCard: React.FC<ChoreCardProps> = ({ chore, tags, onCompletedPress, on
                                 style={{height: 40 }}
                                 >
                                 <StyledView className='flex-row items-center justify-end'>
-                                    <StyledText className={`mr-2 text-lg text-[${Colors.textPrimary}]`}>Add Entry</StyledText>
+                                    <StyledText className={`mr-2 text-lg text-primary`}>Add Entry</StyledText>
                                     <AntDesign name="calendar" size={20} color="white" />
                                 </StyledView>
 
@@ -73,7 +73,7 @@ const ChoreCard: React.FC<ChoreCardProps> = ({ chore, tags, onCompletedPress, on
                                 style={{height: 40}}
                             >
                                 <StyledView className='flex-row items-center justify-end'>
-                                    <StyledText className={`mr-2 text-lg text-[${Colors.textPrimary}]`}>Edit Chore</StyledText>
+                                    <StyledText className={`mr-2 text-lg text-primary`}>Edit Chore</StyledText>
                                     <AntDesign name="form" size={20} color="white" />
                                 </StyledView>
 
@@ -87,17 +87,17 @@ const ChoreCard: React.FC<ChoreCardProps> = ({ chore, tags, onCompletedPress, on
             <StyledView className="h-px bg-gray-700 my-3" />
 
             {/* Chore Name */}
-            <StyledText className={`text-lg font-bold text-[${Colors.textPrimary}]`}>{chore.name}</StyledText>
+            <StyledText className={`text-lg font-bold text-primary`}>{chore.name}</StyledText>
 
             {/* Chore Description */}
-            <StyledText className={`text-sm mt-1 text-[${Colors.textSecondary}]`}>{chore.description}</StyledText>
+            <StyledText className={`text-sm mt-1 text-secondary`}>{chore.description}</StyledText>
 
             {/* Details Container */}
             <StyledView className="flex-row mt-4 justify-between">
                 {/* Estimated Time */}
                 <StyledView className="flex-1 flex-row">
                     <Ionicons name="timer-outline" size={20} color={Colors.accent} className="mr-2" />
-                    <StyledText className={`pl-1 text-sm text-[${Colors.textSecondary}]`}>
+                    <StyledText className={`pl-1 text-sm text-secondary`}>
                         {`${chore.estTime} ${chore.estTimeType}${chore.estTime > 1 ? 's' : ''}`}
                     </StyledText>
                 </StyledView>
@@ -105,7 +105,7 @@ const ChoreCard: React.FC<ChoreCardProps> = ({ chore, tags, onCompletedPress, on
                 {/* Frequency */}
                 <StyledView className="flex-1 flex-row justify-center">
                     <Feather name="repeat" size={20} color={Colors.accent} className="mr-2" />
-                    <StyledText className={`pl-1 text-sm text-[${Colors.textSecondary}]`}>
+                    <StyledText className={`pl-1 text-sm text-secondary`}>
                         {`${chore.frequency} ${chore.frequencyType}${chore.frequency > 1 ? 's' : ''}`}
                     </StyledText>
                 </StyledView>

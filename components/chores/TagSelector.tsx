@@ -22,7 +22,7 @@ const TagSelector = ({
     return (
         <StyledView className="flex-grow ">
             {/* Label */}
-            <StyledText className={`mb-2 text-xl text-[${Colors.textSecondary}]`}>Tags</StyledText>
+            <StyledText className={`mb-2 text-xl text-secondary`}>Tags</StyledText>
 
             {/* Tag Container */}
             <StyledView className="flex-grow">

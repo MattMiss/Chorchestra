@@ -76,27 +76,30 @@ const TagManagerScreen = () => {
             showHeaderNavOptionButton={false}
             headerTitle={'#Tags'}
         >
-            <StyledView className="p-5">
-                {/* FlatList for Tags */}
-                <SwipeListView
-                    data={swipeListData}
-                    renderItem={({item}) => (
-                        <TagManagerListItem  tag={item} onEdit={handleTagSelected} onPickColor={handlePickColor}/>
-                    )}
-                    renderHiddenItem={({item}) => (
-                        <TagManagerHiddenListItem tag={item} onDelete={deleteTag} />
-                    )}
-                    rightOpenValue={-75} // Width of the hidden delete button
-                    disableRightSwipe
-                    // Optional: Customize the list further as needed
-                    contentContainerStyle={{ paddingBottom: 100 }}
-                    // Add a ListEmptyComponent if desired
-                    ListEmptyComponent={
-                        <StyledView className="flex-1 justify-center items-center">
-                            <StyledText className={`text-[${Colors.textSecondary}]`}>No tags available.</StyledText>
-                        </StyledView>
-                    }
-                />
+            <StyledView className="px-2 flex-1">
+                <StyledView className='p-4'>
+                    {/* Swipeable List for Tags */}
+                    <SwipeListView
+                        data={swipeListData}
+                        renderItem={({item}) => (
+                            <TagManagerListItem  tag={item} onEdit={handleTagSelected} onPickColor={handlePickColor}/>
+                        )}
+                        renderHiddenItem={({item}) => (
+                            <TagManagerHiddenListItem tag={item} onDelete={deleteTag} />
+                        )}
+                        rightOpenValue={-75} // Width of the hidden delete button
+                        disableRightSwipe
+                        // Optional: Customize the list further as needed
+                        contentContainerStyle={{ paddingBottom: 100 }}
+                        // Add a ListEmptyComponent if desired
+                        ListEmptyComponent={
+                            <StyledView className="flex-1 justify-center items-center">
+                                <StyledText className={`text-secondary`}>No tags available.</StyledText>
+                            </StyledView>
+                        }
+                    />
+                </StyledView>
+
 
                 {/* Color Picker Modal */}
                 <ColorPickerModal

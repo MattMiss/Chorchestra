@@ -116,8 +116,8 @@ const AddEditChoreScreen = () => {
     };
 
     const handleSaveChore = async () => {
-        if (name.trim() === '' || description.trim() === '') {
-            alert('Please fill in all required fields (Name and Description).');
+        if (name.trim() === '') {
+            alert('A Name is required.');
             return;
         }
 
@@ -197,7 +197,7 @@ const AddEditChoreScreen = () => {
                         className="flex-row items-center min-h-[50]"
                         onPress={() => openModal('instructions', 'Instructions', 'Instruction', instructions)}
                     >
-                        <StyledText className={`flex-grow text-xl text-[${Colors.textSecondary}]`}>
+                        <StyledText className={`flex-grow text-xl text-secondary`}>
                             {instructions.length > 0 ? instructions.length : 'No'} Instructions
                         </StyledText>
                         <StyledView className="py-1 pl-5 pr-2">
@@ -211,7 +211,7 @@ const AddEditChoreScreen = () => {
                         className="flex-row items-center min-h-[50]"
                         onPress={() => openModal('items', 'Items Needed', 'Item', itemsNeeded)}
                     >
-                        <StyledText className={`flex-grow text-xl text-[${Colors.textSecondary}]`}>
+                        <StyledText className={`flex-grow text-xl text-secondary`}>
                             {itemsNeeded.length > 0 ? itemsNeeded.length : 'No'} Items Needed
                         </StyledText>
                         <StyledView className="py-1 pl-5 pr-2">
@@ -240,7 +240,7 @@ const AddEditChoreScreen = () => {
                         className="my-4 p-3 rounded-lg"
                         style={{backgroundColor: Colors.buttonPrimary}}
                     >
-                        <StyledText className={`text-center text-[${Colors.textPrimary}]`}>
+                        <StyledText className={`text-center text-primary`}>
                             {isEditing ? 'Save Changes' : 'Save Chore'}
                         </StyledText>
                     </StyledTouchableOpacity>

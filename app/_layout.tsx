@@ -13,7 +13,7 @@ export default function RootLayout() {
       <DataProvider>
           <GestureHandlerRootView style={{ flex: 1 }}>
               <MenuProvider>
-                  <Stack>
+                  <Stack screenOptions={{headerShown: false}}>
                       <Stack.Screen name="init" options={{ headerShown: false }} />
                       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
                   </Stack>

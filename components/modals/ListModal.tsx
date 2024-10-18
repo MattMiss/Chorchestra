@@ -44,10 +44,10 @@ const ListModal: React.FC<ListModalProps> = ({
             {...rest}
         >
 
-            <StyledView className={`p-4 w-full min-h-[500] bg-[${Colors.backgroundMedium}]`}>
+            <StyledView className={`p-4 w-full min-h-[500] bg-medium`}>
                 <GestureHandlerRootView style={{ flex: 1 }}>
                     {/* Title */}
-                    <StyledText className={`text-3xl text-[${Colors.textSecondary}]`}>{title}</StyledText>
+                    <StyledText className={`text-3xl text-secondary`}>{title}</StyledText>
 
                     {/* Draggable List */}
                     <DraggableList
@@ -60,7 +60,7 @@ const ListModal: React.FC<ListModalProps> = ({
                     {/* Add New Item Button */}
                     <StyledTouchableOpacity onPress={onAddNewItem} className="flex flex-row items-center mt-4 pl-6">
                         <AntDesign name="plus" size={20} color="white" />
-                        <StyledText className={`ml-4 text-[${Colors.textPrimary}]`}>{`Add ${addText}`}</StyledText>
+                        <StyledText className={`ml-4 text-primary`}>{`Add ${addText}`}</StyledText>
                     </StyledTouchableOpacity>
                 </GestureHandlerRootView>
             </StyledView>

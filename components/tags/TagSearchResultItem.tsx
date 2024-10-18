@@ -26,7 +26,7 @@ const TagSearchResultItem: React.FC<TagSearchResultItemProps> = ({tag,isAvailabl
         >
             <StyledView>
                 {tag.id === -1 ? (
-                    <StyledText className={`text-[${Colors.textPrimary}]`}>{`Create and add "${tag.name}"`}</StyledText>
+                    <StyledText className={`text-primary`}>{`Create and add "${tag.name}"`}</StyledText>
                 ) : (
                     <StyledView className="flex-row items-center">
                         <TagItem tag={tag} isAvailable={isAvailable} isRemovable={false} />

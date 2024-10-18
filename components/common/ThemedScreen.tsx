@@ -49,7 +49,7 @@ const ThemedScreen: React.FC<ThemedScreenProps> = ({
     return (
         <SafeAreaView style={{flex: 1}}>
             <StatusBar style={'light'} backgroundColor={Colors.backgroundStatusBar}/>
-            <StyledView className={`flex-1 bg-[${Colors.backgroundDark}]`}>
+            <StyledView className={`flex-1 bg-dark`}>
                 <ScreenNavHeader
                     showNavButton={showHeaderNavButton}
                     showOptions={showHeaderNavOptionButton}

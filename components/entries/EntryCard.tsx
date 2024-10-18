@@ -31,12 +31,12 @@ const EntryCard: React.FC<EntryCardProps> = ({ entry, onDeletePress, onEditPress
 
     return (
         <StyledView
-            className={`p-4 my-2 mx-4 rounded-3xl shadow-sm bg-[${Colors.backgroundMedium}]`}
+            className={`p-4 my-2 mx-4 rounded-3xl shadow-sm bg-medium`}
             accessibilityLabel={`Chore completed on ${formattedDate}`}
         >
             <StyledView className='flex-row justify-between'>
                 {/* Chore Name */}
-                <StyledText className={`text-sm font-bold text-[${Colors.accent}]`}>{choreName}</StyledText>
+                <StyledText className={`text-sm font-bold text-accent`}>{choreName}</StyledText>
 
                 <StyledView className=''>
                     <Menu>
@@ -51,7 +51,7 @@ const EntryCard: React.FC<EntryCardProps> = ({ entry, onDeletePress, onEditPress
                                 style={{height: 40 }}
                             >
                                 <StyledView className='flex-row items-center justify-end'>
-                                    <StyledText className={`mr-2 text-lg text-[${Colors.textPrimary}]`}>Edit</StyledText>
+                                    <StyledText className={`mr-2 text-lg text-primary`}>Edit</StyledText>
                                     <AntDesign name="calendar" size={20} color="white" />
                                 </StyledView>
 
@@ -62,7 +62,7 @@ const EntryCard: React.FC<EntryCardProps> = ({ entry, onDeletePress, onEditPress
                                 style={{height: 40 }}
                             >
                                 <StyledView className='flex-row items-center justify-end'>
-                                    <StyledText className={`mr-2 text-lg text-[${Colors.textPrimary}]`}>Delete</StyledText>
+                                    <StyledText className={`mr-2 text-lg text-primary`}>Delete</StyledText>
                                     <AntDesign name="delete" size={20} color="white" />
                                 </StyledView>
 
@@ -79,13 +79,13 @@ const EntryCard: React.FC<EntryCardProps> = ({ entry, onDeletePress, onEditPress
                 {/* Entry Date and Time */}
                 <StyledView className="flex-row items-center flex-1">
                     <AntDesign name="calendar" size={20} color="white" />
-                    <StyledText className={`ml-2 font-bold text-[${Colors.textPrimary}]`}>{formattedDate}</StyledText>
+                    <StyledText className={`ml-2 font-bold text-primary`}>{formattedDate}</StyledText>
                 </StyledView>
 
                 {/* Relative Time */}
                 <StyledView className="flex-row items-center flex-1 justify-end">
                     <AntDesign name="clockcircleo" size={20} color="white" />
-                    <StyledText className={`ml-2 text-sm text-[${Colors.textSecondary}]`}>{relativeTime}</StyledText>
+                    <StyledText className={`ml-2 text-sm text-secondary`}>{relativeTime}</StyledText>
                 </StyledView>
             </StyledView>
         </StyledView>

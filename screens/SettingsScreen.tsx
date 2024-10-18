@@ -35,7 +35,7 @@ const SettingsScreen = () => {
                         className="flex-row items-center min-h-[50]"
                         onPress={handleTagManagerPress}
                     >
-                        <StyledText className={`flex-grow text-xl text-[${Colors.textPrimary}]`}>
+                        <StyledText className={`flex-grow text-xl text-primary`}>
                             Manage Tags
                         </StyledText>
                         <StyledView className="py-1 pl-5 pr-2">
@@ -50,7 +50,7 @@ const SettingsScreen = () => {
                         className="flex-row items-center min-h-[50]"
                         onPress={handleImportExportPress}
                     >
-                        <StyledText className={`flex-grow text-xl text-[${Colors.textPrimary}]`}>
+                        <StyledText className={`flex-grow text-xl text-primary`}>
                             Import/Export Data
                         </StyledText>
                         <StyledView className="py-1 pl-5 pr-2">

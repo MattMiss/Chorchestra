@@ -28,12 +28,12 @@ const EstTimeSelector: React.FC<EstTimeSelectorProps> = ({
     return (
         <StyledView className="flex-row items-center justify-between py-1">
             {/* Label */}
-            <StyledText className={`min-w-[100] text-xl text-[${Colors.textSecondary}]`}>Est Time</StyledText>
+            <StyledText className={`min-w-[100] text-xl text-secondary`}>Est Time</StyledText>
             <StyledView className="flex-1 flex-row items-center ml-2">
                 {/* Number Input */}
                 <StyledView className="flex-[35%] items-center">
                     <StyledInput
-                        className={`pt-1 px-2 border-b border-gray-600 text-3xl text-[${Colors.textPrimary}]`}
+                        className={`pt-1 px-2 border-b border-gray-600 text-3xl text-primary`}
                         keyboardType="number-pad"
                         value={estTime?.toString()}
                         onChangeText={(text) => {

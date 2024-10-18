@@ -36,12 +36,12 @@ export const TagManagerListItem: React.FC<TagManagerListItemProps> = ({ tag, onE
             <TagItem tag={tag} isRemovable={false} textSize="text-md" />
 
             <StyledTouchableOpacity
-                className="rounded-lg"
+                className="h-10 w-10 rounded-full bg-medium justify-center items-center"
                 onPress={() => onPickColor(tag)}
                 accessibilityLabel={`Pick color for tag ${tag.name}`}
                 activeOpacity={0.7} // Optional: set to desired opacity on press
             >
-                <FontAwesome5 name="palette" size={20} color="white" />
+                <FontAwesome5 name="palette" size={24} color="white" />
             </StyledTouchableOpacity>
         </StyledTouchableOpacity>
     );
@@ -50,13 +50,13 @@ export const TagManagerListItem: React.FC<TagManagerListItemProps> = ({ tag, onE
 // Render the hidden delete button
 export const TagManagerHiddenListItem: React.FC<TagManagerHiddenListItemProps> = ({ tag, onDelete }) => {
     return (
-        <StyledView className="flex-1 flex-row justify-end items-center px-4">
+        <StyledView className="flex-row justify-end items-center my-auto px-4">
             <StyledTouchableOpacity
-                className="w-12 h-12 flex justify-center items-center"
+                className="h-10 w-10 rounded-full bg-red-700 justify-center items-center"
                 onPress={() => onDelete(tag)}
                 accessibilityLabel={`Delete tag ${tag.name}`}
             >
-                <FontAwesome5 name="trash" size={20} color="firebrick" />
+                <FontAwesome5 name="trash" size={20} color="white" />
             </StyledTouchableOpacity>
         </StyledView>
     );

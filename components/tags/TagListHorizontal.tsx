@@ -38,7 +38,7 @@ const TagList: React.FC<TagListProps> = ({ tags, canRemoveTags = false, onRemove
                             onPress={onAddTag}
                         >
                             <AntDesign name="plus" size={16} color="white" />
-                            <StyledText className={`ml-1 text-[${Colors.textPrimary}]`}>Tag</StyledText>
+                            <StyledText className={`ml-1 text-primary`}>Tag</StyledText>
                         </StyledTouchableOpacity>
                     );
                 } else {

@@ -8,17 +8,17 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/images/icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#454545"
     },
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/images/icon.png",
+        "backgroundColor": "#454545"
       },
       "permissions": [
         "INTERNET"
@@ -33,9 +33,6 @@
     "plugins": [
       "expo-router"
     ],
-    "experiments": {
-      "typedRoutes": true
-    },
     "extra": {
       "eas": {
         "projectId": "96a96229-1b41-4e6e-9c60-adf1224d193d"

@@ -89,7 +89,7 @@ const EntriesScreen = () => {
             headerTitle={"Entries"}
         >
             <StyledView
-                className="p-1 flex-grow"
+                className="px-1 flex-1"
             >
                 {/* Check if there are any chores to display */}
                 {entries.length > 0 ? (
@@ -100,7 +100,7 @@ const EntriesScreen = () => {
                     />
                 ) : (
                     <StyledView className="flex-1 justify-center items-center">
-                        <StyledText className={`text-lg text-[${Colors.textSecondary}]`}>No entries found</StyledText>
+                        <StyledText className={`text-lg text-secondary`}>No entries found</StyledText>
                     </StyledView>
                 )}
             </StyledView>

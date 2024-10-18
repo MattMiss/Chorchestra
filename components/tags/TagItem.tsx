@@ -38,7 +38,7 @@ const TagItem: React.FC<TagProps> = ({
                 style={{ backgroundColor: tag.color || Colors.defaultTagColor }}
             >
                 <StyledText
-                    className={`${textSize || 'text-xs'} ${!isAvailable && 'line-through'} text-[${Colors.textPrimary}]`}
+                    className={`${textSize || 'text-xs'} ${!isAvailable && 'line-through'} text-primary`}
                     style={{ color: textColor }}
                 >
                     {tag.name}

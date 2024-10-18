@@ -1,7 +1,7 @@
 // src/screens/ChoresScreen.tsx
 
 import React, {useEffect, useMemo, useState} from 'react';
-import {View, Text, FlatList, ActivityIndicator, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, Text, FlatList, ActivityIndicator, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
 import { styled } from 'nativewind';
 import { router } from 'expo-router';
 import { Tag, ProcessedChore } from '@/types';
@@ -18,6 +18,7 @@ import {Colors} from "@/constants/Colors";
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
+const StyledScrollView = styled(ScrollView);
 const StyledTouchableOpacity = styled(TouchableOpacity);
 
 const defaultFilters = {
@@ -220,8 +221,8 @@ const ChoresScreen = () => {
             showHeaderNavOptionButton={true}
             headerTitle={"Chores"}
         >
-            <StyledView className="p-2 flex-grow">
-                <StyledView className={`flex w-full py-2 px-4 mb-4 rounded-lg bg-[${Colors.backgroundMedium}]`}>
+            <StyledView className="px-2 flex-1">
+                <StyledView className={`flex w-full py-2 px-4 mb-4 rounded-lg bg-medium`}>
                     {/* Filters and Sort By Section */}
                     <StyledView className="flex-row justify-between items-center">
 
@@ -237,7 +238,7 @@ const ChoresScreen = () => {
                                     color="white"
                                 />
                             </StyledTouchableOpacity>
-                            <StyledText className={`ml-1 text-[${Colors.textPrimary}]`}>Sort</StyledText>
+                            <StyledText className={`ml-1 text-primary`}>Sort</StyledText>
                             <Picker
                                 selectedValue={sortOption}
                                 style={styles.picker}
@@ -261,7 +262,7 @@ const ChoresScreen = () => {
                         >
                             <StyledView className='flex-row'>
                                 <AntDesign name="filter" size={20} color="white" />
-                                <StyledText className={`ml-1 text-[${Colors.textPrimary}]`}>Filters</StyledText>
+                                <StyledText className={`ml-1 text-primary`}>Filters</StyledText>
                             </StyledView>
 
                         </StyledTouchableOpacity>
@@ -279,7 +280,7 @@ const ChoresScreen = () => {
                     />
                 ) : (
                     <StyledView className="flex-1 justify-center items-center">
-                        <StyledText className={`text-lg text-[${Colors.textSecondary}]`}>No chores found</StyledText>
+                        <StyledText className={`text-lg text-secondary`}>No chores found</StyledText>
                     </StyledView>
                 )}
             </StyledView>

@@ -92,7 +92,7 @@ const AddEditTagModal = ({ selectedTag, visible, onClose, availableTags }: TagMo
                     <TouchableWithoutFeedback onPress={onClose}>
                         <StyledView className="flex-1 justify-end items-center bg-transparent-70">
                             <TouchableWithoutFeedback>
-                                <StyledView className={`p-4 w-full max-w-md min-h-[240] rounded-t-3xl bg-[${Colors.backgroundMedium}]`}>
+                                <StyledView className={`p-4 w-full max-w-md min-h-[240] rounded-t-3xl bg-medium`}>
                                     <TextInputFloatingLabel label="Tag Name" value={tagInput} onChangeText={setTagInput} />
                                     <StyledView className="mt-6">
                                         <StyledTouchableOpacity

@@ -102,17 +102,17 @@ const ChoreFiltersModal: React.FC<FiltersModalProps> = ({
             <TouchableWithoutFeedback onPress={onClose}>
                 <StyledView className="flex-1 justify-end items-center bg-transparent-70">
                     <TouchableWithoutFeedback>
-                        <StyledView className={`p-4 w-full max-w-md min-h-[300] rounded-t-3xl bg-[${Colors.backgroundMedium}]`}>
+                        <StyledView className={`p-4 w-full max-w-md min-h-[300] rounded-t-3xl bg-medium`}>
                             <StyledView className='flex-row'>
                                 <AntDesign name="filter" size={20} color="white" />
-                                <StyledText className={`ml-1 mb-2 text-lg font-bold text-[${Colors.accent}]`}>Filters</StyledText>
+                                <StyledText className={`ml-1 mb-2 text-lg font-bold text-accent`}>Filters</StyledText>
                             </StyledView>
 
                             <StyledView className='border-b-gray-500 border-b-2 mb-4'></StyledView>
 
                             {/* Priority Filters */}
                             <StyledView className='flex-row mt-2'>
-                                <StyledText className={`mr-10 mb-2 font-semibold text-[${Colors.textPrimary}]`}>Priority</StyledText>
+                                <StyledText className={`mr-10 mb-2 font-semibold text-primary`}>Priority</StyledText>
                                 {priorityOptions.map((option)=> (
                                     <StyledTouchableOpacity
                                         key={option.value}
@@ -131,7 +131,7 @@ const ChoreFiltersModal: React.FC<FiltersModalProps> = ({
 
                             {/* Overdue Status Filter */}
                             <StyledView className='flex-row mt-2 items-center'>
-                                <StyledText className={`flex-1 font-semibold text-[${Colors.textPrimary}]`}>Overdue Status</StyledText>
+                                <StyledText className={`flex-1 font-semibold text-primary`}>Overdue Status</StyledText>
                                 <StyledView className='flex-1'>
                                     <Picker
                                         selectedValue={localFilters.overdueStatus}
@@ -156,7 +156,7 @@ const ChoreFiltersModal: React.FC<FiltersModalProps> = ({
                                         onPress={() => setShowLastCompletedStartDatePicker(true)}
                                         style={{backgroundColor: Colors.buttonSecondary}}
                                     >
-                                        <StyledText className={`text-lg text-center font-bold text-[${Colors.textPrimary}]`}>
+                                        <StyledText className={`text-lg text-center font-bold text-primary`}>
                                             Start Date:{' '}
                                             {localFilters.lastCompletedStartDate
                                                 ? dayjs(localFilters.lastCompletedStartDate).format('MMM D, YYYY')
@@ -190,7 +190,7 @@ const ChoreFiltersModal: React.FC<FiltersModalProps> = ({
                                         onPress={() => setShowLastCompletedEndDatePicker(true)}
                                         style={{backgroundColor: Colors.buttonSecondary}}
                                     >
-                                        <StyledText className={`text-lg text-center font-bold text-[${Colors.textPrimary}]`}>
+                                        <StyledText className={`text-lg text-center font-bold text-primary`}>
                                             End Date:{' '}
                                             {localFilters.lastCompletedEndDate
                                                 ? dayjs(localFilters.lastCompletedEndDate).format('MMM D, YYYY')
@@ -219,7 +219,7 @@ const ChoreFiltersModal: React.FC<FiltersModalProps> = ({
                             </StyledView>
 
                             {/* Time Left Range */}
-                            <StyledText className={`font-semibold mb-2 mt-4 text-[${Colors.textPrimary}]`}>
+                            <StyledText className={`font-semibold mb-2 mt-4 text-primary`}>
                                 Time Left Range (Days)
                             </StyledText>
                             <StyledView className="flex-row items-center mb-2">
@@ -240,7 +240,7 @@ const ChoreFiltersModal: React.FC<FiltersModalProps> = ({
                             </StyledView>
 
                             {/* Tags Filter */}
-                            <StyledText className={`font-semibold mb-2 mt-4 text-[${Colors.textPrimary}]`}>Tags</StyledText>
+                            <StyledText className={`font-semibold mb-2 mt-4 text-primary`}>Tags</StyledText>
                             {tags.map((tag) => (
                                 <StyledTouchableOpacity
                                     key={tag.id}
@@ -251,7 +251,7 @@ const ChoreFiltersModal: React.FC<FiltersModalProps> = ({
                                         value={localFilters.selectedTags[tag.id] || false}
                                         onValueChange={() => toggleTag(tag.id)}
                                     />
-                                    <StyledText className={`ml-2 text-[${Colors.textPrimary}]`}>{tag.name}</StyledText>
+                                    <StyledText className={`ml-2 text-primary`}>{tag.name}</StyledText>
                                 </StyledTouchableOpacity>
                             ))}
 
@@ -263,7 +263,7 @@ const ChoreFiltersModal: React.FC<FiltersModalProps> = ({
                                     accessibilityLabel="Cancel color change"
                                     style={{backgroundColor: Colors.buttonSecondary}}
                                 >
-                                    <StyledText className={`text-[${Colors.textPrimary}]`}>Reset</StyledText>
+                                    <StyledText className={`text-primary`}>Reset</StyledText>
                                 </StyledTouchableOpacity>
 
                                 <StyledTouchableOpacity
@@ -272,7 +272,7 @@ const ChoreFiltersModal: React.FC<FiltersModalProps> = ({
                                     accessibilityLabel="Save color change"
                                     style={{backgroundColor: Colors.buttonPrimary}}
                                 >
-                                    <StyledText className={`text-[${Colors.textPrimary}]`}>Apply</StyledText>
+                                    <StyledText className={`text-primary`}>Apply</StyledText>
                                 </StyledTouchableOpacity>
                             </StyledView>
                         </StyledView>

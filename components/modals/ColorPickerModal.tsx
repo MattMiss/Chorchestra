@@ -55,13 +55,13 @@ const ColorPickerModal: React.FC<ColorPickerModalProps> = ({ visible, onClose, o
             <TouchableWithoutFeedback onPress={onClose}>
                 <StyledView className="flex-1 justify-end items-center bg-transparent-70">
                     <TouchableWithoutFeedback>
-                        <StyledView className={`p-8 w-full max-w-md min-h-[300] rounded-t-3xl bg-[${Colors.backgroundMedium}]`}>
+                        <StyledView className={`p-8 w-full max-w-md min-h-[300] rounded-t-3xl bg-medium`}>
                             {
                                 tag &&
                                 <StyledView className=''>
                                     <StyledView className='flex-row justify-between mb-4 mr-2'>
-                                        <StyledText className={`text-[${Colors.textPrimary}]`}>Original</StyledText>
-                                        <StyledText className={`text-[${Colors.textPrimary}]`}>New</StyledText>
+                                        <StyledText className={`text-primary`}>Original</StyledText>
+                                        <StyledText className={`text-primary`}>New</StyledText>
                                     </StyledView>
                                     <StyledView className='flex-row justify-between mb-4'>
                                         {/* Tag Preview */}
@@ -106,7 +106,7 @@ const ColorPickerModal: React.FC<ColorPickerModalProps> = ({ visible, onClose, o
                                     accessibilityLabel="Cancel color change"
                                     style={{backgroundColor: Colors.buttonSecondary}}
                                 >
-                                    <StyledText className={`text-[${Colors.textPrimary}]`}>Cancel</StyledText>
+                                    <StyledText className={`text-primary`}>Cancel</StyledText>
                                 </StyledTouchableOpacity>
 
                                 <StyledTouchableOpacity
@@ -115,7 +115,7 @@ const ColorPickerModal: React.FC<ColorPickerModalProps> = ({ visible, onClose, o
                                     accessibilityLabel="Save color change"
                                     style={{backgroundColor: Colors.buttonPrimary}}
                                 >
-                                    <StyledText className={`text-[${Colors.textPrimary}]`}>Save</StyledText>
+                                    <StyledText className={`text-primary`}>Save</StyledText>
                                 </StyledTouchableOpacity>
                             </StyledView>
                         </StyledView>

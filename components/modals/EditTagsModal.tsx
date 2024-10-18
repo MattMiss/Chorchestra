@@ -116,7 +116,7 @@ const EditTagsModal = ({ visible, onClose, onTagAdded, selectedTags, availableTa
                 <TouchableWithoutFeedback onPress={onClose}>
                     <StyledView className="flex-1 justify-end items-center bg-transparent-70">
                         <TouchableWithoutFeedback>
-                            <StyledView className={`p-4 w-full max-w-md min-h-[75%] rounded-t-3xl bg-[${Colors.backgroundMedium}]`}>
+                            <StyledView className={`p-4 w-full max-w-md min-h-[75%] rounded-t-3xl bg-medium`}>
                                 <StyledView className="flex-1">
                                     <StyledView className="w-full p-3">
                                         <TextInputFloatingLabel label='Search for a tag' value={tagInput} onChangeText={handleInputChange} />

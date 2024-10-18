@@ -48,7 +48,7 @@ const ListItemWithInput = forwardRef<View, ListItemProps>(({ item, drag, isActiv
                     onChangeText={setCurrentText}
                     onBlur={handleSaveEdit} // Save when focus is lost
                     onSubmitEditing={handleSaveEdit} // Save on enter key press
-                    className={`text-lg p-0 bg-transparent text-[${Colors.textPrimary}]`}
+                    className={`text-lg p-0 bg-transparent text-primary`}
                     autoFocus={false}
                     multiline // Allow multiline input
                     blurOnSubmit={true} // Blurs the input on submit

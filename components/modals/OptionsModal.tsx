@@ -41,9 +41,9 @@ const OptionsModal: React.FC<OptionsModalProps> = ({
             <TouchableWithoutFeedback onPress={onClose}>
                 <StyledView className="flex-1 justify-end items-center bg-transparent-70">
                     <TouchableWithoutFeedback>
-                        <StyledView className={`p-4 w-full max-w-md min-h-[200] rounded-t-3xl bg-[${Colors.backgroundMedium}]`}>
+                        <StyledView className={`p-4 w-full max-w-md min-h-[200] rounded-t-3xl bg-medium`}>
                             <StyledView className="flex-1 items-center">
-                                {title && <StyledText className={`text-lg font-semibold mb-4 text-[${Colors.textPrimary}]`}>
+                                {title && <StyledText className={`text-lg font-semibold mb-4 text-primary`}>
                                     {title}
                                 </StyledText>}
 
@@ -57,7 +57,7 @@ const OptionsModal: React.FC<OptionsModalProps> = ({
                                         accessibilityLabel={option1Text}
                                     >
                                         <StyledView className='flex-row items-center justify-center'>
-                                            <StyledText className={`mr-2 text-center text-xl text-[${Colors.textPrimary}]`}>
+                                            <StyledText className={`mr-2 text-center text-xl text-primary`}>
                                                 {option1Text}
                                             </StyledText>
                                             <AntDesign name="right" size={18} color="white" />
@@ -73,7 +73,7 @@ const OptionsModal: React.FC<OptionsModalProps> = ({
                                         accessibilityLabel={option2Text}
                                     >
                                         <StyledView className='flex-row items-center justify-center'>
-                                            <StyledText className={`mr-2 text-center text-xl text-[${Colors.textPrimary}]`}>
+                                            <StyledText className={`mr-2 text-center text-xl text-primary`}>
                                                 {option2Text}
                                             </StyledText>
                                             <AntDesign name="right" size={18} color="white" />

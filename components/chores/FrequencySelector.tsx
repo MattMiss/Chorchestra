@@ -28,12 +28,12 @@ const FrequencySelector: React.FC<FrequencySelectorProps> = ({
     return (
         <StyledView className="flex-row items-center justify-between py-1">
             {/* Label */}
-            <StyledText className={`min-w-[100] text-xl text-[${Colors.textSecondary}]`}>Frequency</StyledText>
+            <StyledText className={`min-w-[100] text-xl text-secondary`}>Frequency</StyledText>
             <StyledView className="flex-1 flex-row items-center ml-2">
                 {/* Number Input */}
                 <StyledView className="flex-[35%] items-center">
                     <StyledInput
-                        className={`pt-1 px-2 border-b border-gray-600 text-3xl text-[${Colors.textPrimary}]`}
+                        className={`pt-1 px-2 border-b border-gray-600 text-3xl text-primary`}
                         keyboardType="number-pad"
                         value={frequencyNumber.toString()}
                         onChangeText={(text) => {

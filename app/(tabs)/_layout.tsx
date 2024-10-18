@@ -1,53 +1,61 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import {FontAwesome} from "@expo/vector-icons";
+import { FontAwesome } from '@expo/vector-icons';
+import { View } from 'react-native';
+import { styled } from 'nativewind';
+import { Colors } from '@/constants/Colors'; // Adjust the path if needed
+
+// Styled view for background color
+const StyledView = styled(View);
 
 export default function TabLayout() {
     return (
-        <Tabs
-            screenOptions={{
-                tabBarActiveTintColor: '#F7FAFF',  // White for active icons/text
-                tabBarInactiveTintColor: '#858E9F', // Grey for inactive icons/text
-                tabBarStyle: {
-                    backgroundColor: '#1C1F26',  // Black background for tab bar
-                    borderTopWidth: 0,  // Remove the border line
-                    elevation: 0,  // Remove shadow on Android
-                    shadowOpacity: 0,  // Remove shadow on iOS
-                },
-                tabBarItemStyle:{
-                    padding: 4
-                },
-                headerShown: false,
-                tabBarHideOnKeyboard: true,
-            }}
-        >
-            <Tabs.Screen
-                name="entries"
-                options={{
-                    title: 'Entries',
-                    tabBarIcon: ({ color, focused }) => (
-                        <FontAwesome name="cog" size={24} color={color} />
-                    ),
+        <StyledView  className='flex-1 bg-dark'>
+            <Tabs
+                screenOptions={{
+                    tabBarActiveTintColor: '#F7FAFF',  // White for active icons/text
+                    tabBarInactiveTintColor: '#858E9F', // Grey for inactive icons/text
+                    tabBarStyle: {
+                        backgroundColor: '#1C1F26',  // Black background for tab bar
+                        borderTopColor: '#383838',
+                        borderTopWidth: 0.5,
+                        shadowOpacity: 0,  // Remove shadow on iOS
+                    },
+                    tabBarItemStyle: {
+                        padding: 4
+                    },
+                    headerShown: false,
+                    tabBarHideOnKeyboard: true,
                 }}
-            />
-            <Tabs.Screen
-                name="chores"
-                options={{
-                    title: 'Chores',
-                    tabBarIcon: ({ color, focused }) => (
-                        <FontAwesome name="tasks" size={24} color={color} />
-                    ),
-                }}
-            />
-            <Tabs.Screen
-                name="settings"
-                options={{
-                    title: 'Settings',
-                    tabBarIcon: ({ color, focused }) => (
-                        <FontAwesome name="cog" size={24} color={color} />
-                    ),
-                }}
-            />
-        </Tabs>
+            >
+                <Tabs.Screen
+                    name="entries"
+                    options={{
+                        title: 'Entries',
+                        tabBarIcon: ({ color }) => (
+                            <FontAwesome name="cog" size={24} color={color} />
+                        ),
+                    }}
+                />
+                <Tabs.Screen
+                    name="chores"
+                    options={{
+                        title: 'Chores',
+                        tabBarIcon: ({ color }) => (
+                            <FontAwesome name="tasks" size={24} color={color} />
+                        ),
+                    }}
+                />
+                <Tabs.Screen
+                    name="settings"
+                    options={{
+                        title: 'Settings',
+                        tabBarIcon: ({ color }) => (
+                            <FontAwesome name="cog" size={24} color={color} />
+                        ),
+                    }}
+                />
+            </Tabs>
+        </StyledView>
     );
 }

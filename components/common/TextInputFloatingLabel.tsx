@@ -94,12 +94,12 @@ const TextInputFloatingLabel: React.FC<TextInputFloatingLabelProps> = ({
         <StyledView className="mt-2 mx-2">
             <StyledAnimatedText
                 style={floatingLabelStyle} // Consolidate the styles here
-                className={`absolute text-[${Colors.textSecondary}]`}
+                className={`absolute text-secondary`}
             >
                 {label}
             </StyledAnimatedText>
             <StyledTextInput
-                className={`pt-3 pb-1 px-2 border-b ${borderColor} text-lg text-[${Colors.textPrimary}]`}
+                className={`pt-3 pb-1 px-2 border-b ${borderColor} text-lg text-primary`}
                 onFocus={handleFocus}
                 onBlur={handleBlur}
                 value={value}

@@ -113,11 +113,11 @@ const AddEditEntryModal = ({ selectedEntry, choreId, visible, onClose }: EntryMo
             <TouchableWithoutFeedback onPress={onClose}>
                 <StyledView className="flex-1 justify-end items-center bg-transparent-70">
                     <TouchableWithoutFeedback>
-                        <StyledView className={`p-4 w-full max-w-md min-h-[300] rounded-t-3xl bg-[${Colors.backgroundMedium}]`}>
+                        <StyledView className={`p-4 w-full max-w-md min-h-[300] rounded-t-3xl bg-medium`}>
 
                             {/* Chore Dropdown Row */}
                             <StyledView className="flex-row items-center mb-4">
-                                <StyledText className={`mr-4 text-xl font-bold text-[${Colors.accent}]`}>Chore</StyledText>
+                                <StyledText className={`mr-4 text-xl font-bold text-accent`}>Chore</StyledText>
 
                                 <StyledView className="flex-1">
                                     <StyledPicker
@@ -153,7 +153,7 @@ const AddEditEntryModal = ({ selectedEntry, choreId, visible, onClose }: EntryMo
                                         onPress={() => setShowDatePicker(true)}
                                         style={{backgroundColor: Colors.buttonSecondary}}
                                     >
-                                        <StyledText className={`text-lg text-center font-bold text-[${Colors.textPrimary}]`}>
+                                        <StyledText className={`text-lg text-center font-bold text-primary`}>
                                             {`${dateCompleted.toLocaleDateString()}`}
                                         </StyledText>
                                     </StyledTouchableOpacity>
@@ -176,7 +176,7 @@ const AddEditEntryModal = ({ selectedEntry, choreId, visible, onClose }: EntryMo
                                         onPress={() => setShowTimePicker(true)}
                                         style={{backgroundColor: Colors.buttonSecondary}}
                                     >
-                                        <StyledText className={`text-lg text-center font-bold text-[${Colors.textPrimary}]`}>
+                                        <StyledText className={`text-lg text-center font-bold text-primary`}>
                                             {`${dateCompleted.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`}
                                         </StyledText>
                                     </StyledTouchableOpacity>

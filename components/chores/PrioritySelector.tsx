@@ -21,7 +21,7 @@ const PrioritySelector = ({
     return (
         <StyledView className="flex-row items-center justify-between py-1">
             {/* Label */}
-            <StyledText className="min-w-[100] text-xl text-gray-400">Priority</StyledText>
+            <StyledText className="min-w-[100] text-xl text-secondary">Priority</StyledText>
             <StyledView className='flex-[35%]'></StyledView>
 
             {/* Picker Container */}
