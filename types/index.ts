@@ -62,3 +62,8 @@ export interface BackupData {
     tags: Tag[];
     entries: Entry[];
 }
+
+export interface Section {
+    title: string;
+    data: ProcessedChore[];
+}

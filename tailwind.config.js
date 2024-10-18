@@ -27,7 +27,8 @@ module.exports = {
         buttonPrimary: '#14A8CC',
         buttonSecondary: '#6d767c',
         buttonAlternative: '#F5103B',
-        tagDefault: '#7e7e7e'
+        tagDefault: '#7e7e7e',
+        sectionTitle: 'rgba(203,237,245,0.59)',
       }
     },
   },

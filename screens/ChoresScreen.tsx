@@ -1,15 +1,15 @@
 // src/screens/ChoresScreen.tsx
 
 import React, {useEffect, useMemo, useState} from 'react';
-import {View, Text, FlatList, ActivityIndicator, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
-import { styled } from 'nativewind';
-import { router } from 'expo-router';
-import { Tag, ProcessedChore } from '@/types';
-import { useDataContext } from '@/context/DataContext';
+import {ActivityIndicator, SectionList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {styled} from 'nativewind';
+import {router} from 'expo-router';
+import {ProcessedChore, Section, Tag} from '@/types';
+import {useDataContext} from '@/context/DataContext';
 import ThemedScreen from '@/components/common/ThemedScreen';
-import { AntDesign } from '@expo/vector-icons';
+import {AntDesign} from '@expo/vector-icons';
 import ChoreCard from '@/components/chores/ChoreCard';
-import { getTagById, getLastCompletionDate, getNextDueDate, getTimeLeft } from '@/utils/helpers';
+import {getLastCompletionDate, getNextDueDate, getTagById, getTimeLeft, groupChores} from '@/utils/helpers';
 import AddEditEntryModal from "@/components/modals/AddEditEntryModal";
 import dayjs from "dayjs";
 import {Picker} from "@react-native-picker/picker";
@@ -18,7 +18,6 @@ import {Colors} from "@/constants/Colors";
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
-const StyledScrollView = styled(ScrollView);
 const StyledTouchableOpacity = styled(TouchableOpacity);
 
 const defaultFilters = {
@@ -127,9 +126,10 @@ const ChoresScreen = () => {
 
     // Sorting Chores
     const sortedChores = useMemo(() => {
-        const sorted = [...filteredChores].sort((a, b) => {
+        return [...filteredChores].sort((a, b) => {
             let comparison = 0;
 
+            // Primary Comparison based on sortOption
             switch (sortOption) {
                 case 'choreName':
                     comparison = a.name.localeCompare(b.name);
@@ -148,7 +148,11 @@ const ChoresScreen = () => {
                         (bLastCompleted ? bLastCompleted.valueOf() : 0);
                     break;
                 case 'timeLeft':
-                    comparison = a.nextDueDate.valueOf() - b.nextDueDate.valueOf();
+                    if (a.timeLeft === b.timeLeft) {
+                        comparison = 0;
+                    } else {
+                        comparison = a.nextDueDate.valueOf() - b.nextDueDate.valueOf();
+                    }
                     break;
                 case 'isOverdue':
                     comparison = Number(a.isOverdue) - Number(b.isOverdue);
@@ -160,11 +164,21 @@ const ChoresScreen = () => {
                     break;
             }
 
+            // Secondary Comparison by Name if Primary is Equal
+            if (comparison === 0 && sortOption !== 'choreName') {
+                comparison = a.name.localeCompare(b.name);
+            }
+
+            // Adjust comparison based on sortOrder
             return sortOrder === 'asc' ? comparison : -comparison;
         });
-
-        return sorted;
     }, [filteredChores, sortOption, sortOrder, entries]);
+
+
+    // Grouping Chores into Sections Based on `groupBy`
+    const sectionedChores: Section[] = useMemo(() => {
+        return groupChores(sortedChores, sortOption);
+    }, [sortedChores, sortOption]);
 
 
     const renderChore = ({ item }: { item: ProcessedChore }) => {
@@ -173,17 +187,19 @@ const ChoresScreen = () => {
 
 
         return (
-            <ChoreCard
-                chore={item}
-                tags={tagsForChore}
-                onCompletedPress={() => {
-                    setSelectedChore(item);
-                    setAddEditEntryModalVisible(true);
-                }}
-                onEditPress={() => handleEditChore(item.id)}
-                lastCompleted={item.lastCompletedDisplay}
-                timeLeft={item.timeLeft}
-            />
+            <StyledView className="px-2">
+                <ChoreCard
+                    chore={item}
+                    tags={tagsForChore}
+                    onCompletedPress={() => {
+                        setSelectedChore(item);
+                        setAddEditEntryModalVisible(true);
+                    }}
+                    onEditPress={() => handleEditChore(item.id)}
+                    lastCompleted={item.lastCompletedDisplay}
+                    timeLeft={item.timeLeft}
+                />
+            </StyledView>
         );
     };
 
@@ -247,10 +263,10 @@ const ChoresScreen = () => {
                                 mode={'dropdown'}
                             >
                                 <Picker.Item label="Chore Name" value="choreName" style={styles.pickerItem} />
+                                <Picker.Item label="Due Next" value="timeLeft" style={styles.pickerItem}/>
                                 <Picker.Item label="Est Time" value="estTime" style={styles.pickerItem}/>
                                 <Picker.Item label="Frequency" value="frequency" style={styles.pickerItem}/>
                                 <Picker.Item label="Last Completed" value="lastCompleted" style={styles.pickerItem}/>
-                                <Picker.Item label="Time Left" value="timeLeft" style={styles.pickerItem}/>
                                 <Picker.Item label="Is Overdue" value="isOverdue" style={styles.pickerItem}/>
                                 <Picker.Item label="Priority" value="priority" style={styles.pickerItem}/>
                             </Picker>
@@ -270,12 +286,19 @@ const ChoresScreen = () => {
                 </StyledView>
 
 
-                {/* Chores */}
-                {sortedChores.length > 0 ? (
-                    <FlatList
-                        data={sortedChores}
+                {/* Chores SectionList */}
+                {sectionedChores.length > 0 ? (
+                    <SectionList
+                        sections={sectionedChores}
                         keyExtractor={(item) => item.id.toString()}
                         renderItem={renderChore}
+                        renderSectionHeader={({ section: { title } }) => (
+                            <StyledView className="flex-row items-center mt-2 mb-6">
+                                <StyledView className="flex-grow bg-sectionTitle h-1 mr-2 mt-1"></StyledView>
+                                <StyledText className="font-bold text-lg text-primary text-center">{title}</StyledText>
+                                <StyledView className="flex-grow bg-sectionTitle h-1 ml-2 mt-1"></StyledView>
+                            </StyledView>
+                        )}
                         contentContainerStyle={{ paddingBottom: 30 }}
                     />
                 ) : (

@@ -25,7 +25,7 @@ interface ChoreCardProps {
 // ChoreCard component using reusable StyledText and StyledView
 const ChoreCard: React.FC<ChoreCardProps> = ({ chore, tags, onCompletedPress, onEditPress, lastCompleted, timeLeft }) => {
     // Determine if the chore is overdue
-    const isOverdue = timeLeft === 'Due now' || timeLeft.includes('ago');
+    const isOverdue = timeLeft.includes('ago');
 
     const priorityColor = getPriorityLevelColor(chore.priority);
     const priorityLabel = getPriorityLevelLabel(chore.priority) || 'N/A';
@@ -90,7 +90,10 @@ const ChoreCard: React.FC<ChoreCardProps> = ({ chore, tags, onCompletedPress, on
             <StyledText className={`text-lg font-bold text-primary`}>{chore.name}</StyledText>
 
             {/* Chore Description */}
-            <StyledText className={`text-sm mt-1 text-secondary`}>{chore.description}</StyledText>
+            {
+                chore.description !== '' &&
+                <StyledText className={`text-sm mt-1 text-secondary`}>{chore.description}</StyledText>
+            }
 
             {/* Details Container */}
             <StyledView className="flex-row mt-4 justify-between">
@@ -118,9 +121,9 @@ const ChoreCard: React.FC<ChoreCardProps> = ({ chore, tags, onCompletedPress, on
             </StyledView>
 
             {/* Tags */}
-            <StyledView className='mt-4'>
-                <TagList tags={tags} />
-            </StyledView>
+            {tags.length > 0 && <StyledView className='mt-3'>
+                <TagList tags={tags}/>
+            </StyledView>}
         </StyledView>
     );
 };

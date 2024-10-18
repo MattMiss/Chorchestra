@@ -1,6 +1,6 @@
 // src/utils/helpers.ts
 
-import {PriorityLevel, priorityOptions, Tag, Chore, FrequencyType} from "@/types";
+import {PriorityLevel, priorityOptions, Tag, Chore, FrequencyType, ProcessedChore, Section} from "@/types";
 import { Dayjs } from 'dayjs';
 import dayjs from '@/utils/dayjsConfig'
 
@@ -148,11 +148,94 @@ export const getNextDueDate = (
 // Get the time left until the next due date
 export const getTimeLeft = (nextDueDate: Dayjs): string => {
     const now = dayjs();
-    const diff = nextDueDate.diff(now, 'second');
 
-    if (diff <= 0) {
-        return 'Due now';
+    // Check if the next due date is today
+    if (nextDueDate.isToday()) {
+        return 'Due Today';
     }
 
-    return nextDueDate.fromNow(); // e.g., 'in 3 days', 'in a week'
+    // If the due date is in the future, return the time left
+    if (nextDueDate.isAfter(now)) {
+        return nextDueDate.fromNow(); // e.g., 'in 3 days', 'in a week'
+    }
+
+    // If the due date is in the past (but the day has already changed), return the relative time
+    return nextDueDate.fromNow(); // e.g., 'a day ago', '2 days ago'
 };
+
+
+/**
+ * Groups chores into sections based on their time left.
+ * @param chores Array of processed chores.
+ * @returns Array of sections.
+ */
+export const groupChoresByTimeLeft = (chores: ProcessedChore[]): Section[] => {
+    const sections: Section[] = [
+        { title: 'Overdue', data: [] },
+        { title: 'Due Today', data: [] },
+        { title: 'In a Week', data: [] },
+        { title: 'In a Month', data: [] },
+        { title: 'More Than a Month', data: [] },
+    ];
+
+    chores.forEach((chore) => {
+        const daysLeft = chore.nextDueDate.diff(dayjs(), 'day');
+
+        if (chore.isOverdue) {
+            sections[0].data.push(chore);
+        } else if (daysLeft === 0) {
+            sections[1].data.push(chore);
+        } else if (daysLeft > 0 && daysLeft <= 7) {
+            sections[2].data.push(chore);
+        } else if (daysLeft > 7 && daysLeft <= 30) {
+            sections[3].data.push(chore);
+        } else {
+            sections[4].data.push(chore);
+        }
+    });
+
+    // Remove empty sections
+    return sections.filter(section => section.data.length > 0);
+};
+
+export const groupChoresByPriority = (chores: ProcessedChore[]): Section[] => {
+    const prioritySections: Section[] = [
+        { title: 'High Priority', data: [] },
+        { title: 'Medium Priority', data: [] },
+        { title: 'Low Priority', data: [] },
+    ];
+
+    chores.forEach((chore) => {
+        switch (chore.priority) {
+            case 3:
+                prioritySections[0].data.push(chore);
+                break;
+            case 2:
+                prioritySections[1].data.push(chore);
+                break;
+            case 1:
+                prioritySections[2].data.push(chore);
+                break;
+            default:
+                break;
+        }
+    });
+
+    // Remove empty sections
+    return prioritySections.filter(section => section.data.length > 0);
+};
+
+
+export const groupChores = (chores: ProcessedChore[], groupBy: string): Section[] => {
+    if (groupBy === 'timeLeft') {
+        return groupChoresByTimeLeft(chores);
+    }
+
+    if (groupBy === 'priority') {
+        return groupChoresByPriority(chores);
+    }
+
+    // Default to no grouping if groupBy value is unrecognized
+    return [{ title: 'Chores', data: chores }];
+};
+
