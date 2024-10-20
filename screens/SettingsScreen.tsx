@@ -2,11 +2,9 @@ import {Text, TouchableOpacity, View} from 'react-native';
 import {styled} from "nativewind";
 import ThemedScreen from "@/components/common/ThemedScreen";
 import {router} from "expo-router";
-import {useDataContext} from "@/context/DataContext";
 import {AntDesign} from "@expo/vector-icons";
 import Container from "@/components/common/Container";
 import React from "react";
-import {Colors} from "@/constants/Colors";
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -25,7 +23,7 @@ const SettingsScreen = () => {
     return (
         <ThemedScreen
             showHeaderNavButton={false}
-            showHeaderNavOptionButton={true}
+            showHeaderNavOptionButton={false}
             headerTitle={'Settings'}
         >
             <StyledView className='flex-1 p-2'>

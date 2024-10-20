@@ -9,7 +9,8 @@ import {useDataContext} from '@/context/DataContext';
 import ThemedScreen from '@/components/common/ThemedScreen';
 import {AntDesign} from '@expo/vector-icons';
 import ChoreCard from '@/components/chores/ChoreCard';
-import {getLastCompletionDate, getNextDueDate, getTagById, getTimeLeft, groupChores} from '@/utils/helpers';
+import {getTagById} from '@/utils/helpers';
+import {getLastCompletionDate, getNextDueDate, getTimeLeft, groupChores} from '@/utils/chores';
 import AddEditEntryModal from "@/components/modals/AddEditEntryModal";
 import dayjs from "dayjs";
 import {Picker} from "@react-native-picker/picker";
@@ -37,7 +38,7 @@ const ChoresScreen = () => {
 
     // New state variables
     const [filtersModalVisible, setFiltersModalVisible] = useState<boolean>(false);
-    const [sortOption, setSortOption] = useState<string>('choreName');
+    const [sortOption, setSortOption] = useState<string>('timeLeft');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
     const [filters, setFilters] = useState(defaultFilters);
@@ -234,7 +235,7 @@ const ChoresScreen = () => {
     return (
         <ThemedScreen
             showHeaderNavButton={false}
-            showHeaderNavOptionButton={true}
+            showHeaderNavOptionButton={false}
             headerTitle={"Chores"}
         >
             <StyledView className="px-2 flex-1">

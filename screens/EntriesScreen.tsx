@@ -85,7 +85,7 @@ const EntriesScreen = () => {
     return (
         <ThemedScreen
             showHeaderNavButton={false}
-            showHeaderNavOptionButton={true}
+            showHeaderNavOptionButton={false}
             headerTitle={"Entries"}
         >
             <StyledView

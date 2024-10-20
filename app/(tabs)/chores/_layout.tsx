@@ -1,7 +1,7 @@
 import React from 'react';
 import { Stack } from 'expo-router';
 
-export default function NoteStack() {
+export default function ChoreStack() {
     return (
         <Stack screenOptions={{headerShown: false}}>
             <Stack.Screen

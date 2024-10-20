@@ -3,7 +3,6 @@ import React from 'react';
 import { FontAwesome } from '@expo/vector-icons';
 import { View } from 'react-native';
 import { styled } from 'nativewind';
-import { Colors } from '@/constants/Colors'; // Adjust the path if needed
 
 // Styled view for background color
 const StyledView = styled(View);
@@ -28,6 +27,15 @@ export default function TabLayout() {
                     tabBarHideOnKeyboard: true,
                 }}
             >
+                <Tabs.Screen
+                    name="home"
+                    options={{
+                        title: 'Home',
+                        tabBarIcon: ({ color }) => (
+                            <FontAwesome name="home" size={24} color={color} />
+                        ),
+                    }}
+                />
                 <Tabs.Screen
                     name="entries"
                     options={{

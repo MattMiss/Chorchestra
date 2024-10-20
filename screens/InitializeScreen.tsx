@@ -13,7 +13,7 @@ const App = () => {
     useEffect(() => {
         const initializeDatabase = async () => {
             try {
-                router.replace('/chores/my-chores');
+                router.replace('/home/home-screen');
             } catch (error) {
                 console.error('Error initializing database:', error);
                 Alert.alert(
