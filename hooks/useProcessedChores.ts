@@ -1,7 +1,7 @@
 // src/hooks/useProcessedChores.ts
 
 import { useMemo } from 'react';
-import dayjs from 'dayjs';
+import dayjs from '@/utils/dayjsConfig';
 import { useDataContext } from '@/context/DataContext';
 import { ProcessedChore } from '@/types';
 import { getLastCompletionDate, getNextDueDate, getTimeLeft } from '@/utils/chores';

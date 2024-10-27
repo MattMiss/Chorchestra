@@ -5,7 +5,7 @@ export default function HomeStack() {
     return (
         <Stack screenOptions={{headerShown: false}}>
             <Stack.Screen
-                name="home-screen"  // This refers to "my-chores.tsx" in the chores folder
+                name="home-screen"
                 options={{ title: 'Home' }}
             />
         </Stack>

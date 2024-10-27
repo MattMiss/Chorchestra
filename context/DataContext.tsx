@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, useRef, ReactNode, useContext } from 'react';
-import * as FileSystem from 'expo-file-system';
-import { AppState } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Alert, AppState } from 'react-native';
 import { debounce } from 'lodash';
 import { Chore, Entry, Tag } from "@/types";
 
@@ -47,42 +47,54 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
         tagsRef.current = tags;
     }, [tags]);
 
-    // Define file URIs
-    const choresFileUri = `${FileSystem.documentDirectory}chores.json`;
-    const entriesFileUri = `${FileSystem.documentDirectory}entries.json`;
-    const tagsFileUri = `${FileSystem.documentDirectory}tags.json`;
+    // Define AsyncStorage keys
+    const CHORES_KEY = 'chores';
+    const ENTRIES_KEY = 'entries';
+    const TAGS_KEY = 'tags';
 
-    const fileExists = async (uri: string): Promise<boolean> => {
-        const fileInfo = await FileSystem.getInfoAsync(uri);
-        return fileInfo.exists;
-    };
+    // Validation functions
+    const validateChore = (chore: any): chore is Chore => typeof chore.id === 'number' && typeof chore.name === 'string';
+    const validateEntry = (entry: any): entry is Entry => typeof entry.id === 'number' && typeof entry.choreId === 'number';
+    const validateTag = (tag: any): tag is Tag => typeof tag.id === 'number' && typeof tag.name === 'string';
 
-    // Load data from files on mount
+    // Load data from AsyncStorage on mount
     useEffect(() => {
         const loadData = async () => {
             try {
-                const choresExists = await fileExists(choresFileUri);
-                const entriesExists = await fileExists(entriesFileUri);
-                const tagsExists = await fileExists(tagsFileUri);
+                const choresData = await AsyncStorage.getItem(CHORES_KEY);
+                const entriesData = await AsyncStorage.getItem(ENTRIES_KEY);
+                const tagsData = await AsyncStorage.getItem(TAGS_KEY);
 
-                const [choresData, entriesData, tagsData] = await Promise.all([
-                    choresExists ? FileSystem.readAsStringAsync(choresFileUri) : null,
-                    entriesExists ? FileSystem.readAsStringAsync(entriesFileUri) : null,
-                    tagsExists ? FileSystem.readAsStringAsync(tagsFileUri) : null,
-                ]);
-
-                setChores(choresData ? JSON.parse(choresData) : []);
-                setEntries(entriesData ? JSON.parse(entriesData) : []);
-                setTags(tagsData ? JSON.parse(tagsData) : []);
-            } catch (error: any) {
-                console.error('Error loading data:', error);
-                if (error.code === 'ERR_FILESYSTEM_CANNOT_FIND_FILE') {
-                    setChores([]);
-                    setEntries([]);
-                    setTags([]);
+                // Validate and set chores
+                const parsedChores = choresData ? JSON.parse(choresData) : [];
+                if (Array.isArray(parsedChores) && parsedChores.every(validateChore)) {
+                    setChores(parsedChores);
                 } else {
-                    console.error('Unhandled error loading files:', error);
+                    setChores([]);
+                    Alert.alert('Data Error', 'Failed to load chores data.');
                 }
+
+                // Parse entries
+                const parsedEntries = entriesData ? JSON.parse(entriesData) : [];
+                if (Array.isArray(parsedEntries) && parsedEntries.every(validateEntry)) {
+                    setEntries(parsedEntries);
+                } else {
+                    setEntries([]);
+                    Alert.alert('Data Error', 'Failed to load entries data.');
+                }
+
+                // Parse tags
+                const parsedTags = tagsData ? JSON.parse(tagsData) : [];
+                if (Array.isArray(parsedTags) && parsedTags.every(validateTag)) {
+                    setTags(parsedTags);
+                } else {
+                    setTags([]);
+                    Alert.alert('Data Error', 'Failed to load tags data.');
+                }
+
+            } catch (error) {
+                console.error('Error loading data:', error);
+                Alert.alert('Data Error', 'An unexpected error occurred while loading data.');
             } finally {
                 setIsLoading(false);
             }
@@ -91,27 +103,27 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
         loadData();
     }, []);
 
-    // Function to save data back to files
+    // Save data to AsyncStorage
     const saveData = async () => {
-        console.log("SaveData chores: ", choresRef.current);  // Access the latest value from the ref
         try {
             await Promise.all([
-                FileSystem.writeAsStringAsync(choresFileUri, JSON.stringify(choresRef.current)),
-                FileSystem.writeAsStringAsync(entriesFileUri, JSON.stringify(entriesRef.current)),
-                FileSystem.writeAsStringAsync(tagsFileUri, JSON.stringify(tagsRef.current)),
+                AsyncStorage.setItem(CHORES_KEY, JSON.stringify(choresRef.current)),
+                AsyncStorage.setItem(ENTRIES_KEY, JSON.stringify(entriesRef.current)),
+                AsyncStorage.setItem(TAGS_KEY, JSON.stringify(tagsRef.current)),
             ]);
             console.log('Data saved successfully');
-
-            // Debug: check the file contents after saving
-            const savedChores = await FileSystem.readAsStringAsync(choresFileUri);
-            console.log('Saved chores content:', savedChores);
         } catch (error) {
             console.error('Error saving data:', error);
         }
     };
 
-    // Debounced save function to prevent excessive writes
+    // Debounced save function
     const debouncedSaveData = useRef(debounce(saveData, 1000)).current;
+
+    // Use this function for non-debounced saves during critical operations
+    const saveDataImmediately = async () => {
+        await saveData();
+    };
 
     // Save data when any of the data arrays change
     useEffect(() => {
@@ -124,8 +136,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     useEffect(() => {
         const subscription = AppState.addEventListener('change', (nextAppState) => {
             if (nextAppState.match(/inactive|background/)) {
-                console.log("Inactive Saving Data");
-                debouncedSaveData.flush(); // Immediately save data
+                debouncedSaveData.flush();
             }
         });
 

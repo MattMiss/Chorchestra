@@ -6,7 +6,6 @@ import {exportData, importData} from "@/utils/dataBackup";
 import {useDataContext} from "@/context/DataContext";
 import Container from "@/components/common/Container";
 import {FontAwesome5} from "@expo/vector-icons";
-import {Colors} from "@/constants/Colors";
 
 const StyledView = styled(View);
 const StyledText = styled(Text);

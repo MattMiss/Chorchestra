@@ -13,7 +13,7 @@ import Checkbox from 'expo-checkbox';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {priorityOptions, Tag} from '@/types';
-import dayjs from 'dayjs';
+import dayjs from '@/utils/dayjsConfig';
 import {AntDesign} from "@expo/vector-icons";
 import TextInputFloatingLabel from "@/components/common/TextInputFloatingLabel";
 import {Colors} from "@/constants/Colors";

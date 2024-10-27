@@ -6,7 +6,7 @@ import { Text } from 'react-native';
 import { Entry, Chore } from '@/types';
 import { styled } from 'nativewind';
 import { getChoreNameById } from "@/utils/helpers";
-import dayjs from '@/utils/dayjsConfig'; // Adjust the import path as needed
+import dayjs from '@/utils/dayjsConfig';
 import {AntDesign, Entypo} from '@expo/vector-icons';
 import {Menu, MenuOption, MenuOptions, MenuTrigger} from "react-native-popup-menu";
 import {Colors} from "@/constants/Colors"; // Importing Material Icons

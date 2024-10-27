@@ -30,12 +30,14 @@ const HomeScreen = () => {
     const [addEditEntryModalVisible, setAddEditEntryModalVisible] = useState<boolean>(false);
 
     useEffect(() => {
-        const pastDueSection = sections.find(section => section.title === 'Past Due');
-        setPastDueSection(pastDueSection ? pastDueSection.data : []);
-        const dueTodaySection = sections.find(section => section.title === 'Due Today');
-        setTodaySection(dueTodaySection ? dueTodaySection.data : []);
-        const dueThisWeek = sections.find(section => section.title === 'Due This Week');
-        setInAWeekSection(dueThisWeek ? dueThisWeek.data : []);
+        if (sections){
+            const pastDueSection = sections.find(section => section.title === 'Past Due');
+            setPastDueSection(pastDueSection ? pastDueSection.data : []);
+            const dueTodaySection = sections.find(section => section.title === 'Due Today');
+            setTodaySection(dueTodaySection ? dueTodaySection.data : []);
+            const dueThisWeek = sections.find(section => section.title === 'Due This Week');
+            setInAWeekSection(dueThisWeek ? dueThisWeek.data : []);
+        }
     }, [sections, chores, entries]);
 
     const handleSectionPress = (title: string, chores: ProcessedChore[]) => {

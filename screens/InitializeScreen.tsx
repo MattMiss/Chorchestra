@@ -1,35 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { styled } from 'nativewind';
-import { View, ActivityIndicator, Alert } from "react-native";
+import { View, ActivityIndicator } from "react-native";
 import { router } from "expo-router";
 import {Colors} from "@/constants/Colors";
 import ThemedScreen from "@/components/common/ThemedScreen";
+import {useDataContext} from "@/context/DataContext";
 
 const StyledView = styled(View);
 
-const App = () => {
-    const [isInitializing, setIsInitializing] = useState(true);
+const InitializeScreen = () => {
+    const {isLoading} = useDataContext();
 
     useEffect(() => {
-        const initializeDatabase = async () => {
-            try {
-                router.replace('/home/home-screen');
-            } catch (error) {
-                console.error('Error initializing database:', error);
-                Alert.alert(
-                    "Initialization Error",
-                    "An error occurred while setting up the database. Please restart the app.",
-                    [{ text: "OK" }]
-                );
-            } finally {
-                setIsInitializing(false);
-            }
-        };
+        if (!isLoading){
+            router.replace('/chores/my-chores');
+        }
+    }, [isLoading, router]);
 
-        initializeDatabase();
-    }, []);
-
-    if (isInitializing) {
+    if (isLoading) {
         return (
             <ThemedScreen
                 showHeaderNavButton={false}
@@ -55,4 +43,4 @@ const App = () => {
     );
 };
 
-export default App;
+export default InitializeScreen;

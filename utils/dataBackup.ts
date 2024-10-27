@@ -2,7 +2,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import { Alert } from 'react-native';
-import dayjs from 'dayjs';
+import dayjs from '@/utils/dayjsConfig';
 import { BackupData } from '@/types';
 
 // Function to export data as a JSON file and share it
@@ -44,7 +44,7 @@ export const importData = async (): Promise<BackupData | null> => {
 
         // Check if the user canceled the picker
         if (result.canceled) {
-            Alert.alert('Import Canceled', 'No file was selected.');
+            Alert.alert('Import Cancelled', 'No file was selected.');
             return null;
         }
 

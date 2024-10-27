@@ -12,7 +12,7 @@ import ChoreCard from '@/components/chores/ChoreCard';
 import {getTagById} from '@/utils/helpers';
 import {getLastCompletionDate, getNextDueDate, getTimeLeft, groupChores} from '@/utils/chores';
 import AddEditEntryModal from "@/components/modals/AddEditEntryModal";
-import dayjs from "dayjs";
+import dayjs from '@/utils/dayjsConfig';
 import {Picker} from "@react-native-picker/picker";
 import ChoreFiltersModal from "@/components/modals/ChoreFiltersModal";
 import {Colors} from "@/constants/Colors";
@@ -48,20 +48,26 @@ const ChoresScreen = () => {
         // console.log("Chores: ", JSON.stringify(chores, null, 2));
     }, [chores]);
 
+    const today = dayjs().startOf('day');
+
     // Processed Chores
     const processedChores: ProcessedChore[] = useMemo(() => {
+        const today = dayjs().startOf('day');
         return chores.map((chore) => {
+
+
             const lastCompletionDate = getLastCompletionDate(chore.id, entries);
             const nextDueDate = getNextDueDate(
                 lastCompletionDate,
                 chore.frequency,
                 chore.frequencyType as 'day' | 'week' | 'month' | 'year'
             );
+            const dueDate = dayjs(nextDueDate).startOf('day');
             const timeLeft = getTimeLeft(nextDueDate);
             const lastCompletedDisplay = lastCompletionDate
                 ? lastCompletionDate.format('MMM D, YYYY')
                 : 'Never';
-            const isOverdue = nextDueDate.isBefore(dayjs(), 'day');
+            const isOverdue = dueDate.isBefore(today, 'day');
 
             return {
                 ...chore,
@@ -76,43 +82,43 @@ const ChoresScreen = () => {
     // Filtering Chores
     const filteredChores = useMemo(() => {
         return processedChores.filter((chore) => {
-            // Filter by priority
+            // 1. Filter by priority
             if (!filters.priorities[chore.priority]) return false;
 
-            // Filter by overdue status
+            // 2. Filter by overdue status
             if (filters.overdueStatus === 'overdue' && !chore.isOverdue) return false;
             if (filters.overdueStatus === 'notOverdue' && chore.isOverdue) return false;
 
-            // Filter by last completed date range
+            // 3. Filter by last completed date range
             if (filters.lastCompletedStartDate || filters.lastCompletedEndDate) {
                 const lastCompletedDate = getLastCompletionDate(chore.id, entries);
                 if (lastCompletedDate) {
-                    if (
-                        filters.lastCompletedStartDate &&
-                        lastCompletedDate.isBefore(dayjs(filters.lastCompletedStartDate), 'day')
-                    )
-                        return false;
-                    if (
-                        filters.lastCompletedEndDate &&
-                        lastCompletedDate.isAfter(dayjs(filters.lastCompletedEndDate), 'day')
-                    )
-                        return false;
+                    const startDate = filters.lastCompletedStartDate
+                        ? dayjs(filters.lastCompletedStartDate).startOf('day')
+                        : null;
+                    const endDate = filters.lastCompletedEndDate
+                        ? dayjs(filters.lastCompletedEndDate).endOf('day')
+                        : null;
+
+                    if (startDate && lastCompletedDate.isBefore(startDate, 'day')) return false;
+                    if (endDate && lastCompletedDate.isAfter(endDate, 'day')) return false;
                 } else {
-                    // Exclude chores never completed if date range is set
+                    // Exclude chores never completed if a date range is set
                     return false;
                 }
             }
 
-            // Filter by time left range
+            // 4. Filter by time left range
             if (filters.timeLeftRange[0] !== null || filters.timeLeftRange[1] !== null) {
-                const daysLeft = chore.nextDueDate.diff(dayjs(), 'day');
+                const dueDate = dayjs(chore.nextDueDate).startOf('day');
+                const daysLeft = dueDate.diff(today, 'day');
                 if (filters.timeLeftRange[0] !== null && daysLeft < filters.timeLeftRange[0])
                     return false;
                 if (filters.timeLeftRange[1] !== null && daysLeft > filters.timeLeftRange[1])
                     return false;
             }
 
-            // Filter by tags
+            // 5. Filter by tags
             const anyTagSelected = Object.values(filters.selectedTags).some((selected) => selected);
             if (anyTagSelected) {
                 const hasSelectedTag = chore.tagIds.some((tagId) => filters.selectedTags[tagId]);
@@ -121,7 +127,8 @@ const ChoresScreen = () => {
 
             return true;
         });
-    }, [processedChores, filters, entries]);
+    }, [processedChores, filters, entries, today]);
+
 
 
 

@@ -2,7 +2,7 @@
   "expo": {
     "name": "Chorechesrta",
     "slug": "Chorechesrta",
-    "version": "1.0.0",
+    "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -20,9 +20,7 @@
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#454545"
       },
-      "permissions": [
-        "INTERNET"
-      ],
+      "permissions": [],
       "package": "com.mattwm.Chorechesrta"
     },
     "web": {
@@ -31,12 +29,27 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "@sentry/react-native/expo",
+        {
+          "project": "chorechestra",
+          "organization": "mattwm",
+          "url": "https://sentry.io/",
+          "note": "Use SENTRY_AUTH_TOKEN env to authenticate with Sentry."
+        }
+      ]
     ],
     "extra": {
       "eas": {
         "projectId": "96a96229-1b41-4e6e-9c60-adf1224d193d"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/96a96229-1b41-4e6e-9c60-adf1224d193d"
     }
   }
 }
