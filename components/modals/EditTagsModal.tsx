@@ -3,13 +3,12 @@ import { View, TouchableOpacity, Modal, TouchableWithoutFeedback, FlatList } fro
 import { styled } from 'nativewind';
 import { Tag } from '@/types';
 import { debounce } from 'lodash';
-import { useDataContext } from "@/context/DataContext";
+import { useTagsContext } from "@/context/TagsContext"; // Update to use TagsContext
 import TagSearchResultItem from "@/components/tags/TagSearchResultItem";
 import { sortTagsByName } from '@/utils/helpers';
-import {Colors} from "@/constants/Colors";
+import { Colors } from "@/constants/Colors";
 import TextInputFloatingLabel from "@/components/common/TextInputFloatingLabel";
 
-// New Interface extending Tag with `isAvailable` field
 interface TagWithAvailability extends Tag {
     isAvailable: boolean;
 }
@@ -19,51 +18,43 @@ const StyledView = styled(View);
 interface TagModalProps {
     visible: boolean;
     onClose: () => void;
-    onTagAdded: (tag: Tag) => void; // Pass the full Tag object instead of just id
+    onTagAdded: (tag: Tag) => void;
     selectedTags: Tag[];
-    availableTags: Tag[];
 }
 
-const EditTagsModal = ({ visible, onClose, onTagAdded, selectedTags, availableTags }: TagModalProps) => {
+const EditTagsModal = ({ visible, onClose, onTagAdded, selectedTags }: TagModalProps) => {
     const [tagInput, setTagInput] = useState('');
-    const [suggestionsList, setSuggestionsList] = useState<TagWithAvailability[]>([]); // Use TagWithAvailability array for suggestions
+    const [suggestionsList, setSuggestionsList] = useState<TagWithAvailability[]>([]);
     const [loading, setLoading] = useState(false);
 
-    const { setTags, isLoading } = useDataContext();
-
-    useEffect(() => {
-        console.log("SELECTED: ", selectedTags);
-    }, [selectedTags]);
+    const { tags, addTag } = useTagsContext(); // Use TagsContext to get tags and saveTag function
 
     useEffect(() => {
         handleClearTag();
     }, [visible]);
 
-    // Create TagWithAvailability array from availableTags and selectedTags
     const createTagWithAvailabilityList = (tags: Tag[]): TagWithAvailability[] => {
         return tags.map((tag) => ({
             ...tag,
-            isAvailable: !selectedTags.some((selectedTag) => selectedTag.id === tag.id), // Set isAvailable based on whether the tag is in selectedTags
+            isAvailable: !selectedTags.some((selectedTag) => selectedTag.id === tag.id),
         }));
     };
 
-    // Memoized function for suggestions
     const debouncedGetTagSuggestions = useCallback(
         debounce((query: string) => {
             const filterToken = query.trim().toLowerCase();
             if (query.length < 1) {
-                setSuggestionsList(createTagWithAvailabilityList(availableTags));
+                setSuggestionsList(createTagWithAvailabilityList(tags));
                 return;
             }
             setLoading(true);
 
-            const filteredTags = availableTags.filter((tag) =>
+            const filteredTags = tags.filter((tag) =>
                 tag.name?.toLowerCase().includes(filterToken)
             );
 
-            // Add a "Create new tag" option if no matching tags are found
             if (filteredTags.length === 0) {
-                setSuggestionsList([{ id: -1, name: query.trim(), color: '', isAvailable: true }]); // Use id -1 for new tags
+                setSuggestionsList([{ id: -1, name: query.trim(), color: '', isAvailable: true }]);
             } else {
                 const updatedTags = createTagWithAvailabilityList(filteredTags);
                 setSuggestionsList(updatedTags);
@@ -71,7 +62,7 @@ const EditTagsModal = ({ visible, onClose, onTagAdded, selectedTags, availableTa
 
             setLoading(false);
         }, 300),
-        [availableTags, selectedTags]
+        [tags, selectedTags]
     );
 
     const handleInputChange = useCallback((text: string) => {
@@ -81,22 +72,18 @@ const EditTagsModal = ({ visible, onClose, onTagAdded, selectedTags, availableTa
 
     const handleClearTag = useCallback(() => {
         setTagInput('');
-        setSuggestionsList(createTagWithAvailabilityList(availableTags)); // Create the suggestions list with availability check
-    }, [availableTags, selectedTags]);
+        setSuggestionsList(createTagWithAvailabilityList(tags));
+    }, [tags, selectedTags]);
 
-    const saveNewTag = (): Tag => {
+    const handleSaveNewTag = (): Tag => {
         const newTag: Tag = { id: Date.now(), name: tagInput.trim() };
-        setTags((prevTags) => {
-            const updatedTags = [newTag, ...prevTags];
-            return sortTagsByName(updatedTags);
-        });
-
+        addTag(newTag); // Use saveTag from TagsContext to persist the new tag
         return newTag;
     };
 
     const handleTagSelected = (tag: Tag) => {
         if (tag.id === -1) {
-            const tagWithID = saveNewTag();
+            const tagWithID = handleSaveNewTag();
             onTagAdded(tagWithID);
         } else {
             onTagAdded(tag);
@@ -111,7 +98,7 @@ const EditTagsModal = ({ visible, onClose, onTagAdded, selectedTags, availableTa
             <TouchableOpacity
                 style={{ flex: 1 }}
                 activeOpacity={1}
-                onPressOut={onClose} // This only triggers when clicking outside the modal content
+                onPressOut={onClose}
             >
                 <TouchableWithoutFeedback onPress={onClose}>
                     <StyledView className="flex-1 justify-end items-center bg-transparent-70">

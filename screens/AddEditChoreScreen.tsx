@@ -5,18 +5,19 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import TextInputFloatingLabel from "@/components/common/TextInputFloatingLabel";
 import Container from '@/components/common/Container';
 import ListModal from "@/components/modals/ListModal";
-import {DraggableListItem, EstTimeType, FrequencyType, PriorityLevel, Tag} from '@/types';
+import { DraggableListItem, EstTimeType, FrequencyType, PriorityLevel, Tag } from '@/types';
 import ThemedScreen from "@/components/common/ThemedScreen";
 import 'react-native-get-random-values';
 import { v4 as getRandomId } from 'uuid';
 import { AntDesign } from "@expo/vector-icons";
 import PrioritySelector from "@/components/chores/PrioritySelector";
 import FrequencySelector from "@/components/chores/FrequencySelector";
-import { useDataContext } from "@/context/DataContext";
+import { useChoresContext } from "@/context/ChoresContext";
+import { useTagsContext } from "@/context/TagsContext";
 import TagSelector from "@/components/chores/TagSelector";
 import EditTagsModal from "@/components/modals/EditTagsModal";
 import EstTimeSelector from "@/components/chores/EstTimeSelector";
-import {Colors} from "@/constants/Colors";
+import { Colors } from "@/constants/Colors";
 
 const StyledView = styled(View);
 const StyledScrollView = styled(ScrollView);
@@ -34,34 +35,25 @@ const AddEditChoreScreen = () => {
     const [frequencyType, setFrequencyType] = useState<FrequencyType>('day');
     const [priority, setPriority] = useState<PriorityLevel>(1);
     const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
-    const [availableTags, setAvailableTags] = useState<Tag[]>([]);
     const [isTagModalVisible, setIsTagModalVisible] = useState(false);
     const [isListModalVisible, setIsListModalVisible] = useState(false);
     const [modalTitle, setModalTitle] = useState('');
     const [modalAddText, setModalAddText] = useState('');
     const [modalItems, setModalItems] = useState<DraggableListItem[]>([]);
     const [modalItemKey, setModalItemKey] = useState<string>('instructions');
-    const [isSaving, setIsSaving] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
 
     const router = useRouter();
-    const { chores, setChores, tags } = useDataContext();
+    const { chores, addChore, editChore } = useChoresContext();
+    const { tags } = useTagsContext();
 
     // Retrieve the passed choreId from the URL parameters (as a string)
     const { choreId } = useLocalSearchParams<{ choreId?: string }>();
 
     useEffect(() => {
-        if (tags) {
-            setAvailableTags(tags);
-        }
-    }, [tags]);
-
-    // If choreId exists, find the corresponding chore and populate the form
-    useEffect(() => {
         if (choreId) {
             const choreToEdit = chores.find((chore) => chore.id.toString() === choreId);
             if (choreToEdit) {
-                // Populate state with the chore data
                 setName(choreToEdit.name);
                 setDescription(choreToEdit.description);
                 setInstructions(choreToEdit.instructions.map((text) => ({ id: getRandomId(), text })));
@@ -75,7 +67,7 @@ const AddEditChoreScreen = () => {
                 setIsEditing(true);
             }
         }
-    }, [choreId, chores]);
+    }, [choreId, chores, tags]);
 
     const openModal = (key: string, title: string, addText: string, items: DraggableListItem[]) => {
         setModalItemKey(key);
@@ -123,13 +115,10 @@ const AddEditChoreScreen = () => {
 
         const instructionsText = instructions.map((item) => item.text.trim()).filter((text) => text !== '');
         const itemsNeededText = itemsNeeded.map((item) => item.text.trim()).filter((text) => text !== '');
-
         const tagIds = selectedTags.map((tag) => tag.id);
 
-        setIsSaving(true);
-
         const newChore = {
-            id: isEditing && choreId ? Number(choreId) : Date.now(), // Keep the same ID if editing
+            id: isEditing && choreId ? Number(choreId) : Date.now(),
             name: name.trim(),
             description: description.trim(),
             estTime,
@@ -143,17 +132,13 @@ const AddEditChoreScreen = () => {
             tagIds,
         };
 
-        // Update chores array: If editing, replace the chore; if adding, push the new one
         if (isEditing) {
-            setChores((prevChores) =>
-                prevChores.map((c) => (c.id === newChore.id ? newChore : c))
-            );
+            editChore(newChore);
         } else {
-            setChores((prevState) => [...prevState, newChore]);
+            addChore(newChore);
         }
 
-        setIsSaving(false);
-        router.back(); // Navigate back to the previous screen
+        router.back();
     };
 
     const toggleTagModal = (showModal: boolean) => {
@@ -161,18 +146,11 @@ const AddEditChoreScreen = () => {
     }
 
     const handleTagAdded = (newTag: Tag) => {
-        // Check if the tag already exists in selectedTags
         if (!selectedTags.some((tag) => tag.id === newTag.id)) {
-            setSelectedTags((prevSelectedTags) => {
-                const updatedTags = [...prevSelectedTags, newTag];
-                console.log("Updated selectedTags: ", updatedTags); // Log to verify the update
-                return updatedTags;
-            });
+            setSelectedTags((prevSelectedTags) => [...prevSelectedTags, newTag]);
         } else {
             alert(`${newTag.name} is already selected`);
         }
-
-        // After adding the tag, close the modal
         toggleTagModal(false);
     };
 
@@ -197,7 +175,7 @@ const AddEditChoreScreen = () => {
                         className="flex-row items-center min-h-[50]"
                         onPress={() => openModal('instructions', 'Instructions', 'Instruction', instructions)}
                     >
-                        <StyledText className={`flex-grow text-xl text-secondary`}>
+                        <StyledText className="flex-grow text-xl text-secondary">
                             {instructions.length > 0 ? instructions.length : 'No'} Instructions
                         </StyledText>
                         <StyledView className="py-1 pl-5 pr-2">
@@ -211,7 +189,7 @@ const AddEditChoreScreen = () => {
                         className="flex-row items-center min-h-[50]"
                         onPress={() => openModal('items', 'Items Needed', 'Item', itemsNeeded)}
                     >
-                        <StyledText className={`flex-grow text-xl text-secondary`}>
+                        <StyledText className="flex-grow text-xl text-secondary">
                             {itemsNeeded.length > 0 ? itemsNeeded.length : 'No'} Items Needed
                         </StyledText>
                         <StyledView className="py-1 pl-5 pr-2">
@@ -221,10 +199,10 @@ const AddEditChoreScreen = () => {
                 </Container>
 
                 <Container>
-                    <StyledView className='py-2'>
+                    <StyledView className="py-2">
                         <EstTimeSelector estTime={estTime} setEstTime={setEstTime} timeType={estTimeType} setTimeType={setEstTimeType} />
                     </StyledView>
-                    <StyledView className='pt-1'>
+                    <StyledView className="pt-1">
                         <FrequencySelector frequencyNumber={frequency} setFrequencyNumber={setFrequency} frequencyType={frequencyType} setFrequencyType={setFrequencyType} />
                     </StyledView>
                     <PrioritySelector priority={priority} setPriority={setPriority} />
@@ -238,17 +216,32 @@ const AddEditChoreScreen = () => {
                     <StyledTouchableOpacity
                         onPress={handleSaveChore}
                         className="my-4 p-3 rounded-lg"
-                        style={{backgroundColor: Colors.buttonPrimary}}
+                        style={{ backgroundColor: Colors.buttonPrimary }}
                     >
-                        <StyledText className={`text-center text-primary`}>
+                        <StyledText className="text-center text-primary">
                             {isEditing ? 'Save Changes' : 'Save Chore'}
                         </StyledText>
                     </StyledTouchableOpacity>
                 </StyledView>
             </StyledScrollView>
 
-            <ListModal visible={isListModalVisible} onClose={handleModalClose} title={modalTitle} addText={modalAddText} items={modalItems} onAddNewItem={handleAddNewItem} onUpdateItem={handleItemsUpdate} onReorderItems={handleItemsReorder} onDeleteItem={handleItemsDelete} />
-            <EditTagsModal visible={isTagModalVisible} onClose={() => toggleTagModal(false)} onTagAdded={handleTagAdded} selectedTags={selectedTags} availableTags={availableTags} />
+            <ListModal
+                visible={isListModalVisible}
+                onClose={handleModalClose}
+                title={modalTitle}
+                addText={modalAddText}
+                items={modalItems}
+                onAddNewItem={handleAddNewItem}
+                onUpdateItem={handleItemsUpdate}
+                onReorderItems={handleItemsReorder}
+                onDeleteItem={handleItemsDelete}
+            />
+            <EditTagsModal
+                visible={isTagModalVisible}
+                onClose={() => toggleTagModal(false)}
+                onTagAdded={handleTagAdded}
+                selectedTags={selectedTags}
+            />
         </ThemedScreen>
     );
 };

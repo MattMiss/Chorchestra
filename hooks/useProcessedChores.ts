@@ -2,12 +2,14 @@
 
 import { useMemo } from 'react';
 import dayjs from '@/utils/dayjsConfig';
-import { useDataContext } from '@/context/DataContext';
 import { ProcessedChore } from '@/types';
 import { getLastCompletionDate, getNextDueDate, getTimeLeft } from '@/utils/chores';
+import {useChoresContext} from "@/context/ChoresContext";
+import {useEntriesContext} from "@/context/EntriesContext";
 
 const useProcessedChores = () => {
-    const { chores, entries } = useDataContext();
+    const { chores } = useChoresContext();
+    const { entries } = useEntriesContext();
 
     const processedChores: ProcessedChore[] = useMemo(() => {
         return chores.map((chore) => {

@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { styled } from 'nativewind';
-import { useDataContext } from '@/context/DataContext';
 import ThemedScreen from '@/components/common/ThemedScreen';
 import { AntDesign, FontAwesome6 } from '@expo/vector-icons';
 import ChoreSectionList from '@/components/chores/ChoreSectionList';
@@ -12,11 +11,14 @@ import useCategorizedChores from '@/hooks/useCategorizedChores';
 import { Colors } from "@/constants/Colors";
 import {ProcessedChore} from "@/types";
 import AddEditEntryModal from "@/components/modals/AddEditEntryModal";
+import {useChoresContext} from "@/context/ChoresContext";
+import {useEntriesContext} from "@/context/EntriesContext";
 
 const StyledView = styled(View);
 
 const HomeScreen = () => {
-    const { chores, entries } = useDataContext();
+    const { chores } = useChoresContext();
+    const { entries } = useEntriesContext();
     const { sections } = useCategorizedChores();
 
     const [pastDueSection, setPastDueSection] = useState<ProcessedChore[]>([]);

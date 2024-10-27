@@ -32,7 +32,14 @@ const ChoreSectionList = ({ sectionTitle, chores, icon, onPress }: SpecificSecti
                         <StyledText className="ml-2 font-bold text-lg text-accent">{sectionTitle}:</StyledText>
                         <StyledView className="ml-2 mt-2">
                             {chores.length > 0 ? (
-                                chores.map(chore => <StyledText className="text-primary" key={chore.id}>{chore.name}</StyledText>)
+                                chores.map(chore =>
+                                    <StyledView key={chore.id} className='flex-row items-center mb-1'>
+                                        <StyledView className='flex-row bg-buttonSecondary rounded-lg p-1'>
+                                            <StyledText className="ml-1 text-primary w-[30]" >{chore.nextDueDate.format('ddd')}</StyledText>
+                                            <StyledText className="text-primary text-md w-[46]" >{chore.nextDueDate.format('MMM D')}</StyledText>
+                                        </StyledView>
+                                        <StyledText className="text-primary ml-2" >{chore.name}</StyledText>
+                                    </StyledView>)
                             ) : (
                                 <StyledText className="text-primary">No chores</StyledText>
                             )}

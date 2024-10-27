@@ -3,16 +3,21 @@ import {TouchableOpacity, View, Text, Alert} from "react-native";
 import ThemedScreen from "@/components/common/ThemedScreen";
 import {styled} from "nativewind";
 import {exportData, importData} from "@/utils/dataBackup";
-import {useDataContext} from "@/context/DataContext";
 import Container from "@/components/common/Container";
 import {FontAwesome5} from "@expo/vector-icons";
+import {useChoresContext} from "@/context/ChoresContext";
+import {useTagsContext} from "@/context/TagsContext";
+import {useEntriesContext} from "@/context/EntriesContext";
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledTouchableOpacity = styled(TouchableOpacity);
-const ImportExportDataScreen = () => {
 
-    const {chores,setChores, tags, setTags, entries, setEntries} = useDataContext();
+const ImportExportDataScreen = () => {
+    // Access chores, tags, and entries contexts
+    const { chores, setChores } = useChoresContext();
+    const { tags, setTags } = useTagsContext();
+    const { entries, setEntries } = useEntriesContext();
 
     const handleExportData = async () => {
         try {
@@ -38,7 +43,6 @@ const ImportExportDataScreen = () => {
         }
     };
 
-
     return (
         <ThemedScreen
             showHeaderNavButton={true}
@@ -46,7 +50,7 @@ const ImportExportDataScreen = () => {
             headerTitle={'Import/Export Data'}
         >
             <StyledView className='flex-1 p-2'>
-                {/* Manage Tags Button  */}
+                {/* Import Data Button */}
                 <Container>
                     <StyledTouchableOpacity
                         className="flex-row items-center min-h-[50]"
@@ -61,7 +65,7 @@ const ImportExportDataScreen = () => {
                     </StyledTouchableOpacity>
                 </Container>
 
-                {/* Import/Export Data Button  */}
+                {/* Export Data Button */}
                 <Container>
                     <StyledTouchableOpacity
                         className="flex-row items-center min-h-[50]"
@@ -77,7 +81,7 @@ const ImportExportDataScreen = () => {
                 </Container>
             </StyledView>
         </ThemedScreen>
-    )
-}
+    );
+};
 
 export default ImportExportDataScreen;

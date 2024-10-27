@@ -1,11 +1,10 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import {View, Text, TouchableOpacity, Modal, TouchableWithoutFeedback} from 'react-native';
+import { View, Text, TouchableOpacity, Modal, TouchableWithoutFeedback } from 'react-native';
 import { styled } from 'nativewind';
 import { Tag } from '@/types';
-import {useDataContext} from "@/context/DataContext";
 import TextInputFloatingLabel from "@/components/common/TextInputFloatingLabel";
-import {sortTagsByName} from "@/utils/helpers";
-import {Colors} from "@/constants/Colors";
+import { Colors } from "@/constants/Colors";
+import { useTagsContext } from "@/context/TagsContext";
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -21,41 +20,29 @@ interface TagModalProps {
 const AddEditTagModal = ({ selectedTag, visible, onClose, availableTags }: TagModalProps) => {
     const [tagInput, setTagInput] = useState('');
 
-    const {setTags} = useDataContext();
+    const { addTag, editTag } = useTagsContext();
 
     useEffect(() => {
         handleClearTag();
-        if (visible && selectedTag){
+        if (visible && selectedTag) {
             setTagInput(selectedTag.name);
         }
-    }, [visible]);
-
+    }, [visible, selectedTag]);
 
     const handleClearTag = useCallback(() => {
         setTagInput('');
     }, []);
 
-
-    const handleSaveNewTag = () => {
+    const handleSaveTag = () => {
         const trimmedTag = tagInput.trim();
 
         // Exit if the input is empty after trimming
         if (trimmedTag.length === 0) return;
 
-        // Either edit the selected tag or save a new tag if none are selected
         if (selectedTag) {
             // Update the name of the selected tag
             const updatedTag = { ...selectedTag, name: trimmedTag };
-
-            // Update the tags state:
-            // - Remove the old tag
-            // - Add the updated tag at the beginning of the array
-            setTags(prevTags => {
-                const filteredTags = prevTags.filter(tag => tag.id !== selectedTag.id);
-                const updatedTags = [updatedTag, ...filteredTags];
-                return sortTagsByName(updatedTags); // Sort after updating
-            });
-
+            editTag(updatedTag); // Use editTag from context
         } else {
             // Check if the tag already exists in availableTags (case-insensitive)
             const tagExists = availableTags.some(tag => tag.name.toLowerCase() === trimmedTag.toLowerCase());
@@ -67,49 +54,44 @@ const AddEditTagModal = ({ selectedTag, visible, onClose, availableTags }: TagMo
                 return;
             }
 
-            // Create the new tag object
+            // Create and add the new tag
             const newTag = { id: Date.now(), name: trimmedTag };
-            setTags(prevTags => {
-                const updatedTags = [...prevTags, newTag];
-                return sortTagsByName(updatedTags); // Sort after adding
-            });
+            addTag(newTag); // Use addTag from context
         }
 
-        // Clear the input field and close the modal/dialog
+        // Clear the input field and close the modal
         handleClearTag();
         onClose();
     };
 
-
-
     return (
         <Modal visible={visible} transparent animationType="fade">
-                <TouchableOpacity
-                    style={{ flex: 1 }}
-                    activeOpacity={1}
-                    onPressOut={onClose}
-                >
-                    <TouchableWithoutFeedback onPress={onClose}>
-                        <StyledView className="flex-1 justify-end items-center bg-transparent-70">
-                            <TouchableWithoutFeedback>
-                                <StyledView className={`p-4 w-full max-w-md min-h-[240] rounded-t-3xl bg-medium`}>
-                                    <TextInputFloatingLabel label="Tag Name" value={tagInput} onChangeText={setTagInput} />
-                                    <StyledView className="mt-6">
-                                        <StyledTouchableOpacity
-                                            onPress={handleSaveNewTag}
-                                            className="my-4 p-3 rounded-lg"
-                                            style={{backgroundColor: Colors.buttonPrimary}}
-                                        >
-                                            <StyledText className="text-white text-center">
-                                                {selectedTag ? 'Save' : 'Add Tag'}
-                                            </StyledText>
-                                        </StyledTouchableOpacity>
-                                    </StyledView>
+            <TouchableOpacity
+                style={{ flex: 1 }}
+                activeOpacity={1}
+                onPressOut={onClose}
+            >
+                <TouchableWithoutFeedback onPress={onClose}>
+                    <StyledView className="flex-1 justify-end items-center bg-transparent-70">
+                        <TouchableWithoutFeedback>
+                            <StyledView className="p-4 w-full max-w-md min-h-[240] rounded-t-3xl bg-medium">
+                                <TextInputFloatingLabel label="Tag Name" value={tagInput} onChangeText={setTagInput} />
+                                <StyledView className="mt-6">
+                                    <StyledTouchableOpacity
+                                        onPress={handleSaveTag}
+                                        className="my-4 p-3 rounded-lg"
+                                        style={{ backgroundColor: Colors.buttonPrimary }}
+                                    >
+                                        <StyledText className="text-white text-center">
+                                            {selectedTag ? 'Save' : 'Add Tag'}
+                                        </StyledText>
+                                    </StyledTouchableOpacity>
                                 </StyledView>
-                            </TouchableWithoutFeedback>
-                        </StyledView>
-                    </TouchableWithoutFeedback>
-                </TouchableOpacity>
+                            </StyledView>
+                        </TouchableWithoutFeedback>
+                    </StyledView>
+                </TouchableWithoutFeedback>
+            </TouchableOpacity>
         </Modal>
     );
 };

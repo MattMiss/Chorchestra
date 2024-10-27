@@ -1,59 +1,54 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, FlatList, ActivityIndicator, TouchableOpacity} from 'react-native';
-import {styled} from 'nativewind';
-import {Entry} from "@/types";
-import {useDataContext} from "@/context/DataContext";
+import React, { useState } from 'react';
+import { View, Text, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { styled } from 'nativewind';
+import { Entry } from "@/types";
 import ThemedScreen from "@/components/common/ThemedScreen";
-import {AntDesign} from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import AddEditEntryModal from "@/components/modals/AddEditEntryModal";
 import EntryCard from "@/components/entries/EntryCard";
 import OptionsModal from "@/components/modals/OptionsModal";
-import {Colors} from "@/constants/Colors";
+import { Colors } from "@/constants/Colors";
+import { useChoresContext } from "@/context/ChoresContext";
+import { useEntriesContext } from "@/context/EntriesContext";
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
-const StyledTouchableOpacity = styled(TouchableOpacity)
-
+const StyledTouchableOpacity = styled(TouchableOpacity);
 
 const EntriesScreen = () => {
     const [isEntryModalVisible, setIsEntryModalVisible] = useState<boolean>(false);
     const [isOptionsModalVisible, setIsOptionsModalVisible] = useState<boolean>(false);
     const [selectedEntry, setSelectedEntry] = useState<Entry | undefined>(undefined);
 
-    const {chores, entries, setEntries, isLoading} = useDataContext();
-
-    useEffect(() => {
-        //console.log("Chores: ",JSON.stringify(chores, null, 2));
-        console.log(entries);
-    }, [chores, entries]);
+    const { chores } = useChoresContext();
+    const { entries, isEntriesLoading, deleteEntry } = useEntriesContext();
 
     const handleAddEntryPressed = () => {
         setSelectedEntry(undefined);
         setIsEntryModalVisible(true);
-    }
+    };
 
-    const handleEditEntryPressed = ( item: Entry) => {
+    const handleEditEntryPressed = (item: Entry) => {
         setSelectedEntry(item);
         setIsEntryModalVisible(true);
-    }
+    };
 
-    const handleDeleteEntryPressed = ( item: Entry) => {
+    const handleDeleteEntryPressed = (item: Entry) => {
         setSelectedEntry(item);
         setIsOptionsModalVisible(true);
-    }
+    };
 
     const handleCloseEntryModal = () => {
         setSelectedEntry(undefined);
         setIsEntryModalVisible(false);
-    }
+    };
 
     const handleDeleteEntry = () => {
-        if (selectedEntry){
-            // Update the entries state by filtering out the deleted entry
-            setEntries((prevEntries) => prevEntries.filter((entry) => entry.id !== selectedEntry.id));
+        if (selectedEntry) {
+            deleteEntry(selectedEntry.id); // Use deleteEntry from context
             setSelectedEntry(undefined);
+            setIsOptionsModalVisible(false);
         }
-
     };
 
     const renderEntry = ({ item }: { item: Entry }) => {
@@ -64,16 +59,15 @@ const EntriesScreen = () => {
                 onEditPress={() => handleEditEntryPressed(item)}
                 onDeletePress={() => handleDeleteEntryPressed(item)}
             />
-        )
-    }
+        );
+    };
 
-    // If loading, show a spinner
-    if (isLoading) {
+    if (isEntriesLoading) {
         return (
             <ThemedScreen
                 showHeaderNavButton={false}
                 showHeaderNavOptionButton={true}
-                headerTitle={"Entries"}
+                headerTitle="Entries"
             >
                 <StyledView className="p-2 flex-grow">
                     <ActivityIndicator size="large" color={Colors.accent} />
@@ -86,12 +80,9 @@ const EntriesScreen = () => {
         <ThemedScreen
             showHeaderNavButton={false}
             showHeaderNavOptionButton={false}
-            headerTitle={"Entries"}
+            headerTitle="Entries"
         >
-            <StyledView
-                className="px-1 flex-1"
-            >
-                {/* Check if there are any chores to display */}
+            <StyledView className="px-1 flex-1">
                 {entries.length > 0 ? (
                     <FlatList
                         data={entries}
@@ -100,17 +91,17 @@ const EntriesScreen = () => {
                     />
                 ) : (
                     <StyledView className="flex-1 justify-center items-center">
-                        <StyledText className={`text-lg text-secondary`}>No entries found</StyledText>
+                        <StyledText className="text-lg text-secondary">No entries found</StyledText>
                     </StyledView>
                 )}
             </StyledView>
-            <StyledView className='absolute right-4 bottom-4'>
+            <StyledView className="absolute right-4 bottom-4">
                 <StyledTouchableOpacity
                     className="items-center justify-center m-auto w-14 h-14 rounded-full"
                     onPress={handleAddEntryPressed}
                     activeOpacity={0.7}
                     accessibilityLabel="Add new entry"
-                    style={{backgroundColor: Colors.buttonAlternative}}
+                    style={{ backgroundColor: Colors.buttonAlternative }}
                 >
                     <AntDesign name="plus" size={30} color="white" />
                 </StyledTouchableOpacity>
@@ -125,8 +116,8 @@ const EntriesScreen = () => {
             <OptionsModal
                 visible={isOptionsModalVisible}
                 onClose={() => setIsOptionsModalVisible(false)}
-                option1Text='Delete'
-                option2Text='Cancel'
+                option1Text="Delete"
+                option2Text="Cancel"
                 onOption1Press={handleDeleteEntry}
                 onOption2Press={() => setIsOptionsModalVisible(false)}
             />

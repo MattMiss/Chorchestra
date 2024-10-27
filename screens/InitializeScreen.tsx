@@ -1,23 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { styled } from 'nativewind';
 import { View, ActivityIndicator } from "react-native";
 import { router } from "expo-router";
 import {Colors} from "@/constants/Colors";
 import ThemedScreen from "@/components/common/ThemedScreen";
-import {useDataContext} from "@/context/DataContext";
+import {useChoresContext} from "@/context/ChoresContext";
+import { useTagsContext } from '@/context/TagsContext';
+import {useEntriesContext} from "@/context/EntriesContext";
 
 const StyledView = styled(View);
 
 const InitializeScreen = () => {
-    const {isLoading} = useDataContext();
+    const {isChoresLoading} = useChoresContext();
+    const {isTagsLoading} = useTagsContext();
+    const {isEntriesLoading} = useEntriesContext();
 
     useEffect(() => {
-        if (!isLoading){
+        if (!isChoresLoading && !isTagsLoading && !isEntriesLoading){
             router.replace('/chores/my-chores');
         }
-    }, [isLoading, router]);
+    }, [isChoresLoading, isTagsLoading, isEntriesLoading, router]);
 
-    if (isLoading) {
+    if (isChoresLoading || isTagsLoading || isEntriesLoading) {
         return (
             <ThemedScreen
                 showHeaderNavButton={false}

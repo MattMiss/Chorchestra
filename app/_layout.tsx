@@ -2,12 +2,14 @@
 import React, {useEffect} from 'react';
 import {Stack, useNavigationContainerRef} from "expo-router";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { DataProvider } from "@/context/DataContext";
 import { NativeWindStyleSheet } from "nativewind";
 import { MenuProvider } from 'react-native-popup-menu';
-import { ErrorBoundary as SentryErrorBoundary } from '@sentry/react-native';
 import * as Sentry from '@sentry/react-native';
 import {isRunningInExpoGo} from "expo";
+import { ChoresProvider } from '@/context/ChoresContext';
+import {EntriesProvider} from "@/context/EntriesContext";
+import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
+import {TagsProvider} from "@/context/TagsContext";
 
 NativeWindStyleSheet.setOutput({
     default: "native",
@@ -36,17 +38,25 @@ function RootLayout() {
         }
     }, [ref]);
 
+    const queryClient = new QueryClient();
+
     return (
-        <DataProvider>
-            <GestureHandlerRootView style={{ flex: 1 }}>
-                <MenuProvider>
-                    <Stack screenOptions={{headerShown: false}}>
-                        <Stack.Screen name="init" options={{ headerShown: false }} />
-                        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                    </Stack>
-                </MenuProvider>
-            </GestureHandlerRootView>
-        </DataProvider>
+        <QueryClientProvider client={queryClient}>
+            <ChoresProvider>
+                <EntriesProvider>
+                    <TagsProvider>
+                        <GestureHandlerRootView style={{ flex: 1 }}>
+                            <MenuProvider>
+                                <Stack screenOptions={{headerShown: false}}>
+                                    <Stack.Screen name="init" options={{ headerShown: false }} />
+                                    <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                                </Stack>
+                            </MenuProvider>
+                        </GestureHandlerRootView>
+                    </TagsProvider>
+                </EntriesProvider>
+            </ChoresProvider>
+        </QueryClientProvider>
     );
 }
 

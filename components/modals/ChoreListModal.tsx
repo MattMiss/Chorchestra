@@ -35,14 +35,20 @@ const ChoreListModal: React.FC<ChoreListModalProps> = ({ visible, onClose, secti
                                 {chores.length > 0 ? (
                                     chores.map((chore) => (
                                         <StyledView key={chore.id} className="flex-row justify-between items-center mb-2">
-                                            <StyledText className="text-lg text-primary">{chore.name}</StyledText>
+                                            <StyledView key={chore.id} className='flex-row items-center mb-1'>
+                                                <StyledView className='flex-row bg-buttonSecondary rounded-lg p-1'>
+                                                    <StyledText className="ml-1 text-primary w-[30]" >{chore.nextDueDate.format('ddd')}</StyledText>
+                                                    <StyledText className="text-primary text-md w-[46]" >{chore.nextDueDate.format('MMM D')}</StyledText>
+                                                </StyledView>
+                                                <StyledText className="text-primary ml-2" >{chore.name}</StyledText>
+                                            </StyledView>
 
                                             <StyledTouchableOpacity
                                                 onPress={() => completeChore(chore)}
                                                 className="p-2"
                                             >
                                                 <StyledView className='flex-row items-center justify-end'>
-                                                    <StyledText className={`mr-2 text-lg text-primary`}>Add Entry</StyledText>
+                                                    {/*<StyledText className={`mr-2 text-lg text-primary`}>Add Entry</StyledText>*/}
                                                     <AntDesign name="form" size={20} color="white" />
                                                 </StyledView>
                                             </StyledTouchableOpacity>
