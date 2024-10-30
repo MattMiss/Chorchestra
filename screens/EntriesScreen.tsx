@@ -1,14 +1,14 @@
 // src/screens/EntriesScreen.tsx
 
 import React, { useState, useMemo, useEffect } from 'react';
-import {View, Text, FlatList, ActivityIndicator, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, Text, ActivityIndicator, TouchableOpacity, StyleSheet} from 'react-native';
 import { styled } from 'nativewind';
 import {AntDesign, FontAwesome} from '@expo/vector-icons';
 import { useChoresContext } from '@/context/ChoresContext';
 import { useEntriesContext } from '@/context/EntriesContext';
 import ThemedScreen from '@/components/common/ThemedScreen';
 import AddEditEntryModal from '@/components/modals/AddEditEntryModal';
-import EntryCard from '@/components/entries/EntryCard';
+import {EntryListItem, EntryListItemHidden} from '@/components/entries/EntryListItem';
 import OptionsModal from '@/components/modals/OptionsModal';
 import ChartComponent from '@/components/charts/ChartComponent';
 import { Colors } from '@/constants/Colors';
@@ -16,6 +16,7 @@ import {Entry} from '@/types';
 import { Picker } from '@react-native-picker/picker';
 import Container from "@/components/common/Container";
 import {sortChoresByName} from "@/utils/chores";
+import {SwipeListView} from "react-native-swipe-list-view";
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -128,27 +129,31 @@ const EntriesScreen = () => {
                 {/* Content Area */}
                 <StyledView className="flex-1">
                     {selectedTab === 'list' ? (
-                        <StyledView className="p-4 flex-1">
-                            <Container>
-                                {entries.length > 0 ? (
-                                    <FlatList
-                                        data={entries}
-                                        keyExtractor={(item) => item.id.toString()}
-                                        renderItem={({ item }) => (
-                                            <EntryCard
-                                                entry={item}
-                                                chores={chores}
-                                                onEditPress={() => handleEditEntryPressed(item)}
-                                                onDeletePress={() => handleDeleteEntryPressed(item)}
-                                            />
-                                        )}
+                        <StyledView className="p-4">
+                            {/* Swipeable List for Tags */}
+                            <SwipeListView
+                                data={entries}
+                                renderItem={({ item }) => (
+                                    <EntryListItem
+                                        entry={item}
+                                        chores={chores}
                                     />
-                                ) : (
-                                    <StyledView className="flex-1 justify-center items-center">
-                                        <StyledText className="text-lg text-secondary">No entries found</StyledText>
-                                    </StyledView>
                                 )}
-                            </Container>
+                                renderHiddenItem={({ item }) => (
+                                    <EntryListItemHidden
+                                        onEditPress={() => handleEditEntryPressed(item)}
+                                        onDeletePress={() => handleDeleteEntryPressed(item)}
+                                    />
+                                )}
+                                rightOpenValue={-90}
+                                disableRightSwipe
+                                contentContainerStyle={{ paddingBottom: 100 }}
+                                ListEmptyComponent={
+                                    <StyledView className="flex-1 justify-center items-center">
+                                        <StyledText className="text-secondary">No entries have been made.</StyledText>
+                                    </StyledView>
+                                }
+                            />
                         </StyledView>
                     ) : (
                         <StyledView className="p-2 flex-1">

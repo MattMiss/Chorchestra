@@ -35,7 +35,9 @@ export const Colors = {
   buttonPrimary: '#14A8CC',
   buttonSecondary: '#6d767c',
   buttonAlternative: '#F5103B',
-  defaultTagColor: '#7e7e7e'
+  defaultTagColor: '#7e7e7e',
+  iconDelete: '#b72f2f',
+  iconEdit: '#1dcc1d'
 };
 
 export const COLOR_PALETTE: string[][] = [
