@@ -1,26 +1,36 @@
-import React, { useState } from 'react';
-import { View, Text, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
+// src/screens/EntriesScreen.tsx
+
+import React, { useState, useMemo, useEffect } from 'react';
+import {View, Text, FlatList, ActivityIndicator, TouchableOpacity, StyleSheet} from 'react-native';
 import { styled } from 'nativewind';
-import { Entry } from "@/types";
-import ThemedScreen from "@/components/common/ThemedScreen";
-import { AntDesign } from "@expo/vector-icons";
-import AddEditEntryModal from "@/components/modals/AddEditEntryModal";
-import EntryCard from "@/components/entries/EntryCard";
-import OptionsModal from "@/components/modals/OptionsModal";
-import { Colors } from "@/constants/Colors";
-import { useChoresContext } from "@/context/ChoresContext";
-import { useEntriesContext } from "@/context/EntriesContext";
+import {AntDesign, FontAwesome} from '@expo/vector-icons';
+import { useChoresContext } from '@/context/ChoresContext';
+import { useEntriesContext } from '@/context/EntriesContext';
+import ThemedScreen from '@/components/common/ThemedScreen';
+import AddEditEntryModal from '@/components/modals/AddEditEntryModal';
+import EntryCard from '@/components/entries/EntryCard';
+import OptionsModal from '@/components/modals/OptionsModal';
+import ChartComponent from '@/components/charts/ChartComponent';
+import { Colors } from '@/constants/Colors';
+import {Entry} from '@/types';
+import { Picker } from '@react-native-picker/picker';
+import Container from "@/components/common/Container";
+import {sortChoresByName} from "@/utils/chores";
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledTouchableOpacity = styled(TouchableOpacity);
+const StyledPicker = styled(Picker);
 
 const EntriesScreen = () => {
-    const [isEntryModalVisible, setIsEntryModalVisible] = useState<boolean>(false);
-    const [isOptionsModalVisible, setIsOptionsModalVisible] = useState<boolean>(false);
+    const [isEntryModalVisible, setIsEntryModalVisible] = useState(false);
+    const [isOptionsModalVisible, setIsOptionsModalVisible] = useState(false);
     const [selectedEntry, setSelectedEntry] = useState<Entry | undefined>(undefined);
+    const [selectedTab, setSelectedTab] = useState<'list' | 'chart'>('chart');
+    const [selectedChoreId, setSelectedChoreId] = useState<number | null>(null);
+    const [timeRange, setTimeRange] = useState('week');
 
-    const { chores } = useChoresContext();
+    const { chores, isChoresLoading } = useChoresContext();
     const { entries, isEntriesLoading, deleteEntry } = useEntriesContext();
 
     const handleAddEntryPressed = () => {
@@ -45,30 +55,44 @@ const EntriesScreen = () => {
 
     const handleDeleteEntry = () => {
         if (selectedEntry) {
-            deleteEntry(selectedEntry.id); // Use deleteEntry from context
+            deleteEntry(selectedEntry.id);
             setSelectedEntry(undefined);
             setIsOptionsModalVisible(false);
         }
     };
 
-    const renderEntry = ({ item }: { item: Entry }) => {
-        return (
-            <EntryCard
-                entry={item}
-                chores={chores}
-                onEditPress={() => handleEditEntryPressed(item)}
-                onDeletePress={() => handleDeleteEntryPressed(item)}
-            />
-        );
+    const filteredEntries = useMemo(() => {
+        return selectedChoreId ? entries.filter(entry => entry.choreId === selectedChoreId) : [];
+    }, [entries, selectedChoreId]);
+
+    useEffect(() => {
+        if (!isChoresLoading && chores.length > 0) {
+            setSelectedChoreId(chores[0].id);
+        }
+    }, [isChoresLoading, chores]);
+
+    const changeChore = (direction: "decrease" | "increase") => {
+        if (!chores || chores.length === 0 || selectedChoreId === null) return;
+
+        // Find the current chore index
+        const currentIndex = chores.findIndex(chore => chore.id === selectedChoreId);
+
+        if (currentIndex === -1) return; // Current chore not found
+
+        if (direction === "decrease") {
+            // Move to the previous chore if available
+            const previousIndex = currentIndex > 0 ? currentIndex - 1 : chores.length - 1;
+            setSelectedChoreId(chores[previousIndex].id);
+        } else if (direction === "increase") {
+            // Move to the next chore if available
+            const nextIndex = currentIndex < chores.length - 1 ? currentIndex + 1 : 0;
+            setSelectedChoreId(chores[nextIndex].id);
+        }
     };
 
-    if (isEntriesLoading) {
+    if (isChoresLoading || isEntriesLoading) {
         return (
-            <ThemedScreen
-                showHeaderNavButton={false}
-                showHeaderNavOptionButton={true}
-                headerTitle="Entries"
-            >
+            <ThemedScreen headerTitle="Entries">
                 <StyledView className="p-2 flex-grow">
                     <ActivityIndicator size="large" color={Colors.accent} />
                 </StyledView>
@@ -77,52 +101,150 @@ const EntriesScreen = () => {
     }
 
     return (
-        <ThemedScreen
-            showHeaderNavButton={false}
-            showHeaderNavOptionButton={false}
-            headerTitle="Entries"
-        >
-            <StyledView className="px-1 flex-1">
-                {entries.length > 0 ? (
-                    <FlatList
-                        data={entries}
-                        keyExtractor={(item) => item.id.toString()}
-                        renderItem={renderEntry}
-                    />
-                ) : (
-                    <StyledView className="flex-1 justify-center items-center">
-                        <StyledText className="text-lg text-secondary">No entries found</StyledText>
-                    </StyledView>
-                )}
-            </StyledView>
-            <StyledView className="absolute right-4 bottom-4">
-                <StyledTouchableOpacity
-                    className="items-center justify-center m-auto w-14 h-14 rounded-full"
-                    onPress={handleAddEntryPressed}
-                    activeOpacity={0.7}
-                    accessibilityLabel="Add new entry"
-                    style={{ backgroundColor: Colors.buttonAlternative }}
-                >
-                    <AntDesign name="plus" size={30} color="white" />
-                </StyledTouchableOpacity>
-            </StyledView>
+        <ThemedScreen headerTitle="Entries">
+            <StyledView className="flex-1">
+                {/* Tab Navigation */}
+                <StyledView className="flex-row justify-around px-6">
+                    <StyledTouchableOpacity
+                        className={`flex-1 flex-row items-center justify-center py-2 ${selectedTab === 'chart' ? 'border-b-2 border-accent' : ''}`}
+                        onPress={() => setSelectedTab('chart')}
+                    >
+                        <FontAwesome name="area-chart" size={20} color={selectedTab === 'chart' ? Colors.accent : Colors.textPrimary} />
+                        <StyledText className={`ml-2 text-lg font-semibold ${selectedTab === 'chart' ? 'text-accent' : 'text-primary'}`}>
+                            Chart View
+                        </StyledText>
+                    </StyledTouchableOpacity>
+                    <StyledTouchableOpacity
+                        className={`flex-1 flex-row items-center justify-center py-2 ${selectedTab === 'list' ? 'border-b-2 border-accent' : ''}`}
+                        onPress={() => setSelectedTab('list')}
+                    >
+                        <FontAwesome name="list" size={20} color={selectedTab === 'list' ? Colors.accent : Colors.textPrimary} />
+                        <StyledText className={`ml-2 text-lg font-semibold ${selectedTab === 'list' ? 'text-accent' : 'text-primary'}`}>
+                            List View
+                        </StyledText>
+                    </StyledTouchableOpacity>
+                </StyledView>
 
-            <AddEditEntryModal
-                selectedEntry={selectedEntry}
-                visible={isEntryModalVisible}
-                onClose={handleCloseEntryModal}
-            />
+                {/* Content Area */}
+                <StyledView className="flex-1">
+                    {selectedTab === 'list' ? (
+                        <StyledView className="p-4 flex-1">
+                            <Container>
+                                {entries.length > 0 ? (
+                                    <FlatList
+                                        data={entries}
+                                        keyExtractor={(item) => item.id.toString()}
+                                        renderItem={({ item }) => (
+                                            <EntryCard
+                                                entry={item}
+                                                chores={chores}
+                                                onEditPress={() => handleEditEntryPressed(item)}
+                                                onDeletePress={() => handleDeleteEntryPressed(item)}
+                                            />
+                                        )}
+                                    />
+                                ) : (
+                                    <StyledView className="flex-1 justify-center items-center">
+                                        <StyledText className="text-lg text-secondary">No entries found</StyledText>
+                                    </StyledView>
+                                )}
+                            </Container>
+                        </StyledView>
+                    ) : (
+                        <StyledView className="p-2 flex-1">
+                            <Container>
+                                {/* Chore Picker */}
+                                <StyledView className="flex-row items-center">
+                                    {/* Label */}
+                                    <StyledText className="text-xl text-secondary">Chore</StyledText>
+                                    <StyledTouchableOpacity
+                                        onPress={() => changeChore("decrease")}
+                                        disabled={chores[0] && selectedChoreId === chores[0].id}
+                                        className="my-4 p-2 rounded-lg ml-4"
+                                        style={{ backgroundColor: selectedChoreId === chores[0].id ? Colors.buttonSecondary : Colors.buttonPrimary }}
+                                    >
+                                        <FontAwesome name="minus" size={20} color={Colors.textPrimary} />
+                                    </StyledTouchableOpacity>
+                                    <StyledTouchableOpacity
+                                        disabled={selectedChoreId === chores[chores.length - 1]?.id}
+                                        onPress={() => changeChore("increase")}
+                                        className="my-4 p-2 rounded-lg ml-2"
+                                        style={{ backgroundColor: selectedChoreId === chores[chores.length - 1].id ? Colors.buttonSecondary : Colors.buttonPrimary }}
+                                    >
+                                        <FontAwesome name="plus" size={20} color={Colors.textPrimary} />
+                                    </StyledTouchableOpacity>
+                                </StyledView>
 
-            <OptionsModal
-                visible={isOptionsModalVisible}
-                onClose={() => setIsOptionsModalVisible(false)}
-                option1Text="Delete"
-                option2Text="Cancel"
-                onOption1Press={handleDeleteEntry}
-                onOption2Press={() => setIsOptionsModalVisible(false)}
-            />
+                                {/* Picker Container */}
+                                <StyledView className="flex-row items-center pl-1">
+
+                                    <StyledView className="flex-grow">
+                                        <StyledPicker
+                                            selectedValue={selectedChoreId}
+                                            onValueChange={(value) => setSelectedChoreId(value as number)}
+                                            mode="dropdown"
+                                            style={styles.picker}
+                                        >
+                                            {sortChoresByName(chores).map(chore => (
+                                                <Picker.Item
+                                                    key={chore.id}
+                                                    label={chore.name}
+                                                    value={chore.id}
+                                                    style={styles.pickerItem}
+                                                />
+                                            ))}
+                                        </StyledPicker>
+                                    </StyledView>
+                                </StyledView>
+                            </Container>
+
+                            <StyledView className={`h-[400] w-full p-4 mb-4 rounded-lg bg-medium`}>
+                                {/* Chart Component */}
+                                <ChartComponent data={filteredEntries} timeRange={timeRange} onTimeRangeChange={setTimeRange} />
+                            </StyledView>
+                        </StyledView>
+                    )}
+                </StyledView>
+
+                {/* Add Entry Button */}
+                <StyledView className="absolute right-4 bottom-4">
+                    <StyledTouchableOpacity
+                        onPress={handleAddEntryPressed}
+                        style={{ backgroundColor: Colors.buttonAlternative }}
+                        className="items-center justify-center w-14 h-14 rounded-full"
+                    >
+                        <AntDesign name="plus" size={30} color="white" />
+                    </StyledTouchableOpacity>
+                </StyledView>
+
+                {/* Modals */}
+                <AddEditEntryModal selectedEntry={selectedEntry} visible={isEntryModalVisible} onClose={handleCloseEntryModal} />
+                <OptionsModal
+                    visible={isOptionsModalVisible}
+                    onClose={() => setIsOptionsModalVisible(false)}
+                    option1Text="Delete"
+                    option2Text="Cancel"
+                    onOption1Press={handleDeleteEntry}
+                    onOption2Press={() => setIsOptionsModalVisible(false)}
+                />
+            </StyledView>
         </ThemedScreen>
     );
 };
 
+const styles = StyleSheet.create({
+    picker: {
+        height: 40,
+        color: Colors.textPrimary,
+        backgroundColor: Colors.backgroundMedium,
+    },
+    pickerItem: {
+        color: Colors.textPrimary,
+        backgroundColor: Colors.backgroundMedium,
+        fontSize: 18,
+    },
+});
+
 export default EntriesScreen;
+
+

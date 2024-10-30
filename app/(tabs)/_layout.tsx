@@ -37,20 +37,20 @@ export default function TabLayout() {
                     }}
                 />
                 <Tabs.Screen
+                    name="entries"
+                    options={{
+                        title: 'Entries',
+                        tabBarIcon: ({ color }) => (
+                            <FontAwesome name="area-chart" size={24} color={color} />
+                        ),
+                    }}
+                />
+                <Tabs.Screen
                     name="chores"
                     options={{
                         title: 'Chores',
                         tabBarIcon: ({ color }) => (
                             <FontAwesome name="tasks" size={24} color={color} />
-                        ),
-                    }}
-                />
-                <Tabs.Screen
-                    name="entries"
-                    options={{
-                        title: 'Entries',
-                        tabBarIcon: ({ color }) => (
-                            <FontAwesome name="cog" size={24} color={color} />
                         ),
                     }}
                 />

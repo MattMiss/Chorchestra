@@ -27,16 +27,23 @@ const EntryCard: React.FC<EntryCardProps> = ({ entry, onDeletePress, onEditPress
     const choreName = getChoreNameById(chores, entry.choreId) || "Unknown Chore";
     const completedDate = dayjs(entry.dateCompleted);
     const formattedDate = completedDate.format('MMM DD, YY h:mm A'); // e.g., September 14, 2023 3:45 PM
-    const relativeTime = completedDate.fromNow(); // e.g., "2 days ago"
 
     return (
         <StyledView
-            className={`p-4 my-2 mx-4 rounded-3xl shadow-sm bg-medium`}
+            className={`px-2 mb-2`}
             accessibilityLabel={`Chore completed on ${formattedDate}`}
         >
-            <StyledView className='flex-row justify-between'>
+            <StyledView className='flex-row'>
+                <StyledView className="flex-[35%]">
+                    <StyledText className={`ml-2 font-bold text-primary text-sm`}>
+                        {dayjs(completedDate).format('MMM ddd D')}
+                    </StyledText>
+                    <StyledText className={`ml-2 font-bold text-primary text-xs`}>
+                        {dayjs(completedDate).format('h:mm A')}
+                    </StyledText>
+                </StyledView>
                 {/* Chore Name */}
-                <StyledText className={`text-sm font-bold text-accent`}>{choreName}</StyledText>
+                <StyledText className={`flex-[65%] pt-1 text-xs font-bold text-accent`}>{choreName}</StyledText>
 
                 <StyledView className=''>
                     <Menu>
@@ -72,22 +79,14 @@ const EntryCard: React.FC<EntryCardProps> = ({ entry, onDeletePress, onEditPress
                 </StyledView>
             </StyledView>
 
-            {/* Optional Divider */}
-            <StyledView className="h-px bg-gray-700 my-3" />
 
-            <StyledView className='flex-row justify-between items-center'>
-                {/* Entry Date and Time */}
-                <StyledView className="flex-row items-center flex-1">
-                    <AntDesign name="calendar" size={20} color="white" />
-                    <StyledText className={`ml-2 font-bold text-primary`}>{formattedDate}</StyledText>
-                </StyledView>
-
-                {/* Relative Time */}
-                <StyledView className="flex-row items-center flex-1 justify-end">
-                    <AntDesign name="clockcircleo" size={20} color="white" />
-                    <StyledText className={`ml-2 text-sm text-secondary`}>{relativeTime}</StyledText>
-                </StyledView>
-            </StyledView>
+            {/*<StyledView className='flex-row justify-between items-center'>*/}
+            {/*    /!* Relative Time *!/*/}
+            {/*    <StyledView className="flex-row items-center flex-1 justify-end">*/}
+            {/*        <AntDesign name="clockcircleo" size={20} color="white" />*/}
+            {/*        <StyledText className={`ml-2 text-sm text-secondary`}>{relativeTime}</StyledText>*/}
+            {/*    </StyledView>*/}
+            {/*</StyledView>*/}
         </StyledView>
     );
 };

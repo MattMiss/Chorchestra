@@ -2,7 +2,38 @@
 
 import { Dayjs } from "dayjs";
 import dayjs from '@/utils/dayjsConfig'; // Import from dayjsConfig to ensure plugins are included
-import { FrequencyType, ProcessedChore, Section } from '@/types';
+import { FrequencyType, ProcessedChore, Section, Chore } from '@/types';
+
+/**
+ * Sorts an array of chores by their name property.
+ *
+ * @param chores - The array of chores to sort.
+ * @param options - Optional sorting options.
+ * @returns A new array of chores sorted by name.
+ */
+export const sortChoresByName = (
+    chores: Chore[],
+    options?: {
+        ascending?: boolean;
+        caseSensitive?: boolean;
+    }
+): Chore[] => {
+    const { ascending = true, caseSensitive = false } = options || {};
+
+    return [...chores].sort((a, b) => {
+        let nameA = a.name;
+        let nameB = b.name;
+
+        if (!caseSensitive) {
+            nameA = nameA.toLowerCase();
+            nameB = nameB.toLowerCase();
+        }
+
+        if (nameA < nameB) return ascending ? -1 : 1;
+        if (nameA > nameB) return ascending ? 1 : -1;
+        return 0; // names are equal
+    });
+};
 
 // Get the last completion date for a chore
 export const getLastCompletionDate = (
