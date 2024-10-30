@@ -52,6 +52,10 @@ export interface Entry {
     dateCompleted: string; // ISO date string
 }
 
+export interface ProcessedEntry extends Entry {
+    choreName: string;
+}
+
 export interface DraggableListItem {
     id: string;
     text: string;

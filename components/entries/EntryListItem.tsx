@@ -2,9 +2,8 @@
 import React from 'react';
 import {TouchableOpacity, View} from 'react-native';
 import { Text } from 'react-native';
-import { Entry, Chore } from '@/types';
+import { ProcessedEntry } from '@/types';
 import { styled } from 'nativewind';
-import { getChoreNameById } from "@/utils/helpers";
 import dayjs from '@/utils/dayjsConfig';
 import {FontAwesome5} from '@expo/vector-icons';
 import {Colors} from "@/constants/Colors"; // Importing Material Icons
@@ -15,8 +14,7 @@ const StyledView = styled(View);
 const StyledTouchableOpacity = styled(TouchableOpacity);
 
 interface EntryListItemProps {
-    entry: Entry;
-    chores: Chore[];
+    entry: ProcessedEntry;
 }
 
 interface EntryListItemHiddenProps {
@@ -25,8 +23,7 @@ interface EntryListItemHiddenProps {
 }
 
 // EntryCard component with enhanced date/time display
-export const EntryListItem: React.FC<EntryListItemProps> = ({ entry, chores }) => {
-    const choreName = getChoreNameById(chores, entry.choreId) || "Unknown Chore";
+export const EntryListItem: React.FC<EntryListItemProps> = ({ entry }) => {
     const completedDate = dayjs(entry.dateCompleted);
     const formattedDate = completedDate.format('MMM DD, YY h:mm A'); // e.g., September 14, 2023 3:45 PM
 
@@ -45,7 +42,7 @@ export const EntryListItem: React.FC<EntryListItemProps> = ({ entry, chores }) =
                     </StyledText>
                 </StyledView>
                 {/* Chore Name */}
-                <StyledText className={'flex-[70%] pt-1 text-xs font-bold text-accent items-start'}>{choreName}</StyledText>
+                <StyledText className={'flex-[70%] pt-1 text-xs font-bold text-accent items-start'}>{entry.choreName}</StyledText>
             </StyledView>
         </StyledView>
     );

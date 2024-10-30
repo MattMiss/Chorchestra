@@ -12,11 +12,13 @@ import {EntryListItem, EntryListItemHidden} from '@/components/entries/EntryList
 import OptionsModal from '@/components/modals/OptionsModal';
 import ChartComponent from '@/components/charts/ChartComponent';
 import { Colors } from '@/constants/Colors';
-import {Entry} from '@/types';
+import {Entry, ProcessedEntry} from '@/types';
 import { Picker } from '@react-native-picker/picker';
 import Container from "@/components/common/Container";
 import {sortChoresByName} from "@/utils/chores";
 import {SwipeListView} from "react-native-swipe-list-view";
+import {getChoreNameById} from "@/utils/helpers";
+import dayjs from "dayjs";
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -30,6 +32,8 @@ const EntriesScreen = () => {
     const [selectedTab, setSelectedTab] = useState<'list' | 'chart'>('chart');
     const [selectedChoreId, setSelectedChoreId] = useState<number | null>(null);
     const [timeRange, setTimeRange] = useState('week');
+    const [sortOption, setSortOption] = useState<string>('dateCompleted');
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
     const { chores, isChoresLoading } = useChoresContext();
     const { entries, isEntriesLoading, deleteEntry } = useEntriesContext();
@@ -62,9 +66,6 @@ const EntriesScreen = () => {
         }
     };
 
-    const filteredEntries = useMemo(() => {
-        return selectedChoreId ? entries.filter(entry => entry.choreId === selectedChoreId) : [];
-    }, [entries, selectedChoreId]);
 
     useEffect(() => {
         if (!isChoresLoading && chores.length > 0) {
@@ -90,6 +91,36 @@ const EntriesScreen = () => {
             setSelectedChoreId(chores[nextIndex].id);
         }
     };
+
+
+
+    const filteredEntries = useMemo(() => {
+        return entries.map((entry) : ProcessedEntry => ({
+            ...entry,
+            choreName: getChoreNameById(chores, entry.choreId) || '',
+        }));
+    }, [entries, chores]);
+
+    const sortedEntries = useMemo(() => {
+        return [...filteredEntries].sort((a, b) => {
+            let comparison = 0;
+            switch (sortOption) {
+                case 'choreName':
+                    comparison = a.choreName.localeCompare(b.choreName);
+                    break;
+                case 'dateCompleted':
+                    comparison = dayjs(a.dateCompleted).valueOf() - dayjs(b.dateCompleted).valueOf();
+                    break;
+                default:
+                    break;
+            }
+            return sortOrder === 'asc' ? comparison : -comparison;
+        });
+    }, [filteredEntries, sortOption, sortOrder]);
+
+    const filteredChartEntries = useMemo(() => {
+        return selectedChoreId ? filteredEntries.filter(entry => entry.choreId === selectedChoreId) : [];
+    }, [filteredEntries, selectedChoreId]);
 
     if (isChoresLoading || isEntriesLoading) {
         return (
@@ -130,13 +161,37 @@ const EntriesScreen = () => {
                 <StyledView className="flex-1">
                     {selectedTab === 'list' ? (
                         <StyledView className="p-4">
+                            <StyledView className="flex w-full py-2 px-4 mb-4 rounded-lg bg-medium">
+                                <StyledView className="flex-row justify-between items-center">
+                                    <StyledView className="flex-1 flex-row items-center">
+                                        <StyledTouchableOpacity
+                                            onPress={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                                        >
+                                            <AntDesign name={sortOrder === 'asc' ? 'arrowup' : 'arrowdown'} size={20} color="white" />
+                                        </StyledTouchableOpacity>
+                                        <StyledText className="ml-1 text-primary">Sort</StyledText>
+                                        <StyledView className="flex-grow">
+                                            <Picker
+                                                selectedValue={sortOption}
+                                                style={styles.picker}
+                                                onValueChange={(itemValue) => setSortOption(itemValue)}
+                                                dropdownIconColor="white"
+                                                mode="dropdown"
+                                            >
+                                                <Picker.Item label="Chore Name" value="choreName" style={styles.pickerItem} />
+                                                <Picker.Item label="Completed Date" value="dateCompleted" style={styles.pickerItem} />
+                                            </Picker>
+                                        </StyledView>
+                                    </StyledView>
+                                </StyledView>
+                            </StyledView>
+
                             {/* Swipeable List for Tags */}
                             <SwipeListView
-                                data={entries}
+                                data={sortedEntries}
                                 renderItem={({ item }) => (
                                     <EntryListItem
                                         entry={item}
-                                        chores={chores}
                                     />
                                 )}
                                 renderHiddenItem={({ item }) => (
@@ -182,7 +237,6 @@ const EntriesScreen = () => {
 
                                 {/* Picker Container */}
                                 <StyledView className="flex-row items-center pl-1">
-
                                     <StyledView className="flex-grow">
                                         <StyledPicker
                                             selectedValue={selectedChoreId}
@@ -205,7 +259,7 @@ const EntriesScreen = () => {
 
                             <StyledView className={`h-[400] w-full p-4 mb-4 rounded-lg bg-medium`}>
                                 {/* Chart Component */}
-                                <ChartComponent data={filteredEntries} timeRange={timeRange} onTimeRangeChange={setTimeRange} />
+                                <ChartComponent data={filteredChartEntries} timeRange={timeRange} onTimeRangeChange={setTimeRange} />
                             </StyledView>
                         </StyledView>
                     )}

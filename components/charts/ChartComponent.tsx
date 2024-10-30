@@ -7,7 +7,7 @@ import { Picker } from '@react-native-picker/picker';
 import { styled } from 'nativewind';
 import dayjs from '@/utils/dayjsConfig';
 import { Colors } from '@/constants/Colors';
-import { Entry } from '@/types';
+import {ProcessedEntry} from '@/types';
 import {FontAwesome} from "@expo/vector-icons";
 
 const StyledView = styled(View);
@@ -18,7 +18,7 @@ const StyledTouchableOpacity = styled(TouchableOpacity);
 const { width: screenWidth } = Dimensions.get('window');
 
 interface ChartComponentProps {
-    data: Entry[];
+    data: ProcessedEntry[];
     timeRange: string;
     onTimeRangeChange: (range: string) => void;
 }
