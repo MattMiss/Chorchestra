@@ -5,6 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Chore } from '@/types';
 import { Alert } from 'react-native';
+import {sortChoresByName} from "@/utils/chores";
 
 interface ChoresContextType {
     chores: Chore[];
@@ -32,7 +33,7 @@ const fetchChores = async (): Promise<Chore[]> => {
     const choresData = await AsyncStorage.getItem(CHORES_KEY);
     const parsedChores = choresData ? JSON.parse(choresData) : [];
     if (Array.isArray(parsedChores) && parsedChores.every(validateChore)) {
-        return parsedChores;
+        return sortChoresByName(parsedChores);
     } else {
         throw new Error('Invalid chores data');
     }

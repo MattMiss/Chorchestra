@@ -17,7 +17,7 @@ const InitializeScreen = () => {
 
     useEffect(() => {
         if (!isChoresLoading && !isTagsLoading && !isEntriesLoading){
-            router.replace('/chores/my-chores');
+            router.replace('/home/home-screen');
         }
     }, [isChoresLoading, isTagsLoading, isEntriesLoading, router]);
 

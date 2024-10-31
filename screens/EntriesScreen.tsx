@@ -15,15 +15,21 @@ import { Colors } from '@/constants/Colors';
 import {Entry, ProcessedEntry} from '@/types';
 import { Picker } from '@react-native-picker/picker';
 import Container from "@/components/common/Container";
-import {sortChoresByName} from "@/utils/chores";
 import {SwipeListView} from "react-native-swipe-list-view";
 import {getChoreNameById} from "@/utils/helpers";
 import dayjs from "dayjs";
+import EntryFiltersModal from "@/components/modals/EntryFiltersModal";
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledTouchableOpacity = styled(TouchableOpacity);
 const StyledPicker = styled(Picker);
+
+const defaultEntryFilters = {
+    completedStartDate: null as Date | null,
+    completedEndDate: null as Date | null,
+    selectedChores: {} as { [key: number]: boolean },
+};
 
 const EntriesScreen = () => {
     const [isEntryModalVisible, setIsEntryModalVisible] = useState(false);
@@ -33,7 +39,9 @@ const EntriesScreen = () => {
     const [selectedChoreId, setSelectedChoreId] = useState<number | null>(null);
     const [timeRange, setTimeRange] = useState('week');
     const [sortOption, setSortOption] = useState<string>('dateCompleted');
-    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+    const [filters, setFilters] = useState(defaultEntryFilters);
+    const [filtersModalVisible, setFiltersModalVisible] = useState<boolean>(false);
 
     const { chores, isChoresLoading } = useChoresContext();
     const { entries, isEntriesLoading, deleteEntry } = useEntriesContext();
@@ -94,12 +102,34 @@ const EntriesScreen = () => {
 
 
 
-    const filteredEntries = useMemo(() => {
+    const processedEntries = useMemo(() => {
         return entries.map((entry) : ProcessedEntry => ({
             ...entry,
             choreName: getChoreNameById(chores, entry.choreId) || '',
         }));
-    }, [entries, chores]);
+    }, [entries, chores, filters]);
+
+    const filteredEntries = useMemo(() => {
+        return processedEntries.filter((entry) => {
+            const entryDate = dayjs(entry.dateCompleted);
+
+            // Date range filter
+            if (filters.completedStartDate && entryDate.isBefore(dayjs(filters.completedStartDate), 'day')) {
+                return false;
+            }
+            if (filters.completedEndDate && entryDate.isAfter(dayjs(filters.completedEndDate), 'day')) {
+                return false;
+            }
+
+            // Chore filter
+            if (Object.keys(filters.selectedChores).length > 0) {
+                const isChoreSelected = filters.selectedChores[entry.choreId];
+                if (!isChoreSelected) return false;
+            }
+
+            return true;
+        });
+    }, [processedEntries, filters]);
 
     const sortedEntries = useMemo(() => {
         return [...filteredEntries].sort((a, b) => {
@@ -116,11 +146,11 @@ const EntriesScreen = () => {
             }
             return sortOrder === 'asc' ? comparison : -comparison;
         });
-    }, [filteredEntries, sortOption, sortOrder]);
+    }, [processedEntries, sortOption, sortOrder]);
 
     const filteredChartEntries = useMemo(() => {
-        return selectedChoreId ? filteredEntries.filter(entry => entry.choreId === selectedChoreId) : [];
-    }, [filteredEntries, selectedChoreId]);
+        return selectedChoreId ? processedEntries.filter(entry => entry.choreId === selectedChoreId) : [];
+    }, [processedEntries, selectedChoreId]);
 
     if (isChoresLoading || isEntriesLoading) {
         return (
@@ -182,6 +212,15 @@ const EntriesScreen = () => {
                                                 <Picker.Item label="Completed Date" value="dateCompleted" style={styles.pickerItem} />
                                             </Picker>
                                         </StyledView>
+                                        <StyledTouchableOpacity
+                                            onPress={() => setFiltersModalVisible(true)}
+                                            className="ml-4 px-4 py-2 items-end"
+                                        >
+                                            <StyledView className="flex-row">
+                                                <AntDesign name="filter" size={20} color="white" />
+                                                <StyledText className="ml-1 text-primary">Filters</StyledText>
+                                            </StyledView>
+                                        </StyledTouchableOpacity>
                                     </StyledView>
                                 </StyledView>
                             </StyledView>
@@ -244,7 +283,7 @@ const EntriesScreen = () => {
                                             mode="dropdown"
                                             style={styles.picker}
                                         >
-                                            {sortChoresByName(chores).map(chore => (
+                                            {chores.map(chore => (
                                                 <Picker.Item
                                                     key={chore.id}
                                                     label={chore.name}
@@ -276,8 +315,10 @@ const EntriesScreen = () => {
                     </StyledTouchableOpacity>
                 </StyledView>
 
-                {/* Modals */}
+                {/* Add/Edit Entry Modal */}
                 <AddEditEntryModal selectedEntry={selectedEntry} visible={isEntryModalVisible} onClose={handleCloseEntryModal} />
+
+                {/* Options Modal */}
                 <OptionsModal
                     visible={isOptionsModalVisible}
                     onClose={() => setIsOptionsModalVisible(false)}
@@ -286,6 +327,18 @@ const EntriesScreen = () => {
                     onOption1Press={handleDeleteEntry}
                     onOption2Press={() => setIsOptionsModalVisible(false)}
                 />
+
+                {/* Entry Filters Modal */}
+                <EntryFiltersModal
+                    visible={filtersModalVisible}
+                    onClose={() => setFiltersModalVisible(false)}
+                    filters={filters}
+                    setFilters={setFilters}
+                    resetFilters={() => setFilters(defaultEntryFilters)}
+                    chores={chores}
+                    isChoresLoading={isChoresLoading}
+                />
+
             </StyledView>
         </ThemedScreen>
     );
