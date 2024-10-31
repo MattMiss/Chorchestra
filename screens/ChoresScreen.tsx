@@ -21,7 +21,7 @@ const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledTouchableOpacity = styled(TouchableOpacity);
 
-const defaultFilters = {
+const defaultChoreFilters = {
     priorities: { 1: true, 2: true, 3: true },
     overdueStatus: 'all',
     lastCompletedStartDate: null as Date | null,
@@ -33,14 +33,14 @@ const defaultFilters = {
 const ChoresScreen = () => {
     const { chores, isChoresLoading } = useChoresContext();
     const { entries } = useEntriesContext();
-    const { tags } = useTagsContext();
+    const { tags, isTagsLoading } = useTagsContext();
 
     const [selectedChore, setSelectedChore] = useState<ProcessedChore | null>(null);
     const [addEditEntryModalVisible, setAddEditEntryModalVisible] = useState<boolean>(false);
     const [filtersModalVisible, setFiltersModalVisible] = useState<boolean>(false);
     const [sortOption, setSortOption] = useState<string>('timeLeft');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-    const [filters, setFilters] = useState(defaultFilters);
+    const [filters, setFilters] = useState(defaultChoreFilters);
 
     const today = dayjs().startOf('day');
 
@@ -75,12 +75,19 @@ const ChoresScreen = () => {
 
     const filteredChores = useMemo(() => {
         return processedChores.filter((chore) => {
-            // Filtering logic based on priorities, overdue status, last completed date, etc.
+            // 1. Filter by priority
             if (!filters.priorities[chore.priority]) return false;
+
+            // 2. Filter by overdue status
             if (filters.overdueStatus === 'overdue' && !chore.isOverdue) return false;
             if (filters.overdueStatus === 'notOverdue' && chore.isOverdue) return false;
 
-            // Additional filtering based on other criteria...
+            // 3. Filter by selected tags
+            if (Object.keys(filters.selectedTags).length > 0) {
+                // Check if chore's tags include at least one selected tag
+                const hasSelectedTag = chore.tagIds.some(tagId => filters.selectedTags[tagId]);
+                if (!hasSelectedTag) return false;
+            }
 
             return true;
         });
@@ -231,8 +238,9 @@ const ChoresScreen = () => {
                 onClose={() => setFiltersModalVisible(false)}
                 filters={filters}
                 setFilters={setFilters}
-                resetFilters={() => setFilters(defaultFilters)}
+                resetFilters={() => setFilters(defaultChoreFilters)}
                 tags={tags}
+                isTagsLoading={isTagsLoading}
             />
 
             <AddEditEntryModal

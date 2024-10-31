@@ -5,6 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Tag} from '@/types';
 import { Alert } from 'react-native';
+import {sortTagsByName} from "@/utils/helpers";
 
 interface TagsContextType {
     tags: Tag[];
@@ -32,7 +33,7 @@ const fetchTags = async (): Promise<Tag[]> => {
     const tagsData = await AsyncStorage.getItem(TAGS_KEY);
     const parsedTags = tagsData ? JSON.parse(tagsData) : [];
     if (Array.isArray(parsedTags) && parsedTags.every(validateTag)) {
-        return parsedTags;
+        return sortTagsByName(parsedTags);
     } else {
         throw new Error('Invalid tags data');
     }

@@ -15,7 +15,7 @@ import { Chore } from '@/types';
 import dayjs from '@/utils/dayjsConfig';
 import { AntDesign } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
-import ChoreCheckboxItem from "@/components/chores/ChoreCheckboxItem";
+import CheckboxItem from "@/components/common/CheckboxItem";
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -27,8 +27,8 @@ interface EntryFiltersModalProps {
     filters: any;
     setFilters: (filters: any) => void;
     resetFilters: () => void;
-    chores: Chore[] | null;  // Update to handle possibly null chores data
-    isChoresLoading: boolean; // New prop to handle loading state
+    chores: Chore[] | null;
+    isChoresLoading: boolean;
 }
 
 const EntryFiltersModal: React.FC<EntryFiltersModalProps> = ({
@@ -73,10 +73,10 @@ const EntryFiltersModal: React.FC<EntryFiltersModalProps> = ({
 
     const memoizedChoreList = useMemo(() => {
         return chores?.map((chore) => (
-            <ChoreCheckboxItem
+            <CheckboxItem
                 key={chore.id}
-                choreId={chore.id}
-                choreName={chore.name}
+                itemId={chore.id}
+                itemName={chore.name}
                 isSelected={!!localFilters.selectedChores[chore.id]}
                 onToggle={toggleChore}
             />

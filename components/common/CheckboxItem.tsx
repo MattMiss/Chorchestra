@@ -1,4 +1,4 @@
-// ChoreCheckboxItem.tsx
+// CheckboxItem.tsx
 
 import React, { memo } from 'react';
 import { TouchableOpacity, Text } from 'react-native';
@@ -10,24 +10,24 @@ const StyledText = styled(Text);
 const StyledTouchableOpacity = styled(TouchableOpacity);
 
 interface ChoreCheckboxItemProps {
-    choreId: number;
-    choreName: string;
+    itemId: number;
+    itemName: string;
     isSelected: boolean;
     onToggle: (choreId: number) => void;
 }
 
-const ChoreCheckboxItem: React.FC<ChoreCheckboxItemProps> = memo(({ choreId, choreName, isSelected, onToggle }) => (
+const CheckboxItem: React.FC<ChoreCheckboxItemProps> = memo(({ itemId, itemName, isSelected, onToggle }) => (
     <StyledTouchableOpacity
-        onPress={() => onToggle(choreId)}
+        onPress={() => onToggle(itemId)}
         className="flex-row items-center mb-2"
     >
         <Checkbox
             value={isSelected}
-            onValueChange={() => onToggle(choreId)}
+            onValueChange={() => onToggle(itemId)}
             color={isSelected ? Colors.accent : Colors.textPrimary}
         />
-        <StyledText className={`ml-2 text-primary`}>{choreName}</StyledText>
+        <StyledText className={`ml-2 text-primary`}>{itemName}</StyledText>
     </StyledTouchableOpacity>
 ));
 
-export default ChoreCheckboxItem;
+export default CheckboxItem;

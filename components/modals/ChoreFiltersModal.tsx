@@ -1,12 +1,12 @@
 // src/components/modals/FiltersModal.tsx
 
-import React, {useEffect, useState } from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {
     Modal,
     View,
     Text,
     TouchableOpacity,
-    TouchableWithoutFeedback, StyleSheet, Platform,
+    TouchableWithoutFeedback, StyleSheet, Platform, ScrollView, ActivityIndicator,
 } from 'react-native';
 import { styled } from 'nativewind';
 import Checkbox from 'expo-checkbox';
@@ -17,6 +17,7 @@ import dayjs from '@/utils/dayjsConfig';
 import {AntDesign} from "@expo/vector-icons";
 import TextInputFloatingLabel from "@/components/common/TextInputFloatingLabel";
 import {Colors} from "@/constants/Colors";
+import CheckboxItem from "@/components/common/CheckboxItem";
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -29,6 +30,7 @@ interface FiltersModalProps {
     setFilters: (filters: any) => void;
     resetFilters: () => void;
     tags: Tag[];
+    isTagsLoading: boolean;
 }
 
 const ChoreFiltersModal: React.FC<FiltersModalProps> = ({
@@ -38,6 +40,7 @@ const ChoreFiltersModal: React.FC<FiltersModalProps> = ({
                                                        setFilters,
                                                        resetFilters,
                                                        tags,
+                                                       isTagsLoading,
                                                    }) => {
     const [localFilters, setLocalFilters] = useState(filters);
 
@@ -97,12 +100,24 @@ const ChoreFiltersModal: React.FC<FiltersModalProps> = ({
         onClose();
     };
 
+    const memoizedTagList = useMemo(() => {
+        return tags?.map((tag) => (
+            <CheckboxItem
+                key={tag.id}
+                itemId={tag.id}
+                itemName={tag.name}
+                isSelected={!!localFilters.selectedTags[tag.id]}
+                onToggle={toggleTag}
+            />
+        ));
+    }, [tags, localFilters.selectedTags, toggleTag]);
+
     return (
         <Modal visible={visible} transparent animationType="fade">
             <TouchableWithoutFeedback onPress={onClose}>
                 <StyledView className="flex-1 justify-end items-center bg-transparent-70">
                     <TouchableWithoutFeedback>
-                        <StyledView className={`p-4 w-full max-w-md min-h-[300] rounded-t-3xl bg-medium`}>
+                        <StyledView className={`p-4 w-full max-w-md min-h-[300] max-h-[85%] rounded-t-3xl bg-medium`}>
                             <StyledView className='flex-row'>
                                 <AntDesign name="filter" size={20} color="white" />
                                 <StyledText className={`ml-1 mb-2 text-lg font-bold text-accent`}>Filters</StyledText>
@@ -241,19 +256,15 @@ const ChoreFiltersModal: React.FC<FiltersModalProps> = ({
 
                             {/* Tags Filter */}
                             <StyledText className={`font-semibold mb-2 mt-4 text-primary`}>Tags</StyledText>
-                            {tags.map((tag) => (
-                                <StyledTouchableOpacity
-                                    key={tag.id}
-                                    onPress={() => toggleTag(tag.id)}
-                                    className="flex-row items-center mb-2"
-                                >
-                                    <Checkbox
-                                        value={localFilters.selectedTags[tag.id] || false}
-                                        onValueChange={() => toggleTag(tag.id)}
-                                    />
-                                    <StyledText className={`ml-2 text-primary`}>{tag.name}</StyledText>
-                                </StyledTouchableOpacity>
-                            ))}
+                            <StyledView className="max-h-[30%] pb-2">
+                                <ScrollView>
+                                    {isTagsLoading ? (
+                                        <ActivityIndicator size="large" color={Colors.accent} />
+                                    ) : (
+                                        memoizedTagList
+                                    )}
+                                </ScrollView>
+                            </StyledView>
 
                             {/* Buttons */}
                             <StyledView className="flex-row gap-4 justify-between mt-4">
