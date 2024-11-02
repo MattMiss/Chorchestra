@@ -46,6 +46,10 @@ export interface ProcessedChore extends Chore {
     isOverdue: boolean;
 }
 
+export interface ChoresGroupedByDate {
+    [key: string]: ProcessedChore[];
+}
+
 export interface Entry {
     id: number;
     choreId: number;

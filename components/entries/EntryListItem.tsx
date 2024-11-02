@@ -59,13 +59,13 @@ export const EntryListItemHidden: React.FC<EntryListItemHiddenProps> = ({ onDele
                     className="p-2 mr-2 justify-center items-center"
                     onPress={onEditPress}
                 >
-                    <FontAwesome5 name="pen" size={20} color={Colors.iconEdit} />
+                    <FontAwesome5 name="pen" size={20} color={Colors.iconGreen} />
                 </StyledTouchableOpacity>
                 <StyledTouchableOpacity
                     className="p-2 justify-center items-center"
                     onPress={onDeletePress}
                 >
-                    <FontAwesome5 name="trash" size={20} color={Colors.iconDelete} />
+                    <FontAwesome5 name="trash" size={20} color={Colors.iconRed} />
                 </StyledTouchableOpacity>
             </StyledView>
         </StyledView>

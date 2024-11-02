@@ -24,7 +24,7 @@ export const Colors = {
     tabIconSelected: tintColorDark,
   },
   textPrimary: '#F7FAFF',
-  textSecondary: '#858E9F',
+  textSecondary: '#9fa9bd',
   accent:'#14A8CC',
   tabIconDefault: '',
   tabIconSelected: '',
@@ -36,8 +36,9 @@ export const Colors = {
   buttonSecondary: '#6d767c',
   buttonAlternative: '#F5103B',
   defaultTagColor: '#7e7e7e',
-  iconDelete: '#b72f2f',
-  iconEdit: '#1dcc1d'
+  iconRed: '#b72f2f',
+  iconGreen: '#1dcc1d',
+  iconYellow: '#dada21'
 };
 
 export const COLOR_PALETTE: string[][] = [

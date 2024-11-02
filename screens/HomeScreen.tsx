@@ -1,5 +1,3 @@
-// src/screens/HomeScreen.tsx
-
 import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { styled } from 'nativewind';
@@ -9,10 +7,10 @@ import ChoreSectionList from '@/components/chores/ChoreSectionList';
 import ChoreListModal from '@/components/modals/ChoreListModal';
 import useCategorizedChores from '@/hooks/useCategorizedChores';
 import { Colors } from "@/constants/Colors";
-import {ProcessedChore} from "@/types";
+import {ChoresGroupedByDate, ProcessedChore} from "@/types";
 import AddEditEntryModal from "@/components/modals/AddEditEntryModal";
-import {useChoresContext} from "@/context/ChoresContext";
-import {useEntriesContext} from "@/context/EntriesContext";
+import { useChoresContext } from "@/context/ChoresContext";
+import { useEntriesContext } from "@/context/EntriesContext";
 
 const StyledView = styled(View);
 
@@ -21,30 +19,45 @@ const HomeScreen = () => {
     const { entries } = useEntriesContext();
     const { sections } = useCategorizedChores();
 
-    const [pastDueSection, setPastDueSection] = useState<ProcessedChore[]>([]);
-    const [todaySection, setTodaySection] = useState<ProcessedChore[]>([]);
-    const [withinAWeekSection, setInAWeekSection] = useState<ProcessedChore[]>([]);
+    const [groupedPastDueSection, setGroupedPastDueSection] = useState<{ [key: string]: ProcessedChore[] }>({});
+    const [groupedTodaySection, setGroupedTodaySection] = useState<{ [key: string]: ProcessedChore[] }>({});
+    const [groupedWithinAWeekSection, setGroupedWithinAWeekSection] = useState<{ [key: string]: ProcessedChore[] }>({});
+
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedSectionTitle, setSelectedSectionTitle] = useState<string>('');
-    const [selectedSectionChores, setSelectedSectionChores] = useState<ProcessedChore[]>([]);
+    const [selectedSectionChores, setSelectedSectionChores] = useState<{ [key: string]: ProcessedChore[] }>({});
 
     const [selectedChore, setSelectedChore] = useState<ProcessedChore | null>(null);
     const [addEditEntryModalVisible, setAddEditEntryModalVisible] = useState<boolean>(false);
 
+    // Function to group chores by date
+    const groupChoresByDate = (chores: ProcessedChore[]) : ChoresGroupedByDate => {
+        return chores.reduce((groups: { [key: string]: ProcessedChore[] }, chore) => {
+            const dateKey = chore.nextDueDate.format('MMM D, YYYY');
+            if (!groups[dateKey]) {
+                groups[dateKey] = [];
+            }
+            groups[dateKey].push(chore);
+            return groups;
+        }, {});
+    };
+
     useEffect(() => {
-        if (sections){
+        if (sections) {
             const pastDueSection = sections.find(section => section.title === 'Past Due');
-            setPastDueSection(pastDueSection ? pastDueSection.data : []);
+            setGroupedPastDueSection(pastDueSection ? groupChoresByDate(pastDueSection.data) : {});
+
             const dueTodaySection = sections.find(section => section.title === 'Due Today');
-            setTodaySection(dueTodaySection ? dueTodaySection.data : []);
+            setGroupedTodaySection(dueTodaySection ? groupChoresByDate(dueTodaySection.data) : {});
+
             const dueThisWeek = sections.find(section => section.title === 'Due This Week');
-            setInAWeekSection(dueThisWeek ? dueThisWeek.data : []);
+            setGroupedWithinAWeekSection(dueThisWeek ? groupChoresByDate(dueThisWeek.data) : {});
         }
     }, [sections, chores, entries]);
 
-    const handleSectionPress = (title: string, chores: ProcessedChore[]) => {
+    const handleSectionPress = (title: string, groupedChores: { [key: string]: ProcessedChore[] }) => {
         setSelectedSectionTitle(title);
-        setSelectedSectionChores(chores);
+        setSelectedSectionChores(groupedChores);
         setModalVisible(true);
     };
 
@@ -54,34 +67,34 @@ const HomeScreen = () => {
             showHeaderNavOptionButton={false}
             headerTitle={"Home"}
         >
-            <StyledView className="px-2 flex-1">
-                {/* Chores SectionList */}
+            <StyledView className="px-2 flex-1 justify-between">
+                {/* Chores SectionList with grouped data */}
                 <ChoreSectionList
                     sectionTitle="Chores Past Due"
-                    chores={pastDueSection}
-                    icon={<AntDesign name="warning" size={24} color={Colors.textPrimary} />}
-                    onPress={() => handleSectionPress('Past Due', pastDueSection)}
+                    groupedChores={groupedPastDueSection}
+                    icon={<AntDesign name="warning" size={24} color={Colors.iconRed} />}
+                    onPress={() => handleSectionPress('Past Due', groupedPastDueSection)}
                 />
                 <ChoreSectionList
                     sectionTitle="Chores Due Today"
-                    chores={todaySection}
-                    icon={<FontAwesome6 name="calendar-day" size={24} color={Colors.textPrimary} />}
-                    onPress={() => handleSectionPress('Due Today', todaySection)}
+                    groupedChores={groupedTodaySection}
+                    icon={<FontAwesome6 name="calendar-day" size={24} color={Colors.iconYellow} />}
+                    onPress={() => handleSectionPress('Due Today', groupedTodaySection)}
                 />
                 <ChoreSectionList
                     sectionTitle="Chores Due Within A Week"
-                    chores={withinAWeekSection}
-                    icon={<FontAwesome6 name="calendar-week" size={24} color={Colors.textPrimary} />}
-                    onPress={() => handleSectionPress('Due Within A Week', withinAWeekSection)}
+                    groupedChores={groupedWithinAWeekSection}
+                    icon={<FontAwesome6 name="calendar-week" size={24} color={Colors.iconGreen} />}
+                    onPress={() => handleSectionPress('Due Within A Week', groupedWithinAWeekSection)}
                 />
             </StyledView>
 
-            {/* Chore List Modal */}
+            {/* Chore List Modal with grouped data */}
             <ChoreListModal
                 visible={modalVisible}
                 onClose={() => setModalVisible(false)}
                 sectionTitle={selectedSectionTitle}
-                chores={selectedSectionChores}
+                groupedChores={selectedSectionChores}
                 completeChore={(chore) => {
                     setSelectedChore(chore);
                     setModalVisible(false);
