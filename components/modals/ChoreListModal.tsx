@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Modal, TouchableOpacity, View, Text, ScrollView, TouchableWithoutFeedback } from 'react-native';
 import { ProcessedChore, ChoresGroupedByDate } from '@/types';
 import { AntDesign } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors';
 import { styled } from 'nativewind';
+import {formatDate} from "@/utils/dateHelpers";
+import dayjs from "@/utils/dayjsConfig";
 
 const StyledView = styled(View);
 const StyledScrollView = styled(ScrollView);
@@ -19,7 +21,14 @@ interface ChoreListModalProps {
     completeChore: (chore: ProcessedChore) => void;
 }
 
+
 const ChoreListModal: React.FC<ChoreListModalProps> = ({ visible, onClose, sectionTitle, groupedChores, completeChore }) => {
+
+    // Sort dates using dayjs and display the chores in order
+    const sortedDates = useMemo(() => Object.keys(groupedChores).sort((a, b) => {
+        return dayjs(a).isBefore(dayjs(b)) ? -1 : 1;
+    }), [groupedChores]);
+
     return (
         <Modal visible={visible} transparent animationType="fade">
             <TouchableWithoutFeedback onPress={onClose}>
@@ -30,12 +39,12 @@ const ChoreListModal: React.FC<ChoreListModalProps> = ({ visible, onClose, secti
 
                             {/* List of Grouped Chores by Date */}
                             <StyledScrollView className="mb-2">
-                                {Object.keys(groupedChores).length > 0 ? (
-                                    Object.keys(groupedChores).map((dateKey) => (
+                                {sortedDates.length > 0 ? (
+                                    sortedDates.map((dateKey) => (
                                         <StyledView key={dateKey} className="mt-2">
                                             {/* Date Header */}
                                             <StyledText className="font-semibold text-primary text-lg mb-1">
-                                                {dateKey}
+                                                {formatDate(dateKey)}
                                             </StyledText>
 
                                             {/* List of Chores for the Date */}

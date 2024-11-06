@@ -1,9 +1,11 @@
-import React, { ReactNode, useState } from 'react';
+import React, {ReactNode, useMemo, useState} from 'react';
 import { View, Text, TouchableOpacity, ScrollView, LayoutChangeEvent } from 'react-native';
 import {ChoresGroupedByDate} from '@/types';
 import { styled } from "nativewind";
 import { AntDesign, Entypo } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
+import dayjs from "@/utils/dayjsConfig";
+import {formatDate} from "@/utils/dateHelpers";
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -24,6 +26,11 @@ const ChoreSectionList = ({ sectionTitle, groupedChores, icon, onPress }: Specif
         setScrollHeight(height * 0.7); // Setting ScrollView height to 70% of parent height
     };
 
+    // Sort dates using dayjs and display the chores in order
+    const sortedDates = useMemo(() => Object.keys(groupedChores).sort((a, b) => {
+        return dayjs(a).isBefore(dayjs(b)) ? -1 : 1;
+    }), [groupedChores]);
+
     return (
         <StyledView className="flex-1 w-full p-4 mb-4 rounded-lg bg-medium" onLayout={handleLayout}>
             <StyledView className="flex-row items-start">
@@ -35,21 +42,23 @@ const ChoreSectionList = ({ sectionTitle, groupedChores, icon, onPress }: Specif
 
                     {/* Scrollable List within controlled max-height */}
                     <ScrollView style={{ maxHeight: scrollHeight }} contentContainerStyle={{ paddingBottom: 10 }} showsVerticalScrollIndicator={true}>
-                        {Object.keys(groupedChores).map((dateKey) => (
-                            <StyledView key={dateKey} className="mt-2">
-                                {/* Date Header */}
-                                <StyledText className="font-semibold text-primary mb-2">
-                                    {dateKey}
-                                </StyledText>
+                        {sortedDates.map((dateKey) => {
+                            return(
+                                <StyledView key={dateKey} className="mt-2">
+                                    {/* Date Header */}
+                                    <StyledText className="font-semibold text-primary mb-2">
+                                        {formatDate(dateKey)}
+                                    </StyledText>
 
-                                {/* List of Chores for the Date */}
-                                {groupedChores[dateKey].map((chore) => (
-                                    <StyledView key={chore.id} className="ml-4 mb-2 flex-row items-center">
-                                        <StyledText className="text-secondary">{chore.name}</StyledText>
-                                    </StyledView>
-                                ))}
-                            </StyledView>
-                        ))}
+                                    {/* List of Chores for the Date */}
+                                    {groupedChores[dateKey].map((chore) => (
+                                        <StyledView key={chore.id} className="ml-4 mb-2 flex-row items-center">
+                                            <StyledText className="text-secondary">{chore.name}</StyledText>
+                                        </StyledView>
+                                    ))}
+                                </StyledView>
+                            )}
+                        )}
                     </ScrollView>
                 </StyledView>
                 <StyledView className="mt-[2]">

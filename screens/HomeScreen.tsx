@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { View } from 'react-native';
 import { styled } from 'nativewind';
 import ThemedScreen from '@/components/common/ThemedScreen';
@@ -7,7 +7,8 @@ import ChoreSectionList from '@/components/chores/ChoreSectionList';
 import ChoreListModal from '@/components/modals/ChoreListModal';
 import useCategorizedChores from '@/hooks/useCategorizedChores';
 import { Colors } from "@/constants/Colors";
-import {ChoresGroupedByDate, ProcessedChore} from "@/types";
+import { ProcessedChore} from "@/types";
+import {groupChoresByDate} from '@/utils/chores';
 import AddEditEntryModal from "@/components/modals/AddEditEntryModal";
 import { useChoresContext } from "@/context/ChoresContext";
 import { useEntriesContext } from "@/context/EntriesContext";
@@ -29,18 +30,6 @@ const HomeScreen = () => {
 
     const [selectedChore, setSelectedChore] = useState<ProcessedChore | null>(null);
     const [addEditEntryModalVisible, setAddEditEntryModalVisible] = useState<boolean>(false);
-
-    // Function to group chores by date
-    const groupChoresByDate = (chores: ProcessedChore[]) : ChoresGroupedByDate => {
-        return chores.reduce((groups: { [key: string]: ProcessedChore[] }, chore) => {
-            const dateKey = chore.nextDueDate.format('MMM D, YYYY');
-            if (!groups[dateKey]) {
-                groups[dateKey] = [];
-            }
-            groups[dateKey].push(chore);
-            return groups;
-        }, {});
-    };
 
     useEffect(() => {
         if (sections) {

@@ -2,7 +2,7 @@
 
 import { Dayjs } from "dayjs";
 import dayjs from '@/utils/dayjsConfig'; // Import from dayjsConfig to ensure plugins are included
-import { FrequencyType, ProcessedChore, Section, Chore } from '@/types';
+import {FrequencyType, ProcessedChore, Section, Chore, ChoresGroupedByDate} from '@/types';
 
 /**
  * Sorts an array of chores by their name property.
@@ -160,4 +160,16 @@ export const groupChores = (chores: ProcessedChore[], groupBy: string): Section[
     if (groupBy === 'timeLeft') return groupChoresByTimeLeft(chores);
     if (groupBy === 'priority') return groupChoresByPriority(chores);
     return [{ title: 'Chores', data: chores }];
+};
+
+// Function to group chores by date
+export const groupChoresByDate = (chores: ProcessedChore[]) : ChoresGroupedByDate => {
+    return chores.reduce((groups: { [key: string]: ProcessedChore[] }, chore) => {
+        const dateKey = chore.nextDueDate.format('YYYY-MM-DD');
+        if (!groups[dateKey]) {
+            groups[dateKey] = [];
+        }
+        groups[dateKey].push(chore);
+        return groups;
+    }, {});
 };
