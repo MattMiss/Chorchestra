@@ -37,8 +37,8 @@ export const Colors = {
   buttonAlternative: '#F5103B',
   defaultTagColor: '#7e7e7e',
   iconRed: '#b72f2f',
-  iconGreen: '#1dcc1d',
-  iconYellow: '#dada21'
+  iconYellow: '#dada21',
+  iconGreen: '#117e11',
 };
 
 export const COLOR_PALETTE: string[][] = [

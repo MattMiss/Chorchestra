@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {ReactNode, useEffect, useMemo, useState} from 'react';
 import { View } from 'react-native';
 import { styled } from 'nativewind';
 import ThemedScreen from '@/components/common/ThemedScreen';
@@ -27,6 +27,7 @@ const HomeScreen = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedSectionTitle, setSelectedSectionTitle] = useState<string>('');
     const [selectedSectionChores, setSelectedSectionChores] = useState<{ [key: string]: ProcessedChore[] }>({});
+    const [selectedSectionIcon, setSelectedSectionIcon] = useState<ReactNode>(<AntDesign name="warning" size={20} color={Colors.textPrimary} />);
 
     const [selectedChore, setSelectedChore] = useState<ProcessedChore | null>(null);
     const [addEditEntryModalVisible, setAddEditEntryModalVisible] = useState<boolean>(false);
@@ -44,37 +45,63 @@ const HomeScreen = () => {
         }
     }, [sections, chores, entries]);
 
-    const handleSectionPress = (title: string, groupedChores: { [key: string]: ProcessedChore[] }) => {
+    const handleSectionPress = (title: string, groupedChores: { [key: string]: ProcessedChore[] }, sectionIcon: ReactNode) => {
         setSelectedSectionTitle(title);
         setSelectedSectionChores(groupedChores);
+        setSelectedSectionIcon(sectionIcon);
+
         setModalVisible(true);
     };
+
+    const sectionIcon = useMemo(() => ({
+        pastDue: <AntDesign name="warning" size={24} color={Colors.iconRed}/>,
+        dueToday: <FontAwesome6 name="calendar-day" size={24} color={Colors.iconYellow}/>,
+        dueInAWeek: <FontAwesome6 name="calendar-week" size={24} color={Colors.iconGreen}/>
+    }), []);
 
     return (
         <ThemedScreen
             showHeaderNavButton={false}
             showHeaderNavOptionButton={false}
-            headerTitle={"Home"}
+            headerTitle={""}
         >
             <StyledView className="px-2 flex-1 justify-between">
                 {/* Chores SectionList with grouped data */}
+                <StyledView className="flex-1 flex-row justify-between">
+                    <ChoreSectionList
+                        cName="mr-2"
+                        sectionTitle="Past Due"
+                        groupedChores={groupedPastDueSection}
+                        icon={sectionIcon.pastDue}
+                        onPress={() => handleSectionPress(
+                            'Past Due',
+                            groupedPastDueSection,
+                            sectionIcon.pastDue
+                        )}
+                    />
+                    <ChoreSectionList
+                        cName={"ml-2"}
+                        sectionTitle="Due Today"
+                        groupedChores={groupedTodaySection}
+                        icon={sectionIcon.dueToday}
+                        onPress={() => handleSectionPress(
+                            'Due Today',
+                            groupedTodaySection,
+                            sectionIcon.dueToday
+                        )}
+                    />
+                </StyledView>
+
                 <ChoreSectionList
-                    sectionTitle="Chores Past Due"
-                    groupedChores={groupedPastDueSection}
-                    icon={<AntDesign name="warning" size={24} color={Colors.iconRed} />}
-                    onPress={() => handleSectionPress('Past Due', groupedPastDueSection)}
-                />
-                <ChoreSectionList
-                    sectionTitle="Chores Due Today"
-                    groupedChores={groupedTodaySection}
-                    icon={<FontAwesome6 name="calendar-day" size={24} color={Colors.iconYellow} />}
-                    onPress={() => handleSectionPress('Due Today', groupedTodaySection)}
-                />
-                <ChoreSectionList
-                    sectionTitle="Chores Due Within A Week"
+                    cName="p-4"
+                    sectionTitle="Due Within A Week"
                     groupedChores={groupedWithinAWeekSection}
-                    icon={<FontAwesome6 name="calendar-week" size={24} color={Colors.iconGreen} />}
-                    onPress={() => handleSectionPress('Due Within A Week', groupedWithinAWeekSection)}
+                    icon={sectionIcon.dueInAWeek}
+                    onPress={() => handleSectionPress(
+                        'Due Within A Week',
+                        groupedWithinAWeekSection,
+                        sectionIcon.dueInAWeek
+                    )}
                 />
             </StyledView>
 
@@ -83,6 +110,7 @@ const HomeScreen = () => {
                 visible={modalVisible}
                 onClose={() => setModalVisible(false)}
                 sectionTitle={selectedSectionTitle}
+                sectionIcon={selectedSectionIcon}
                 groupedChores={selectedSectionChores}
                 completeChore={(chore) => {
                     setSelectedChore(chore);

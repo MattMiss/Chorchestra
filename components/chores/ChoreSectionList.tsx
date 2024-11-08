@@ -2,7 +2,7 @@ import React, {ReactNode, useMemo, useState} from 'react';
 import { View, Text, TouchableOpacity, ScrollView, LayoutChangeEvent } from 'react-native';
 import {ChoresGroupedByDate} from '@/types';
 import { styled } from "nativewind";
-import { AntDesign, Entypo } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 import dayjs from "@/utils/dayjsConfig";
 import {formatDate} from "@/utils/dateHelpers";
@@ -16,14 +16,15 @@ interface SpecificSectionListProps {
     groupedChores: ChoresGroupedByDate; // Updated type for groupedChores
     icon?: ReactNode;
     onPress: () => void;
+    cName?: string;
 }
 
-const ChoreSectionList = ({ sectionTitle, groupedChores, icon, onPress }: SpecificSectionListProps) => {
+const ChoreSectionList = ({ sectionTitle, groupedChores, icon, onPress, cName = '' }: SpecificSectionListProps) => {
     const [scrollHeight, setScrollHeight] = useState<number | null>(null);
 
     const handleLayout = (event: LayoutChangeEvent) => {
         const { height } = event.nativeEvent.layout;
-        setScrollHeight(height * 0.7); // Setting ScrollView height to 70% of parent height
+        setScrollHeight(height * 0.8); // Setting ScrollView height to 70% of parent height
     };
 
     // Sort dates using dayjs and display the chores in order
@@ -32,44 +33,58 @@ const ChoreSectionList = ({ sectionTitle, groupedChores, icon, onPress }: Specif
     }), [groupedChores]);
 
     return (
-        <StyledView className="flex-1 w-full p-4 mb-4 rounded-lg bg-medium" onLayout={handleLayout}>
-            <StyledView className="flex-row items-start">
-                <StyledView className="mt-[2]">
-                    {icon || <AntDesign name="warning" size={24} color={Colors.textPrimary} />}
+        <StyledView className={`flex-1 w-full p-2 mb-4 rounded-lg bg-medium ${cName}`} onLayout={handleLayout}>
+            <StyledTouchableOpacity
+                className="justify-center items-center"
+                onPress={onPress}
+            >
+                <StyledView className="flex-row items-start mb-1">
+                    <StyledView className="mt-[2]">
+                        {icon || <AntDesign name="warning" size={20} color={Colors.textPrimary} />}
+                    </StyledView>
+                    <StyledView className="flex-1 mx-3 pt-1 w-full">
+                        <StyledText className="text-lg font-bold text-accent">{sectionTitle}</StyledText>
+                    </StyledView>
+
+                    {/*<StyledView className="mt-[2]">*/}
+                    {/*    <Entypo name="dots-three-horizontal" size={22} color="white" />*/}
+                    {/*</StyledView>*/}
                 </StyledView>
-                <StyledView className="flex-1">
-                    <StyledText className="ml-2 font-bold text-lg text-accent">{sectionTitle}:</StyledText>
+            </StyledTouchableOpacity>
+            <StyledView className={`border border-b opacity-30 border-secondary ${sortedDates.length > 0 ? 'mb-4' : ''}`}></StyledView>
+            {/* Scrollable List within controlled max-height */}
+            <ScrollView
+                style={{
+                    maxHeight: scrollHeight
+                }}
+                contentContainerStyle={{
+                    flexGrow: 1, // Ensures content fills space while allowing scrolling
+                    justifyContent: sortedDates.length > 0 ? 'flex-start' : 'center', // Center if no dates
+                }}
+                showsVerticalScrollIndicator
+            >
+                {sortedDates.length > 0 ? sortedDates.map((dateKey) => {
+                        return(
+                            <StyledView key={dateKey} className="w-full">
+                                {/* Date Header */}
+                                <StyledText className="font-semibold text-primary mx-auto mb-2">
+                                    {formatDate(dateKey)}
+                                </StyledText>
 
-                    {/* Scrollable List within controlled max-height */}
-                    <ScrollView style={{ maxHeight: scrollHeight }} contentContainerStyle={{ paddingBottom: 10 }} showsVerticalScrollIndicator={true}>
-                        {sortedDates.map((dateKey) => {
-                            return(
-                                <StyledView key={dateKey} className="mt-2">
-                                    {/* Date Header */}
-                                    <StyledText className="font-semibold text-primary mb-2">
-                                        {formatDate(dateKey)}
-                                    </StyledText>
-
-                                    {/* List of Chores for the Date */}
-                                    {groupedChores[dateKey].map((chore) => (
-                                        <StyledView key={chore.id} className="ml-4 mb-2 flex-row items-center">
-                                            <StyledText className="text-secondary">{chore.name}</StyledText>
-                                        </StyledView>
-                                    ))}
-                                </StyledView>
-                            )}
+                                {/* List of Chores for the Date */}
+                                {groupedChores[dateKey].map((chore) => (
+                                    <StyledView key={chore.id} className="mb-2 flex-row items-center">
+                                        <StyledText className="text-secondary">{chore.name}</StyledText>
+                                    </StyledView>
+                                ))}
+                            </StyledView>
                         )}
-                    </ScrollView>
-                </StyledView>
-                <StyledView className="mt-[2]">
-                    <StyledTouchableOpacity
-                        className="justify-center items-center"
-                        onPress={onPress}
-                    >
-                        <Entypo name="dots-three-horizontal" size={24} color="white" />
-                    </StyledTouchableOpacity>
-                </StyledView>
-            </StyledView>
+                    ) :
+                    <StyledView className="m-auto">
+                        <AntDesign name="check" size={90} color={Colors.iconGreen} />
+                    </StyledView>
+                }
+            </ScrollView>
         </StyledView>
     );
 };

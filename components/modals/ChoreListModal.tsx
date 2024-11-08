@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, {ReactNode, useMemo} from 'react';
 import { Modal, TouchableOpacity, View, Text, ScrollView, TouchableWithoutFeedback } from 'react-native';
 import { ProcessedChore, ChoresGroupedByDate } from '@/types';
 import { AntDesign } from '@expo/vector-icons';
@@ -17,12 +17,13 @@ interface ChoreListModalProps {
     visible: boolean;
     onClose: () => void;
     sectionTitle: string;
+    sectionIcon?: ReactNode;
     groupedChores: ChoresGroupedByDate;
     completeChore: (chore: ProcessedChore) => void;
 }
 
 
-const ChoreListModal: React.FC<ChoreListModalProps> = ({ visible, onClose, sectionTitle, groupedChores, completeChore }) => {
+const ChoreListModal: React.FC<ChoreListModalProps> = ({ visible, onClose, sectionTitle, sectionIcon, groupedChores, completeChore }) => {
 
     // Sort dates using dayjs and display the chores in order
     const sortedDates = useMemo(() => Object.keys(groupedChores).sort((a, b) => {
@@ -35,7 +36,14 @@ const ChoreListModal: React.FC<ChoreListModalProps> = ({ visible, onClose, secti
                 <StyledView className="flex-1 justify-end items-center bg-transparent-70">
                     <TouchableWithoutFeedback>
                         <StyledView className="p-4 w-full max-w-md min-h-[200] max-h-[80%] rounded-t-3xl bg-medium">
-                            <StyledText className="text-xl font-bold mb-4 text-accent">Chores {sectionTitle}</StyledText>
+                            <StyledView className="flex-row items-center mb-2">
+                                <StyledView className="mb-2">
+                                    {sectionIcon || <AntDesign name="warning" size={24} color={Colors.textPrimary} />}
+                                </StyledView>
+                                <StyledView className="flex-1 mx-2 pt-2 w-full">
+                                    <StyledText className="text-xl font-bold mb-4 text-accent">Chores {sectionTitle}</StyledText>
+                                </StyledView>
+                            </StyledView>
 
                             {/* List of Grouped Chores by Date */}
                             <StyledScrollView className="mb-2">
