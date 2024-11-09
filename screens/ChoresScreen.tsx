@@ -16,6 +16,7 @@ import { Colors } from "@/constants/Colors";
 import { useChoresContext } from "@/context/ChoresContext";
 import { useEntriesContext } from "@/context/EntriesContext";
 import { useTagsContext } from "@/context/TagsContext";
+import TextInputFloatingLabel from "@/components/common/TextInputFloatingLabel";
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -41,6 +42,7 @@ const ChoresScreen = () => {
     const [sortOption, setSortOption] = useState<string>('timeLeft');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
     const [filters, setFilters] = useState(defaultChoreFilters);
+    const [searchTerm, setSearchTerm] = useState('');
 
     const today = dayjs().startOf('day');
 
@@ -89,9 +91,17 @@ const ChoresScreen = () => {
                 if (!hasSelectedTag) return false;
             }
 
+            // 4. Filter by search term (ignore case)
+            if (searchTerm !== '') {
+                const searchTermLower = searchTerm.toLowerCase();
+                const choreNameLower = chore.name.toLowerCase();
+                if (!choreNameLower.includes(searchTermLower)) return false;
+            }
+
             return true;
         });
     }, [processedChores, filters, entries, today]);
+
 
     const sortedChores = useMemo(() => {
         return [...filteredChores].sort((a, b) => {
@@ -170,7 +180,7 @@ const ChoresScreen = () => {
             headerTitle={"Chores"}
         >
             <StyledView className="px-2 flex-1">
-                <StyledView className="flex w-full py-2 px-4 mb-4 rounded-lg bg-medium">
+                <StyledView className="flex w-full pt-2 pb-4 px-4 mb-4 rounded-lg bg-medium">
                     <StyledView className="flex-row justify-between items-center">
                         <StyledView className="flex-1 flex-row items-center">
                             <StyledTouchableOpacity
@@ -201,6 +211,7 @@ const ChoresScreen = () => {
                             </StyledView>
                         </StyledTouchableOpacity>
                     </StyledView>
+                    <TextInputFloatingLabel label="Chore name" value={searchTerm} onChangeText={setSearchTerm}/>
                 </StyledView>
 
                 {sectionedChores.length > 0 ? (
