@@ -10,6 +10,7 @@ import { ChoresProvider } from '@/context/ChoresContext';
 import {EntriesProvider} from "@/context/EntriesContext";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import {TagsProvider} from "@/context/TagsContext";
+import NotificationManager from "@/components/notifications/NotificationManager";
 
 NativeWindStyleSheet.setOutput({
     default: "native",
@@ -52,6 +53,7 @@ function RootLayout() {
                                     <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
                                 </Stack>
                             </MenuProvider>
+                            <NotificationManager />
                         </GestureHandlerRootView>
                     </TagsProvider>
                 </EntriesProvider>
