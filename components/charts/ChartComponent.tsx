@@ -1,12 +1,12 @@
 // src/components/ChartComponent.tsx
 
 import React, {useEffect, useMemo} from 'react';
-import {View, Text, Dimensions, StyleSheet, TouchableOpacity} from 'react-native';
-import { LineChart } from 'react-native-gifted-charts';
-import { Picker } from '@react-native-picker/picker';
-import { styled } from 'nativewind';
+import {Dimensions, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {LineChart} from 'react-native-gifted-charts';
+import {Picker} from '@react-native-picker/picker';
+import {styled} from 'nativewind';
 import dayjs from '@/utils/dayjsConfig';
-import { Colors } from '@/constants/Colors';
+import {Colors} from '@/constants/Colors';
 import {ProcessedEntry} from '@/types';
 import {FontAwesome} from "@expo/vector-icons";
 
@@ -96,7 +96,7 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ data, timeRange, onTime
             value: dateMap[date],
             date: date,
             label: timeRange === 'month'
-                ? (index % 5 === 0 ? dayjs(date).format('D') : '') // Add label only every 5 days for 'month'
+                ? (index === 0 || ((index + 1) % 5 === 0) ? dayjs(date).format('D') : '') // Add label only every 5 days for 'month'
                 : timeRange === 'week'
                     ? dayjs(date).format('ddd D') // Format as "Wed 10" for 'week'
                     : dayjs(date).format('MMM'),  // Label as month name for other cases
@@ -120,16 +120,17 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ data, timeRange, onTime
         console.log(JSON.stringify(chartData, null, 2));
     }, [chartData]);
 
+
     // Calculate max Y-axis value and ensure whole number increments
-    const maxYValue = Math.max(...chartData.map(point => point.value), 1);
-    const noOfSections = maxYValue <= 5 ? maxYValue : 5;
-    const stepValue = Math.ceil(maxYValue / noOfSections);
+    const maxYValue = Math.max(...chartData.map(point => point.value), 1);  // Ensure at least 1 as max
+    const noOfSections = maxYValue <= 5 ? maxYValue : 5;  // Dynamically set sections
+    const stepValue = maxYValue <= 1 ? 1 : Math.ceil(maxYValue / noOfSections);  // Force step to 1 if max is 1 or less
 
     return (
         <StyledView className="flex-1">
             {/* Time Range Picker */}
             <StyledView className="py-1">
-                <StyledView className="flex-row items-center">
+                <StyledView className="px-4 flex-row items-center">
                     {/* Label */}
                     <StyledText className="text-xl text-secondary">Timeframe</StyledText>
                     <StyledTouchableOpacity
@@ -151,7 +152,7 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ data, timeRange, onTime
                 </StyledView>
 
                 {/* Picker Container */}
-                <StyledView className="flex-row items-center pl-1">
+                <StyledView className="px-4 flex-row items-center">
                     <StyledView className="flex-grow">
                         <StyledPicker
                             selectedValue={timeRange}
@@ -177,30 +178,31 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ data, timeRange, onTime
                 {/* Line Chart */}
                 {chartData.length > 0 ? (
                     <LineChart
+                        labelsExtraHeight={10}
                         data={chartData}
-                        initialSpacing={0}
+                        areaChart
+                        rotateLabel
+                        animateOnDataChange
+                        initialSpacing={15}
+                        endSpacing={10}
                         overflowTop={60}
-                        overflowBottom={60}
-                        thickness={2}
+                        thickness={1}
+                        dataPointsColor={Colors.accent}
                         color={Colors.accent}
                         xAxisColor={Colors.textPrimary}
                         yAxisColor={Colors.textPrimary}
-                        xAxisLabelTextStyle={{ color: Colors.textPrimary, fontSize: 12, width: 50, textAlign: 'left', paddingLeft: 4 }}
+                        xAxisLabelTextStyle={{ color: Colors.textPrimary, fontSize: 10, paddingRight: 6, paddingTop:5}}
                         yAxisTextStyle={{ color: Colors.textPrimary }}
                         startFillColor={Colors.accent}
-                        startOpacity={0.3}
                         endFillColor={Colors.accent}
+                        startOpacity={0.3}
                         endOpacity={0.01}
-                        dataPointsColor={Colors.accent}
-                        areaChart
-                        width={screenWidth - 130}
+                        width={screenWidth * 0.8}
                         adjustToWidth
                         maxValue={stepValue * noOfSections}
                         noOfSections={noOfSections}
                         stepValue={stepValue}
-                        rotateLabel
-                        animateOnDataChange
-                        endSpacing={0}
+                        formatYLabel={(value) => `${Math.round(Number(value))}`}
                         pointerConfig={{
                             pointerColor: Colors.buttonAlternative,
                             pointerStripColor: Colors.buttonAlternative,

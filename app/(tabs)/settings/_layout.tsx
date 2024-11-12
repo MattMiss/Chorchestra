@@ -16,6 +16,10 @@ export default function NoteStack() {
                 name="import-export-data"
                 options={{ title: 'Import/Export Data' }}
             />
+            <Stack.Screen
+                name="report"
+                options={{ title: 'Report' }}
+            />
         </Stack>
     );
 }

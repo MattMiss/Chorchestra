@@ -296,7 +296,7 @@ const EntriesScreen = () => {
                                 </StyledView>
                             </Container>
 
-                            <StyledView className={`h-[400] w-full p-4 mb-4 rounded-lg bg-medium`}>
+                            <StyledView className={`h-[400] w-full mb-4 rounded-lg bg-medium`}>
                                 {/* Chart Component */}
                                 <ChartComponent data={filteredChartEntries} timeRange={timeRange} onTimeRangeChange={setTimeRange} />
                             </StyledView>

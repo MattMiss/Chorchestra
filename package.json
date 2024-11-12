@@ -63,7 +63,8 @@
     "uuid": "^10.0.0",
     "react-native-svg": "15.2.0",
     "expo-notifications": "~0.28.19",
-    "expo-device": "~6.0.2"
+    "expo-device": "~6.0.2",
+    "expo-mail-composer": "~13.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
