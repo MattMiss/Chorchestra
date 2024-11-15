@@ -1,10 +1,12 @@
 // src/components/notifications/NotificationManager.tsx
 
-import {useEffect, useRef} from 'react';
+import { useEffect, useRef } from 'react';
 import { Alert, Platform } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import dayjs from 'dayjs';
-import useCategorizedChores from '@/hooks/useCategorizedChores'; // Import your custom hook
+import useCategorizedChores from '@/hooks/useCategorizedChores';
+import { NotificationTriggerInput, SchedulableTriggerInputTypes } from "expo-notifications";
+import { useUserConfigContext } from "@/context/UserConfigContext";
 
 // Configure how notifications are handled when received while the app is in the foreground
 Notifications.setNotificationHandler({
@@ -17,25 +19,22 @@ Notifications.setNotificationHandler({
 
 const NotificationManager = () => {
     const { sections } = useCategorizedChores();
+    const { config } = useUserConfigContext();
 
     // Track if the notification has already been scheduled
     const notificationScheduled = useRef(false);
 
     const calculateChoreCountsForTomorrow = () => {
-        // pastDue and dueToday is actually tomorrow's "pastDue" and "dueToday" because notification is
-        // scheduled for tomorrow but calculated today
-        let pastDueCount = 0; // chores past due + due today
-        let dueTodayCount = 0; // chores due tomorrow
+        let pastDueCount = 0;
+        let dueTodayCount = 0;
 
         const today = dayjs();
         const tomorrow = today.add(1, 'day');
 
         sections.forEach(section => {
-            // Add today's past due and due today chores to tomorrow's "past due" count
             if (section.title === 'Past Due' || section.title === 'Due Today') {
                 pastDueCount += section.data.length;
             } else if (section.title === 'Due This Week') {
-                // Check if any chores are due specifically tomorrow
                 section.data.forEach(chore => {
                     if (dayjs(chore.nextDueDate).isSame(tomorrow, 'day')) {
                         dueTodayCount += 1;
@@ -47,11 +46,16 @@ const NotificationManager = () => {
         return { pastDueCount, dueTodayCount };
     };
 
-
     // Function to schedule the daily notification
     const scheduleDailyNotification = async () => {
         console.log("Scheduling daily notification...");
         try {
+            // Ensure config exists and notifications are enabled
+            if (!config || !config.notification.enabled) {
+                console.log('Notifications are disabled or config is not loaded.');
+                return;
+            }
+
             // Cancel all existing scheduled notifications to prevent duplicates
             await Notifications.cancelAllScheduledNotificationsAsync();
 
@@ -71,13 +75,13 @@ const NotificationManager = () => {
             if (pastDueCount > 0) {
                 body += `${dueTodayCount > 0 ? ' and' : 'You have'} ${pastDueCount} past due chore${pastDueCount > 1 ? 's' : ''}`;
             }
-            body += '!'
+            body += '!';
 
-            // Schedule the notification at 6 AM daily
-            const trigger = {
-                hour: 18,
-                minute: 34,
-                repeats: true,
+            // Schedule the notification at the configured time
+            const trigger: NotificationTriggerInput = {
+                hour: config.notification.hour,
+                minute: config.notification.minute,
+                type: SchedulableTriggerInputTypes.DAILY,
             };
 
             await Notifications.scheduleNotificationAsync({
@@ -89,10 +93,9 @@ const NotificationManager = () => {
                 trigger: trigger,
             });
 
-            console.log('Daily notification scheduled at 6 AM.');
+            console.log(`Daily notification scheduled at ${config.notification.hour}:${config.notification.minute}.`);
         } catch (error) {
             console.error('Error scheduling notification:', error);
-            //Alert.alert('Error', 'Failed to schedule daily notification.');
         }
     };
 
@@ -111,7 +114,7 @@ const NotificationManager = () => {
             if (Platform.OS === 'android') {
                 await Notifications.setNotificationChannelAsync('default', {
                     name: 'default',
-                    importance: Notifications.AndroidImportance.DEFAULT,
+                    importance: Notifications.AndroidImportance.MAX,
                     vibrationPattern: [0, 250, 250, 250],
                     lightColor: '#FF231F7C',
                 });
@@ -122,11 +125,11 @@ const NotificationManager = () => {
         };
 
         requestPermissionsAndSchedule();
-    }, []);
+    }, [config]);
 
     // Reschedule notification whenever the chores sections change
     useEffect(() => {
-        if (!notificationScheduled.current) {
+        if (!notificationScheduled.current && config && config.notification.enabled) {
             scheduleDailyNotification();
             notificationScheduled.current = true; // Set the flag to prevent duplicate notifications
         }
@@ -135,7 +138,7 @@ const NotificationManager = () => {
         return () => {
             notificationScheduled.current = false;
         };
-    }, [sections]);
+    }, [sections, config]);
 
     return null; // This component does not render anything
 };

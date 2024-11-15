@@ -17,6 +17,7 @@ import { useChoresContext } from "@/context/ChoresContext";
 import { useEntriesContext } from "@/context/EntriesContext";
 import { useTagsContext } from "@/context/TagsContext";
 import TextInputFloatingLabel from "@/components/common/TextInputFloatingLabel";
+import {useUserConfigContext} from "@/context/UserConfigContext";
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -32,6 +33,7 @@ const defaultChoreFilters = {
 };
 
 const ChoresScreen = () => {
+    const { config, updateConfig } = useUserConfigContext();
     const { chores, isChoresLoading } = useChoresContext();
     const { entries } = useEntriesContext();
     const { tags, isTagsLoading } = useTagsContext();
@@ -39,7 +41,7 @@ const ChoresScreen = () => {
     const [selectedChore, setSelectedChore] = useState<ProcessedChore | null>(null);
     const [addEditEntryModalVisible, setAddEditEntryModalVisible] = useState<boolean>(false);
     const [filtersModalVisible, setFiltersModalVisible] = useState<boolean>(false);
-    const [sortOption, setSortOption] = useState<string>('timeLeft');
+    const [sortOption, setSortOption] = useState<string>('');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
     const [filters, setFilters] = useState(defaultChoreFilters);
     const [searchTerm, setSearchTerm] = useState('');
@@ -47,8 +49,11 @@ const ChoresScreen = () => {
     const today = dayjs().startOf('day');
 
     useEffect(() => {
-        console.log("Chores loaded:", chores);
-    }, [chores]);
+        if (config){
+            setSortOption(config.choreSortBy);
+            setSortOrder(config.choreSortOrder);
+        }
+    }, [config]);
 
     const processedChores: ProcessedChore[] = useMemo(() => {
         return chores.map((chore) => {
@@ -159,6 +164,22 @@ const ChoresScreen = () => {
         // Implementation for deleting a chore
     };
 
+    const handleToggleSortOrder = (sortOrder : 'asc' | 'desc') => {
+        setSortOrder(sortOrder);
+        updateConfig({
+            ...config,
+            choreSortOrder: sortOrder,
+        });
+    }
+
+    const handleChangeSortOrder = (sortOption: string) => {
+        setSortOption(sortOption);
+        updateConfig({
+            ...config,
+            choreSortBy: sortOption,
+        });
+    }
+
     if (isChoresLoading) {
         return (
             <ThemedScreen
@@ -184,7 +205,7 @@ const ChoresScreen = () => {
                     <StyledView className="flex-row justify-between items-center">
                         <StyledView className="flex-1 flex-row items-center">
                             <StyledTouchableOpacity
-                                onPress={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                                onPress={() => handleToggleSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
                             >
                                 <AntDesign name={sortOrder === 'asc' ? 'arrowup' : 'arrowdown'} size={20} color="white" />
                             </StyledTouchableOpacity>
@@ -192,7 +213,7 @@ const ChoresScreen = () => {
                             <Picker
                                 selectedValue={sortOption}
                                 style={styles.picker}
-                                onValueChange={(itemValue) => setSortOption(itemValue)}
+                                onValueChange={(itemValue) => handleChangeSortOrder(itemValue)}
                                 dropdownIconColor="white"
                                 mode="dropdown"
                             >
