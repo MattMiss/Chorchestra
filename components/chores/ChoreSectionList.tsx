@@ -16,10 +16,10 @@ interface SpecificSectionListProps {
     groupedChores: ChoresGroupedByDate; // Updated type for groupedChores
     icon?: ReactNode;
     onPress: () => void;
-    cName?: string;
+    sectionClassName?: string;
 }
 
-const ChoreSectionList = ({ sectionTitle, groupedChores, icon, onPress, cName = '' }: SpecificSectionListProps) => {
+const ChoreSectionList = ({ sectionTitle, groupedChores, icon, onPress, sectionClassName = '' }: SpecificSectionListProps) => {
     const [scrollHeight, setScrollHeight] = useState<number | null>(null);
 
     const handleLayout = (event: LayoutChangeEvent) => {
@@ -33,7 +33,7 @@ const ChoreSectionList = ({ sectionTitle, groupedChores, icon, onPress, cName = 
     }), [groupedChores]);
 
     return (
-        <StyledView className={`flex-1 w-full p-2 mb-4 rounded-lg bg-medium ${cName}`} onLayout={handleLayout}>
+        <StyledView className={`flex-1 w-full p-2 mb-4 rounded-lg bg-medium ${sectionClassName}`} onLayout={handleLayout}>
             <StyledTouchableOpacity
                 className="justify-center items-center"
                 onPress={onPress}
@@ -45,10 +45,6 @@ const ChoreSectionList = ({ sectionTitle, groupedChores, icon, onPress, cName = 
                     <StyledView className="flex-1 mx-3 pt-1 w-full">
                         <StyledText className="text-lg font-bold text-accent">{sectionTitle}</StyledText>
                     </StyledView>
-
-                    {/*<StyledView className="mt-[2]">*/}
-                    {/*    <Entypo name="dots-three-horizontal" size={22} color="white" />*/}
-                    {/*</StyledView>*/}
                 </StyledView>
             </StyledTouchableOpacity>
             <StyledView className={`border border-b opacity-30 border-secondary ${sortedDates.length > 0 ? 'mb-4' : ''}`}></StyledView>
@@ -65,7 +61,7 @@ const ChoreSectionList = ({ sectionTitle, groupedChores, icon, onPress, cName = 
             >
                 {sortedDates.length > 0 ? sortedDates.map((dateKey) => {
                         return(
-                            <StyledView key={dateKey} className="w-full">
+                            <StyledView key={dateKey} className="w-full ml-2 mb-1">
                                 {/* Date Header */}
                                 <StyledText className="font-semibold text-primary mx-auto mb-2">
                                     {formatDate(dateKey)}
@@ -73,14 +69,14 @@ const ChoreSectionList = ({ sectionTitle, groupedChores, icon, onPress, cName = 
 
                                 {/* List of Chores for the Date */}
                                 {groupedChores[dateKey].map((chore) => (
-                                    <StyledView key={chore.id} className="mb-2 flex-row items-center">
+                                    <StyledView key={chore.id} className="mb-1 ml-3 flex-row items-center">
                                         <StyledText className="text-secondary">{chore.name}</StyledText>
                                     </StyledView>
                                 ))}
                             </StyledView>
                         )}
                     ) :
-                    <StyledView className="m-auto">
+                    <StyledView className="m-auto w-[90]">
                         <AntDesign name="check" size={90} color={Colors.iconGreen} />
                     </StyledView>
                 }

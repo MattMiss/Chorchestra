@@ -23,7 +23,6 @@ import EntryFiltersModal from "@/components/modals/EntryFiltersModal";
 const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledTouchableOpacity = styled(TouchableOpacity);
-const StyledPicker = styled(Picker);
 
 const defaultEntryFilters = {
     completedStartDate: null as Date | null,
@@ -199,19 +198,17 @@ const EntriesScreen = () => {
                                         >
                                             <AntDesign name={sortOrder === 'asc' ? 'arrowup' : 'arrowdown'} size={20} color="white" />
                                         </StyledTouchableOpacity>
-                                        <StyledText className="ml-1 text-primary">Sort</StyledText>
-                                        <StyledView className="flex-grow">
-                                            <Picker
-                                                selectedValue={sortOption}
-                                                style={styles.picker}
-                                                onValueChange={(itemValue) => setSortOption(itemValue)}
-                                                dropdownIconColor="white"
-                                                mode="dropdown"
-                                            >
-                                                <Picker.Item label="Chore Name" value="choreName" style={styles.pickerItem} />
-                                                <Picker.Item label="Completed Date" value="dateCompleted" style={styles.pickerItem} />
-                                            </Picker>
-                                        </StyledView>
+                                        <StyledText className="ml-1 font-bold text-primary">Sort By</StyledText>
+                                        <Picker
+                                            selectedValue={sortOption}
+                                            style={styles.picker}
+                                            onValueChange={(itemValue) => setSortOption(itemValue)}
+                                            dropdownIconColor={Colors.textPrimary}
+                                            mode="dropdown"
+                                        >
+                                            <Picker.Item label="Name" value="choreName" style={styles.pickerItem} />
+                                            <Picker.Item label="Date" value="dateCompleted" style={styles.pickerItem} />
+                                        </Picker>
                                         <StyledTouchableOpacity
                                             onPress={() => setFiltersModalVisible(true)}
                                             className="ml-4 px-4 py-2 items-end"
@@ -276,23 +273,22 @@ const EntriesScreen = () => {
 
                                 {/* Picker Container */}
                                 <StyledView className="flex-row items-center pl-1">
-                                    <StyledView className="flex-grow">
-                                        <StyledPicker
-                                            selectedValue={selectedChoreId}
-                                            onValueChange={(value) => setSelectedChoreId(value as number)}
-                                            mode="dropdown"
-                                            style={styles.picker}
-                                        >
-                                            {chores.map(chore => (
-                                                <Picker.Item
-                                                    key={chore.id}
-                                                    label={chore.name}
-                                                    value={chore.id}
-                                                    style={styles.pickerItem}
-                                                />
-                                            ))}
-                                        </StyledPicker>
-                                    </StyledView>
+                                    <Picker
+                                        selectedValue={selectedChoreId}
+                                        onValueChange={(value) => setSelectedChoreId(value as number)}
+                                        mode="dropdown"
+                                        dropdownIconColor={Colors.textPrimary}
+                                        style={styles.picker}
+                                    >
+                                        {chores.map(chore => (
+                                            <Picker.Item
+                                                key={chore.id}
+                                                label={chore.name}
+                                                value={chore.id}
+                                                style={styles.pickerItem}
+                                            />
+                                        ))}
+                                    </Picker>
                                 </StyledView>
                             </Container>
 
@@ -346,14 +342,12 @@ const EntriesScreen = () => {
 
 const styles = StyleSheet.create({
     picker: {
-        height: 40,
+        flex: 1,
         color: Colors.textPrimary,
-        backgroundColor: Colors.backgroundMedium,
     },
     pickerItem: {
         color: Colors.textPrimary,
         backgroundColor: Colors.backgroundMedium,
-        fontSize: 18,
     },
 });
 

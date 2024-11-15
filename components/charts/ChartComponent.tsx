@@ -12,7 +12,6 @@ import {FontAwesome} from "@expo/vector-icons";
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
-const StyledPicker = styled(Picker);
 const StyledTouchableOpacity = styled(TouchableOpacity);
 
 const { width: screenWidth } = Dimensions.get('window');
@@ -153,24 +152,22 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ data, timeRange, onTime
 
                 {/* Picker Container */}
                 <StyledView className="px-4 flex-row items-center">
-                    <StyledView className="flex-grow">
-                        <StyledPicker
-                            selectedValue={timeRange}
-                            onValueChange={(value) => onTimeRangeChange(value as string)}
-                            mode="dropdown"
-                            dropdownIconColor={Colors.textPrimary}
-                            style={styles.picker}
-                        >
-                            {timeRanges.map(range => (
-                                <Picker.Item
-                                    key={range.value}
-                                    label={range.label}
-                                    value={range.value}
-                                    style={styles.pickerItem}
-                                />
-                            ))}
-                        </StyledPicker>
-                    </StyledView>
+                    <Picker
+                        selectedValue={timeRange}
+                        onValueChange={(value) => onTimeRangeChange(value as string)}
+                        mode="dropdown"
+                        dropdownIconColor={Colors.textPrimary}
+                        style={styles.picker}
+                    >
+                        {timeRanges.map(range => (
+                            <Picker.Item
+                                key={range.value}
+                                label={range.label}
+                                value={range.value}
+                                style={styles.pickerItem}
+                            />
+                        ))}
+                    </Picker>
                 </StyledView>
             </StyledView>
 
@@ -236,14 +233,12 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ data, timeRange, onTime
 
 const styles = StyleSheet.create({
     picker: {
-        height: 40,
+        flex: 1,
         color: Colors.textPrimary,
-        backgroundColor: Colors.backgroundMedium,
     },
     pickerItem: {
         color: Colors.textPrimary,
         backgroundColor: Colors.backgroundMedium,
-        fontSize: 18,
     },
 });
 

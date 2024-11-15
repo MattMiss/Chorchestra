@@ -83,9 +83,8 @@ const FrequencySelector: React.FC<FrequencySelectorProps> = ({
 
 const styles = StyleSheet.create({
     picker: {
-        height: 40,
+        flex: 1,
         color: Colors.textPrimary,
-        backgroundColor: Colors.backgroundMedium,
     },
     pickerItem: {
         color: Colors.textPrimary,

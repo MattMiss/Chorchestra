@@ -69,7 +69,7 @@ const HomeScreen = () => {
                 {/* Chores SectionList with grouped data */}
                 <StyledView className="flex-1 flex-row justify-between">
                     <ChoreSectionList
-                        cName="mr-2"
+                        sectionClassName="mr-2"
                         sectionTitle="Past Due"
                         groupedChores={groupedPastDueSection}
                         icon={sectionIcon.pastDue}
@@ -80,7 +80,7 @@ const HomeScreen = () => {
                         )}
                     />
                     <ChoreSectionList
-                        cName={"ml-2"}
+                        sectionClassName={"ml-2"}
                         sectionTitle="Due Today"
                         groupedChores={groupedTodaySection}
                         icon={sectionIcon.dueToday}
@@ -93,7 +93,7 @@ const HomeScreen = () => {
                 </StyledView>
 
                 <ChoreSectionList
-                    cName="p-4"
+                    sectionClassName="p-4"
                     sectionTitle="Due Within A Week"
                     groupedChores={groupedWithinAWeekSection}
                     icon={sectionIcon.dueInAWeek}

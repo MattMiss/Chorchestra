@@ -83,9 +83,8 @@ const EstTimeSelector: React.FC<EstTimeSelectorProps> = ({
 
 const styles = StyleSheet.create({
     picker: {
-        height: 40,
+        flex: 1,
         color: Colors.textPrimary,
-        backgroundColor: Colors.backgroundMedium,
     },
     pickerItem: {
         color: Colors.textPrimary,

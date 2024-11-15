@@ -19,9 +19,10 @@ export default function TabLayout() {
                         borderTopColor: '#383838',
                         borderTopWidth: 0.5,
                         shadowOpacity: 0,  // Remove shadow on iOS
+                        height: 60,
                     },
                     tabBarItemStyle: {
-                        padding: 4
+                        paddingTop: 4
                     },
                     headerShown: false,
                     tabBarHideOnKeyboard: true,
@@ -32,7 +33,7 @@ export default function TabLayout() {
                     options={{
                         title: 'Home',
                         tabBarIcon: ({ color }) => (
-                            <FontAwesome name="home" size={24} color={color} />
+                            <FontAwesome name="home" size={30} color={color} />
                         ),
                     }}
                 />

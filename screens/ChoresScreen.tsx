@@ -265,12 +265,12 @@ const ChoresScreen = () => {
 
 const styles = StyleSheet.create({
     picker: {
-        color: Colors.textPrimary,
-        flex: 1
+        flex: 1,
+        color: Colors.textPrimary
     },
     pickerItem: {
         color: Colors.textPrimary,
-        backgroundColor: Colors.backgroundMedium,
+        backgroundColor: Colors.backgroundMedium
     },
 });
 
