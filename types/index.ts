@@ -9,7 +9,6 @@ export type EstTimeType = 'second' | 'minute' | 'hour' | 'day';
 
 export const estTimeTypeOptions: EstTimeType[] = ['second', 'minute', 'hour', 'day'];
 
-
 export type PriorityLevel = 1 | 2 | 3;
 
 export const priorityOptions = [
