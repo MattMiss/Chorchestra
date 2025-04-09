@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, ViewProps } from 'react-native';
-import { styled } from 'nativewind';
+//import { styled } from 'nativewind';
 import {Colors} from "@/constants/Colors";
 
-const StyledView = styled(View);
+// const View = styled(View);
 
 interface ContainerProps extends ViewProps {
     children: React.ReactNode;
@@ -11,9 +11,9 @@ interface ContainerProps extends ViewProps {
 
 const Container: React.FC<ContainerProps> = ({ children, ...rest }) => {
     return (
-        <StyledView className={`flex w-full p-4 mb-4 rounded-lg bg-medium`} {...rest}>
+        <View className={`flex w-full p-4 mb-4 rounded-lg bg-medium`} {...rest}>
             {children}
-        </StyledView>
+        </View>
     );
 };
 

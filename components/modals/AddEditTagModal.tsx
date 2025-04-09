@@ -1,14 +1,14 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Modal, TouchableWithoutFeedback } from 'react-native';
-import { styled } from 'nativewind';
+//import { styled } from 'nativewind';
 import { Tag } from '@/types';
 import TextInputFloatingLabel from "@/components/common/TextInputFloatingLabel";
 import { Colors } from "@/constants/Colors";
 import { useTagsContext } from "@/context/TagsContext";
 
-const StyledView = styled(View);
-const StyledText = styled(Text);
-const StyledTouchableOpacity = styled(TouchableOpacity);
+// const View = styled(View);
+// const Text = styled(Text);
+// const TouchableOpacity = styled(TouchableOpacity);
 
 interface TagModalProps {
     selectedTag: Tag | null;
@@ -72,24 +72,24 @@ const AddEditTagModal = ({ selectedTag, visible, onClose, availableTags }: TagMo
                 onPressOut={onClose}
             >
                 <TouchableWithoutFeedback onPress={onClose}>
-                    <StyledView className="flex-1 justify-end items-center bg-transparent-70">
+                    <View className="flex-1 justify-end items-center bg-transparent-70">
                         <TouchableWithoutFeedback>
-                            <StyledView className="p-4 w-full max-w-md min-h-[240] rounded-t-3xl bg-medium">
+                            <View className="p-4 w-full max-w-md min-h-[240] rounded-t-3xl bg-medium">
                                 <TextInputFloatingLabel label="Tag Name" value={tagInput} onChangeText={setTagInput} />
-                                <StyledView className="mt-6">
-                                    <StyledTouchableOpacity
+                                <View className="mt-6">
+                                    <TouchableOpacity
                                         onPress={handleSaveTag}
                                         className="my-4 p-3 rounded-lg"
                                         style={{ backgroundColor: Colors.buttonPrimary }}
                                     >
-                                        <StyledText className="text-white text-center">
+                                        <Text className="text-white text-center">
                                             {selectedTag ? 'Save' : 'Add Tag'}
-                                        </StyledText>
-                                    </StyledTouchableOpacity>
-                                </StyledView>
-                            </StyledView>
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
                         </TouchableWithoutFeedback>
-                    </StyledView>
+                    </View>
                 </TouchableWithoutFeedback>
             </TouchableOpacity>
         </Modal>

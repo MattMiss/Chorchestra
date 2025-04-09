@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { View, TouchableOpacity, Modal, TouchableWithoutFeedback, FlatList } from 'react-native';
-import { styled } from 'nativewind';
+//import { styled } from 'nativewind';
 import { Tag } from '@/types';
 import { debounce } from 'lodash';
 import { useTagsContext } from "@/context/TagsContext"; // Update to use TagsContext
@@ -13,7 +13,7 @@ interface TagWithAvailability extends Tag {
     isAvailable: boolean;
 }
 
-const StyledView = styled(View);
+// const View = styled(View);
 
 interface TagModalProps {
     visible: boolean;
@@ -101,15 +101,15 @@ const EditTagsModal = ({ visible, onClose, onTagAdded, selectedTags }: TagModalP
                 onPressOut={onClose}
             >
                 <TouchableWithoutFeedback onPress={onClose}>
-                    <StyledView className="flex-1 justify-end items-center bg-transparent-70">
+                    <View className="flex-1 justify-end items-center bg-transparent-70">
                         <TouchableWithoutFeedback>
-                            <StyledView className={`p-4 w-full max-w-md min-h-[75%] rounded-t-3xl bg-medium`}>
-                                <StyledView className="flex-1">
-                                    <StyledView className="w-full p-3">
+                            <View className={`p-4 w-full max-w-md min-h-[75%] rounded-t-3xl bg-medium`}>
+                                <View className="flex-1">
+                                    <View className="w-full p-3">
                                         <TextInputFloatingLabel label='Search for a tag' value={tagInput} onChangeText={handleInputChange} />
-                                    </StyledView>
+                                    </View>
 
-                                    <StyledView className="px-2">
+                                    <View className="px-2">
                                         <FlatList<TagWithAvailability>
                                             data={memoizedSuggestionsList}
                                             renderItem={({ item }) => (
@@ -122,11 +122,11 @@ const EditTagsModal = ({ visible, onClose, onTagAdded, selectedTags }: TagModalP
                                             keyExtractor={(item) => item.id.toString()}
                                             style={{ marginBottom: 10 }}
                                         />
-                                    </StyledView>
-                                </StyledView>
-                            </StyledView>
+                                    </View>
+                                </View>
+                            </View>
                         </TouchableWithoutFeedback>
-                    </StyledView>
+                    </View>
                 </TouchableWithoutFeedback>
             </TouchableOpacity>
         </Modal>

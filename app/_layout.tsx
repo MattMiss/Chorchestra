@@ -2,7 +2,7 @@
 import React, {useEffect} from 'react';
 import {Stack, useNavigationContainerRef} from "expo-router";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { NativeWindStyleSheet } from "nativewind";
+//import { NativeWindStyleSheet } from "nativewind";
 import { MenuProvider } from 'react-native-popup-menu';
 import * as Sentry from '@sentry/react-native';
 import {isRunningInExpoGo} from "expo";
@@ -13,9 +13,7 @@ import {TagsProvider} from "@/context/TagsContext";
 import NotificationManager from "@/components/notifications/NotificationManager";
 import {UserConfigProvider} from "@/context/UserConfigContext";
 
-NativeWindStyleSheet.setOutput({
-    default: "native",
-});
+import "../global.css";
 
 // const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
 //

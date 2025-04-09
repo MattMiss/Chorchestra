@@ -2,16 +2,16 @@
 
 import React, { useState, useEffect } from 'react';
 import {Modal, View, TouchableOpacity, Text, ScrollView, TouchableWithoutFeedback} from 'react-native';
-import { styled } from 'nativewind';
+//import { styled } from 'nativewind';
 import TagItem from '@/components/tags/TagItem';
 import { Tag } from '@/types';
 import {getContrastingTextColor} from "@/utils/helpers";
 import {COLOR_PALETTE, Colors} from "@/constants/Colors";
 
 // Reusable styled components
-const StyledView = styled(View);
-const StyledTouchableOpacity = styled(TouchableOpacity);
-const StyledText = styled(Text);
+// const View = styled(View);
+// const TouchableOpacity = styled(TouchableOpacity);
+// const Text = styled(Text);
 
 interface ColorPickerModalProps {
     visible: boolean;
@@ -53,31 +53,31 @@ const ColorPickerModal: React.FC<ColorPickerModalProps> = ({ visible, onClose, o
             animationType="slide"
         >
             <TouchableWithoutFeedback onPress={onClose}>
-                <StyledView className="flex-1 justify-end items-center bg-transparent-70">
+                <View className="flex-1 justify-end items-center bg-transparent-70">
                     <TouchableWithoutFeedback>
-                        <StyledView className={`p-8 w-full max-w-md min-h-[300] rounded-t-3xl bg-medium`}>
+                        <View className={`p-8 w-full max-w-md min-h-[300] rounded-t-3xl bg-medium`}>
                             {
                                 tag &&
-                                <StyledView className=''>
-                                    <StyledView className='flex-row justify-between mb-4 mr-2'>
-                                        <StyledText className={`text-primary`}>Original</StyledText>
-                                        <StyledText className={`text-primary`}>New</StyledText>
-                                    </StyledView>
-                                    <StyledView className='flex-row justify-between mb-4'>
+                                <View className=''>
+                                    <View className='flex-row justify-between mb-4 mr-2'>
+                                        <Text className={`text-primary`}>Original</Text>
+                                        <Text className={`text-primary`}>New</Text>
+                                    </View>
+                                    <View className='flex-row justify-between mb-4'>
                                         {/* Tag Preview */}
                                         <TagItem tag={tag} isRemovable={false} textSize="text-md"/>
                                         <TagItem tag={{...tag, color: tempColor}} isRemovable={false} textSize="text-md"/>
-                                    </StyledView>
-                                </StyledView>
+                                    </View>
+                                </View>
                             }
-                            <StyledView className='border-b-gray-400 border-b-2 mb-2'></StyledView>
+                            <View className='border-b-gray-400 border-b-2 mb-2'></View>
 
                             {/* Render each color group as a row */}
                             <ScrollView>
                                 {COLOR_PALETTE.map((colorGroup, index) => (
-                                    <StyledView key={index} className="flex-row justify-around mb-4">
+                                    <View key={index} className="flex-row justify-around mb-4">
                                         {colorGroup.map((color, shadeIndex) => (
-                                            <StyledTouchableOpacity
+                                            <TouchableOpacity
                                                 key={shadeIndex}
                                                 className={`w-10 h-10 rounded-full border-2 ${
                                                     tempColor === color ? 'border-black border-1' : originalColor === color ? 'border-white border-2' : 'border-0'
@@ -87,40 +87,40 @@ const ColorPickerModal: React.FC<ColorPickerModalProps> = ({ visible, onClose, o
                                                 accessibilityLabel={`Select color ${color}`}
                                             >
                                                 {originalColor === color && tempColor !== color && (
-                                                    <StyledText className="text-center" style={{ color: getContrastingTextColor(color) }}>*</StyledText>
+                                                    <Text className="text-center" style={{ color: getContrastingTextColor(color) }}>*</Text>
                                                 )}
                                                 {tempColor === color && (
-                                                    <StyledText className="text-center" style={{ color: getContrastingTextColor(color) }}>✓</StyledText>
+                                                    <Text className="text-center" style={{ color: getContrastingTextColor(color) }}>✓</Text>
                                                 )}
-                                            </StyledTouchableOpacity>
+                                            </TouchableOpacity>
                                         ))}
-                                    </StyledView>
+                                    </View>
                                 ))}
                             </ScrollView>
 
                             {/* Buttons */}
-                            <StyledView className="flex-row gap-4 justify-between mt-4">
-                                <StyledTouchableOpacity
+                            <View className="flex-row gap-4 justify-between mt-4">
+                                <TouchableOpacity
                                     className="flex-1 px-4 py-2 rounded-full items-center"
                                     onPress={handleCancel}
                                     accessibilityLabel="Cancel color change"
                                     style={{backgroundColor: Colors.buttonSecondary}}
                                 >
-                                    <StyledText className={`text-primary`}>Cancel</StyledText>
-                                </StyledTouchableOpacity>
+                                    <Text className={`text-primary`}>Cancel</Text>
+                                </TouchableOpacity>
 
-                                <StyledTouchableOpacity
+                                <TouchableOpacity
                                     className="flex-1 px-4 py-2 rounded-full items-center"
                                     onPress={handleSave}
                                     accessibilityLabel="Save color change"
                                     style={{backgroundColor: Colors.buttonPrimary}}
                                 >
-                                    <StyledText className={`text-primary`}>Save</StyledText>
-                                </StyledTouchableOpacity>
-                            </StyledView>
-                        </StyledView>
+                                    <Text className={`text-primary`}>Save</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
                     </TouchableWithoutFeedback>
-                </StyledView>
+                </View>
             </TouchableWithoutFeedback>
         </Modal>
     );

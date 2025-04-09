@@ -8,14 +8,14 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import { styled } from 'nativewind';
+//import { styled } from 'nativewind';
 import {AntDesign} from "@expo/vector-icons";
 import {Colors} from "@/constants/Colors";
 
 // Reusable styled components
-const StyledText = styled(Text);
-const StyledView = styled(View);
-const StyledTouchableOpacity = styled(TouchableOpacity);
+// const Text = styled(Text);
+// const View = styled(View);
+// const TouchableOpacity = styled(TouchableOpacity);
 
 interface OptionsModalProps {
     visible: boolean;
@@ -39,16 +39,16 @@ const OptionsModal: React.FC<OptionsModalProps> = ({
     return (
         <Modal visible={visible} transparent animationType="fade">
             <TouchableWithoutFeedback onPress={onClose}>
-                <StyledView className="flex-1 justify-end items-center bg-transparent-70">
+                <View className="flex-1 justify-end items-center bg-transparent-70">
                     <TouchableWithoutFeedback>
-                        <StyledView className={`p-4 w-full max-w-md min-h-[200] rounded-t-3xl bg-medium`}>
-                            <StyledView className="flex-1 items-center">
-                                {title && <StyledText className={`text-lg font-semibold mb-4 text-primary`}>
+                        <View className={`p-4 w-full max-w-md min-h-[200] rounded-t-3xl bg-medium`}>
+                            <View className="flex-1 items-center">
+                                {title && <Text className={`text-lg font-semibold mb-4 text-primary`}>
                                     {title}
-                                </StyledText>}
+                                </Text>}
 
-                                <StyledView className="flex-1 justify-center items-center w-full">
-                                    <StyledTouchableOpacity
+                                <View className="flex-1 justify-center items-center w-full">
+                                    <TouchableOpacity
                                         className="w-full py-3 mb-2"
                                         onPress={() => {
                                             onClose();
@@ -56,15 +56,15 @@ const OptionsModal: React.FC<OptionsModalProps> = ({
                                         }}
                                         accessibilityLabel={option1Text}
                                     >
-                                        <StyledView className='flex-row items-center justify-center'>
-                                            <StyledText className={`mr-2 text-center text-xl text-primary`}>
+                                        <View className='flex-row items-center justify-center'>
+                                            <Text className={`mr-2 text-center text-xl text-primary`}>
                                                 {option1Text}
-                                            </StyledText>
+                                            </Text>
                                             <AntDesign name="right" size={18} color="white" />
-                                        </StyledView>
-                                    </StyledTouchableOpacity>
+                                        </View>
+                                    </TouchableOpacity>
 
-                                    <StyledTouchableOpacity
+                                    <TouchableOpacity
                                         className="w-full py-3"
                                         onPress={() => {
                                             onClose();
@@ -72,18 +72,18 @@ const OptionsModal: React.FC<OptionsModalProps> = ({
                                         }}
                                         accessibilityLabel={option2Text}
                                     >
-                                        <StyledView className='flex-row items-center justify-center'>
-                                            <StyledText className={`mr-2 text-center text-xl text-primary`}>
+                                        <View className='flex-row items-center justify-center'>
+                                            <Text className={`mr-2 text-center text-xl text-primary`}>
                                                 {option2Text}
-                                            </StyledText>
+                                            </Text>
                                             <AntDesign name="right" size={18} color="white" />
-                                        </StyledView>
-                                    </StyledTouchableOpacity>
-                                </StyledView>
-                            </StyledView>
-                        </StyledView>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
                     </TouchableWithoutFeedback>
-                </StyledView>
+                </View>
             </TouchableWithoutFeedback>
         </Modal>
     );

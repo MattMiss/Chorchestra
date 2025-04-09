@@ -2,14 +2,14 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 import { FontAwesome } from '@expo/vector-icons';
 import { View } from 'react-native';
-import { styled } from 'nativewind';
+//import { styled } from 'nativewind';
 
 // Styled view for background color
-const StyledView = styled(View);
+//const View = styled(View);
 
 export default function TabLayout() {
     return (
-        <StyledView  className='flex-1 bg-dark'>
+        <View  className='flex-1 bg-dark'>
             <Tabs
                 screenOptions={{
                     tabBarActiveTintColor: '#F7FAFF',  // White for active icons/text
@@ -65,6 +65,6 @@ export default function TabLayout() {
                     }}
                 />
             </Tabs>
-        </StyledView>
+        </View>
     );
 }

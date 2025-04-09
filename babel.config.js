@@ -1,18 +1,17 @@
 module.exports = function (api) {
-  api.cache(true);
-  return {
-    presets: ['babel-preset-expo'],
-    plugins: [
-      'nativewind/babel',
-      'react-native-reanimated/plugin',
-      ['module:react-native-dotenv', {
-        "moduleName": "@env",
-        "path": ".env",
-        "blacklist": null,
-        "whitelist": null,
-        "safe": false,
-        "allowUndefined": true
-      }]
-    ]
+    api.cache(true);
+    return {
+      presets: [
+        ["babel-preset-expo", { jsxImportSource: "nativewind" }]  // NativeWind JSX support
+      ],
+      plugins: [
+        ['module:react-native-dotenv', {
+          moduleName: '@env',
+          path: '.env',
+          allowUndefined: true
+        }],
+        'react-native-reanimated/plugin'  // Must be last in the list
+      ]
+    };
   };
-};
+  

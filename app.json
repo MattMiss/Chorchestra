@@ -38,11 +38,10 @@
         "projectId": "96a96229-1b41-4e6e-9c60-adf1224d193d"
       }
     },
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
+    "runtimeVersion": "0.1.0",
     "updates": {
-      "url": "https://u.expo.dev/96a96229-1b41-4e6e-9c60-adf1224d193d"
+        "enabled": false,
+        "url": "https://u.expo.dev/96a96229-1b41-4e6e-9c60-adf1224d193d"
     }
   }
 }

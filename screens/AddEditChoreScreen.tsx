@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
-import { styled } from 'nativewind';
+//import { styled } from 'nativewind';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import TextInputFloatingLabel from "@/components/common/TextInputFloatingLabel";
 import Container from '@/components/common/Container';
@@ -19,10 +19,10 @@ import EditTagsModal from "@/components/modals/EditTagsModal";
 import EstTimeSelector from "@/components/chores/EstTimeSelector";
 import { Colors } from "@/constants/Colors";
 
-const StyledView = styled(View);
-const StyledScrollView = styled(ScrollView);
-const StyledText = styled(Text);
-const StyledTouchableOpacity = styled(TouchableOpacity);
+// const View = styled(View);
+// const ScrollView = styled(ScrollView);
+// const Text = styled(Text);
+// const TouchableOpacity = styled(TouchableOpacity);
 
 const AddEditChoreScreen = () => {
     const [name, setName] = useState('');
@@ -164,47 +164,47 @@ const AddEditChoreScreen = () => {
             showHeaderNavOptionButton
             headerTitle={isEditing ? 'Edit Chore' : 'Add Chore'}
         >
-            <StyledScrollView className="p-2 flex-grow" contentContainerStyle={{ paddingBottom: 30 }}>
+            <ScrollView className="p-2 flex-grow" contentContainerStyle={{ paddingBottom: 30 }}>
                 <Container>
                     <TextInputFloatingLabel label="Chore Name" value={name} onChangeText={setName} />
                     <TextInputFloatingLabel label="Description" value={description} onChangeText={setDescription} />
                 </Container>
 
                 <Container>
-                    <StyledTouchableOpacity
+                    <TouchableOpacity
                         className="flex-row items-center min-h-[50]"
                         onPress={() => openModal('instructions', 'Instructions', 'Instruction', instructions)}
                     >
-                        <StyledText className="flex-grow text-xl text-secondary">
+                        <Text className="flex-grow text-xl text-secondary">
                             {instructions.length > 0 ? instructions.length : 'No'} Instructions
-                        </StyledText>
-                        <StyledView className="py-1 pl-5 pr-2">
+                        </Text>
+                        <View className="py-1 pl-5 pr-2">
                             <AntDesign name="form" size={24} color="white" />
-                        </StyledView>
-                    </StyledTouchableOpacity>
+                        </View>
+                    </TouchableOpacity>
                 </Container>
 
                 <Container>
-                    <StyledTouchableOpacity
+                    <TouchableOpacity
                         className="flex-row items-center min-h-[50]"
                         onPress={() => openModal('items', 'Items Needed', 'Item', itemsNeeded)}
                     >
-                        <StyledText className="flex-grow text-xl text-secondary">
+                        <Text className="flex-grow text-xl text-secondary">
                             {itemsNeeded.length > 0 ? itemsNeeded.length : 'No'} Items Needed
-                        </StyledText>
-                        <StyledView className="py-1 pl-5 pr-2">
+                        </Text>
+                        <View className="py-1 pl-5 pr-2">
                             <AntDesign name="form" size={24} color="white" />
-                        </StyledView>
-                    </StyledTouchableOpacity>
+                        </View>
+                    </TouchableOpacity>
                 </Container>
 
                 <Container>
-                    <StyledView className="py-2">
+                    <View className="py-2">
                         <EstTimeSelector estTime={estTime} setEstTime={setEstTime} timeType={estTimeType} setTimeType={setEstTimeType} />
-                    </StyledView>
-                    <StyledView className="pt-1">
+                    </View>
+                    <View className="pt-1">
                         <FrequencySelector frequencyNumber={frequency} setFrequencyNumber={setFrequency} frequencyType={frequencyType} setFrequencyType={setFrequencyType} />
-                    </StyledView>
+                    </View>
                     <PrioritySelector priority={priority} setPriority={setPriority} />
                 </Container>
 
@@ -212,18 +212,18 @@ const AddEditChoreScreen = () => {
                     <TagSelector canRemoveTags={true} selectedTags={selectedTags} onRemoveTag={handleRemoveTag} onToggleModal={toggleTagModal} />
                 </Container>
 
-                <StyledView className="mb-10">
-                    <StyledTouchableOpacity
+                <View className="mb-10">
+                    <TouchableOpacity
                         onPress={handleSaveChore}
                         className="my-4 p-3 rounded-lg"
                         style={{ backgroundColor: Colors.buttonPrimary }}
                     >
-                        <StyledText className="text-center text-primary">
+                        <Text className="text-center text-primary">
                             {isEditing ? 'Save Changes' : 'Save Chore'}
-                        </StyledText>
-                    </StyledTouchableOpacity>
-                </StyledView>
-            </StyledScrollView>
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            </ScrollView>
 
             <ListModal
                 visible={isListModalVisible}

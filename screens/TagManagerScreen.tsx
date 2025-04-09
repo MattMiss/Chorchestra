@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { TouchableOpacity, View, Text } from "react-native";
 import ThemedScreen from "@/components/common/ThemedScreen";
 import ColorPickerModal from "@/components/modals/ColorPickerModal";
-import { styled } from "nativewind";
+//import { styled } from "nativewind";
 import { AntDesign } from "@expo/vector-icons";
 import AddEditTagModal from "@/components/modals/AddEditTagModal";
 import { Tag } from "@/types";
@@ -12,9 +12,9 @@ import { SwipeListView } from "react-native-swipe-list-view";
 import { Colors } from "@/constants/Colors";
 import { useTagsContext } from "@/context/TagsContext";
 
-const StyledView = styled(View);
-const StyledText = styled(Text);
-const StyledTouchableOpacity = styled(TouchableOpacity);
+// const View = styled(View);
+// const Text = styled(Text);
+// const TouchableOpacity = styled(TouchableOpacity);
 
 const TagManagerScreen = () => {
     const [isColorModalVisible, setIsColorModalVisible] = useState(false);
@@ -70,8 +70,8 @@ const TagManagerScreen = () => {
             showHeaderNavOptionButton={false}
             headerTitle={'#Tags'}
         >
-            <StyledView className="px-2 flex-1">
-                <StyledView className="p-4">
+            <View className="px-2 flex-1">
+                <View className="p-4">
                     {/* Swipeable List for Tags */}
                     <SwipeListView
                         data={swipeListData}
@@ -85,12 +85,12 @@ const TagManagerScreen = () => {
                         disableRightSwipe
                         contentContainerStyle={{ paddingBottom: 100 }}
                         ListEmptyComponent={
-                            <StyledView className="flex-1 justify-center items-center">
-                                <StyledText className="text-secondary">No tags available.</StyledText>
-                            </StyledView>
+                            <View className="flex-1 justify-center items-center">
+                                <Text className="text-secondary">No tags available.</Text>
+                            </View>
                         }
                     />
-                </StyledView>
+                </View>
 
                 {/* Color Picker Modal */}
                 <ColorPickerModal
@@ -107,10 +107,10 @@ const TagManagerScreen = () => {
                     availableTags={tags}
                     selectedTag={selectedTag}
                 />
-            </StyledView>
+            </View>
 
-            <StyledView className="absolute right-4 bottom-4">
-                <StyledTouchableOpacity
+            <View className="absolute right-4 bottom-4">
+                <TouchableOpacity
                     className="items-center justify-center m-auto w-14 h-14 rounded-full"
                     onPress={handleOpenTagModal}
                     activeOpacity={0.7}
@@ -118,8 +118,8 @@ const TagManagerScreen = () => {
                     style={{ backgroundColor: Colors.buttonAlternative }}
                 >
                     <AntDesign name="plus" size={30} color="white" />
-                </StyledTouchableOpacity>
-            </StyledView>
+                </TouchableOpacity>
+            </View>
         </ThemedScreen>
     );
 };

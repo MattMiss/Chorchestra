@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { styled } from 'nativewind';
+//import { styled } from 'nativewind';
 import { View, ActivityIndicator } from "react-native";
 import { router } from "expo-router";
 import {Colors} from "@/constants/Colors";
@@ -8,7 +8,7 @@ import {useChoresContext} from "@/context/ChoresContext";
 import { useTagsContext } from '@/context/TagsContext';
 import {useEntriesContext} from "@/context/EntriesContext";
 
-const StyledView = styled(View);
+// const View = styled(View);
 
 const InitializeScreen = () => {
     const {isChoresLoading} = useChoresContext();
@@ -27,9 +27,9 @@ const InitializeScreen = () => {
                 showHeaderNavButton={false}
                 showHeaderNavOptionButton={false}
             >
-                <StyledView className="p-2 flex-grow">
+                <View className="p-2 flex-grow">
                     <ActivityIndicator size="large" color={Colors.accent} />
-                </StyledView>
+                </View>
             </ThemedScreen>
         );
     }
@@ -40,9 +40,9 @@ const InitializeScreen = () => {
             showHeaderNavButton={false}
             showHeaderNavOptionButton={false}
         >
-            <StyledView className="p-2 flex-grow">
+            <View className="p-2 flex-grow">
                 <ActivityIndicator size="large" color={Colors.accent} />
-            </StyledView>
+            </View>
         </ThemedScreen>
     );
 };

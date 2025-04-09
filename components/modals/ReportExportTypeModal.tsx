@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Modal, TouchableWithoutFeedback } from 'react-native';
-import { styled } from 'nativewind';
+//import { styled } from 'nativewind';
 
-const StyledView = styled(View);
-const StyledText = styled(Text);
-const StyledTouchableOpacity = styled(TouchableOpacity);
+// const View = styled(View);
+// const Text = styled(Text);
+// const TouchableOpacity = styled(TouchableOpacity);
 
 interface ReportExportTypeModalProps {
     visible: boolean;
@@ -17,37 +17,37 @@ const ReportExportTypeModal = ({ visible, onClose, onSendEmail, onExportFile }: 
     return (
         <Modal visible={visible} transparent animationType="fade">
             <TouchableWithoutFeedback onPress={onClose}>
-                <StyledView className="flex-1 justify-end items-center bg-transparent-70">
+                <View className="flex-1 justify-end items-center bg-transparent-70">
                     <TouchableWithoutFeedback>
-                        <StyledView className="p-4 w-full max-w-md min-h-[200] rounded-t-3xl bg-medium">
-                            <StyledText className="text-lg font-bold mb-4 text-primary text-center">
+                        <View className="p-4 w-full max-w-md min-h-[200] rounded-t-3xl bg-medium">
+                            <Text className="text-lg font-bold mb-4 text-primary text-center">
                                 Export Report
-                            </StyledText>
+                            </Text>
 
                             {/* Option to Send Report via Email */}
-                            <StyledTouchableOpacity
+                            <TouchableOpacity
                                 onPress={() => {
                                     onSendEmail();
                                     onClose();
                                 }}
                                 className="p-4 mb-4 rounded-lg bg-buttonPrimary"
                             >
-                                <StyledText className="text-primary text-center font-bold">Send as Email</StyledText>
-                            </StyledTouchableOpacity>
+                                <Text className="text-primary text-center font-bold">Send as Email</Text>
+                            </TouchableOpacity>
 
                             {/* Option to Export Report as File */}
-                            <StyledTouchableOpacity
+                            <TouchableOpacity
                                 onPress={() => {
                                     onExportFile();
                                     onClose();
                                 }}
                                 className="p-4 rounded-lg bg-buttonAlternative"
                             >
-                                <StyledText className="text-primary text-center font-bold">Export as File</StyledText>
-                            </StyledTouchableOpacity>
-                        </StyledView>
+                                <Text className="text-primary text-center font-bold">Export as File</Text>
+                            </TouchableOpacity>
+                        </View>
                     </TouchableWithoutFeedback>
-                </StyledView>
+                </View>
             </TouchableWithoutFeedback>
         </Modal>
     );

@@ -13,6 +13,7 @@ interface EntriesContextType {
     addEntry: (newEntry: Entry) => void;
     editEntry: (updatedEntry: Entry) => void;
     deleteEntry: (entryId: number) => void;
+    deleteEntriesByChoreId: (choreId: number) => void;
     setEntries: (entries: Entry[]) => void;
 }
 
@@ -98,6 +99,17 @@ export const EntriesProvider: React.FC<EntriesProviderProps> = ({ children }) =>
         [entries, saveEntriesMutation]
     );
 
+    // Delete all entries with a specific choreId
+    const deleteEntriesByChoreId = useCallback(
+        (choreId: number) => {
+            if (!entries) return;
+
+            const updatedEntries = entries.filter(entry => entry.choreId !== choreId);
+            saveEntriesMutation.mutate(updatedEntries);
+        },
+        [entries, saveEntriesMutation]
+    );
+
     // Set all entries (e.g., for importing data)
     const setEntries = useCallback(
         (newEntries: Entry[]) => {
@@ -108,7 +120,7 @@ export const EntriesProvider: React.FC<EntriesProviderProps> = ({ children }) =>
     );
 
     return (
-        <EntriesContext.Provider value={{ entries, isEntriesLoading, isEntriesError, addEntry, editEntry, deleteEntry, setEntries }}>
+        <EntriesContext.Provider value={{ entries, isEntriesLoading, isEntriesError, addEntry, editEntry, deleteEntry, deleteEntriesByChoreId, setEntries }}>
             {children}
         </EntriesContext.Provider>
     );

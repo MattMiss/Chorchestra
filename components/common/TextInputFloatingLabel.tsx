@@ -1,12 +1,12 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Animated, TextInput, TextInputProps, View, Text } from 'react-native';
-import { styled } from 'nativewind';
+//import { styled } from 'nativewind';
 import {Colors} from "@/constants/Colors";
 
-const StyledText = styled(Text);
-const StyledView = styled(View);
-const StyledTextInput = styled(TextInput);
-const StyledAnimatedText = styled(Animated.Text);
+// const Text = styled(Text);
+// const View = styled(View);
+// const TextInput = styled(TextInput);
+// const StyledAnimatedText = styled(Animated.Text);
 
 export const ThemedTextInputTypes = {
     default: 'default',
@@ -91,22 +91,22 @@ const TextInputFloatingLabel: React.FC<TextInputFloatingLabelProps> = ({
     };
 
     return (
-        <StyledView className="mt-2 mx-2">
-            <StyledAnimatedText
+        <View className="mt-2 mx-2">
+            <Animated.Text
                 style={floatingLabelStyle} // Consolidate the styles here
                 className={`absolute text-secondary`}
             >
                 {label}
-            </StyledAnimatedText>
-            <StyledTextInput
+            </Animated.Text>
+            <TextInput
                 className={`pt-3 pb-1 px-2 border-b ${borderColor} text-lg text-primary`}
                 onFocus={handleFocus}
                 onBlur={handleBlur}
                 value={value}
                 {...textInputProps}
             />
-            {showError && hasError && <StyledText className='text-red-500'>{errorMessage}</StyledText>}
-        </StyledView>
+            {showError && hasError && <Text className='text-red-500'>{errorMessage}</Text>}
+        </View>
     );
 };
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Alert } from 'react-native';
-import {styled} from "nativewind";
+//import {styled} from "nativewind";
 import ThemedScreen from "@/components/common/ThemedScreen";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as MailComposer from 'expo-mail-composer';
@@ -14,9 +14,9 @@ import {getChoreNameById} from "@/utils/helpers";
 import ReportContent from '@/components/reports/ReportContent';
 import ReportExportTypeModal from "@/components/modals/ReportExportTypeModal";
 
-const StyledView = styled(View);
-const StyledText = styled(Text);
-const StyledTouchableOpacity = styled(TouchableOpacity);
+// const View = styled(View);
+// const Text = styled(Text);
+// const TouchableOpacity = styled(TouchableOpacity);
 
 const ReportScreen = () => {
 
@@ -127,24 +127,24 @@ const ReportScreen = () => {
             showHeaderNavOptionButton={false}
             headerTitle={'Generate Reports'}
         >
-            <StyledView className="flex-1 px-4">
+            <View className="flex-1 px-4">
                 {/* Date Range Filter */}
-                <StyledText className="font-bold text-lg text-accent mb-2">Date Range</StyledText>
-                <StyledView className='flex-row'>
+                <Text className="font-bold text-lg text-accent mb-2">Date Range</Text>
+                <View className='flex-row'>
                     {/* Start Date Picker Section */}
-                    <StyledView className="flex-1 mx-2">
-                        <StyledTouchableOpacity
+                    <View className="flex-1 mx-2">
+                        <TouchableOpacity
                             className="p-2 rounded-lg mb-2"
                             onPress={() => setShowStartDatePicker(true)}
                             style={{ backgroundColor: Colors.buttonSecondary }}
                         >
-                            <StyledText className={`text-center font-bold text-primary`}>
+                            <Text className={`text-center font-bold text-primary`}>
                                 Begin:{' '}
                                 {startDate
                                     ? dayjs(startDate).format('MMM D, YYYY')
                                     : 'Start Date'}
-                            </StyledText>
-                        </StyledTouchableOpacity>
+                            </Text>
+                        </TouchableOpacity>
 
                         {showStartDatePicker && (
                             <DateTimePicker
@@ -160,22 +160,22 @@ const ReportScreen = () => {
                                 maximumDate={new Date()} // Prevent selecting future dates
                             />
                         )}
-                    </StyledView>
+                    </View>
 
                     {/* End Date Picker Section */}
-                    <StyledView className="flex-1 mx-2">
-                        <StyledTouchableOpacity
+                    <View className="flex-1 mx-2">
+                        <TouchableOpacity
                             className="p-2 rounded-lg mb-2"
                             onPress={() => setShowEndDatePicker(true)}
                             style={{ backgroundColor: Colors.buttonSecondary }}
                         >
-                            <StyledText className={`text-center font-bold text-primary`}>
+                            <Text className={`text-center font-bold text-primary`}>
                                 End:{' '}
                                 {endDate
                                     ? dayjs(endDate).format('MMM D, YYYY')
                                     : 'End Date'}
-                            </StyledText>
-                        </StyledTouchableOpacity>
+                            </Text>
+                        </TouchableOpacity>
 
                         {showEndDatePicker && (
                             <DateTimePicker
@@ -191,41 +191,41 @@ const ReportScreen = () => {
                                 maximumDate={new Date()} // Prevent selecting future dates
                             />
                         )}
-                    </StyledView>
-                </StyledView>
+                    </View>
+                </View>
 
                 {/* Report Buttons/Data */}
-                <StyledText className="font-bold text-lg text-accent mb-2">Report</StyledText>
-                <StyledView className="flex-row">
-                    <StyledView className="flex-1 mx-2">
-                        <StyledTouchableOpacity
+                <Text className="font-bold text-lg text-accent mb-2">Report</Text>
+                <View className="flex-row">
+                    <View className="flex-1 mx-2">
+                        <TouchableOpacity
                             className="p-2 rounded-lg mb-2"
                             onPress={generateReport}
                             style={{ backgroundColor: startDate && endDate ? Colors.buttonPrimary : Colors.buttonPrimaryDisabled }}
                             disabled={!startDate || !endDate}
                         >
-                            <StyledText className={`text-center font-bold text-primary`}>
+                            <Text className={`text-center font-bold text-primary`}>
                                 {reportContent ? 'Generate New Report' : 'Generate Report'}
-                            </StyledText>
-                        </StyledTouchableOpacity>
-                    </StyledView>
-                    <StyledView className="flex-1 mx-2">
-                        <StyledTouchableOpacity
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View className="flex-1 mx-2">
+                        <TouchableOpacity
                             onPress={() => setExportModalVisible(true)}
                             style={{ backgroundColor: reportContent ? Colors.buttonAlternative : Colors.buttonAlternativeDisabled }}
                             disabled={!reportContent}
                             className="p-2 rounded-lg mb-2"
                         >
-                            <StyledText className="text-primary text-center font-bold">Export Report</StyledText>
-                        </StyledTouchableOpacity>
-                    </StyledView>
-                </StyledView>
+                            <Text className="text-primary text-center font-bold">Export Report</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
 
                 {reportContent && (
                     <ReportContent reportContent={reportContent} />
                 )}
 
-            </StyledView>
+            </View>
 
             {/* Export Type Modal */}
             <ReportExportTypeModal

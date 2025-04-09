@@ -4,15 +4,15 @@ import React, {useEffect, useMemo} from 'react';
 import {Dimensions, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {LineChart} from 'react-native-gifted-charts';
 import {Picker} from '@react-native-picker/picker';
-import {styled} from 'nativewind';
+//import {styled} from 'nativewind';
 import dayjs from '@/utils/dayjsConfig';
 import {Colors} from '@/constants/Colors';
 import {ProcessedEntry} from '@/types';
 import {FontAwesome} from "@expo/vector-icons";
 
-const StyledView = styled(View);
-const StyledText = styled(Text);
-const StyledTouchableOpacity = styled(TouchableOpacity);
+// const View = styled(View);
+// const Text = styled(Text);
+// const TouchableOpacity = styled(TouchableOpacity);
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -116,7 +116,7 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ data, timeRange, onTime
     };
 
     useEffect(() => {
-        console.log(JSON.stringify(chartData, null, 2));
+        //console.log(JSON.stringify(chartData, null, 2));
     }, [chartData]);
 
 
@@ -126,32 +126,32 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ data, timeRange, onTime
     const stepValue = maxYValue <= 1 ? 1 : Math.ceil(maxYValue / noOfSections);  // Force step to 1 if max is 1 or less
 
     return (
-        <StyledView className="flex-1">
+        <View className="flex-1">
             {/* Time Range Picker */}
-            <StyledView className="py-1">
-                <StyledView className="px-4 flex-row items-center">
+            <View className="py-1">
+                <View className="px-4 flex-row items-center">
                     {/* Label */}
-                    <StyledText className="text-xl text-secondary">Timeframe</StyledText>
-                    <StyledTouchableOpacity
+                    <Text className="text-xl text-secondary">Timeframe</Text>
+                    <TouchableOpacity
                         onPress={() => changeScale("decrease")}
                         disabled={timeRange === "week"}
                         className="my-4 p-2 rounded-lg ml-4"
                         style={{ backgroundColor: timeRange === "week" ? Colors.buttonSecondary : Colors.buttonPrimary }}
                     >
                         <FontAwesome name="minus" size={20} color={Colors.textPrimary} />
-                    </StyledTouchableOpacity>
-                    <StyledTouchableOpacity
+                    </TouchableOpacity>
+                    <TouchableOpacity
                         disabled={timeRange === "thisYear"}
                         onPress={() => changeScale("increase")}
                         className="my-4 p-2 rounded-lg ml-2"
                         style={{ backgroundColor: timeRange === "thisYear" ? Colors.buttonSecondary : Colors.buttonPrimary }}
                     >
                         <FontAwesome name="plus" size={20} color={Colors.textPrimary} />
-                    </StyledTouchableOpacity>
-                </StyledView>
+                    </TouchableOpacity>
+                </View>
 
                 {/* Picker Container */}
-                <StyledView className="px-4 flex-row items-center">
+                <View className="px-4 flex-row items-center">
                     <Picker
                         selectedValue={timeRange}
                         onValueChange={(value) => onTimeRangeChange(value as string)}
@@ -168,10 +168,10 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ data, timeRange, onTime
                             />
                         ))}
                     </Picker>
-                </StyledView>
-            </StyledView>
+                </View>
+            </View>
 
-            <StyledView className="pt-6">
+            <View className="pt-6">
                 {/* Line Chart */}
                 {chartData.length > 0 ? (
                     <LineChart
@@ -205,29 +205,29 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ data, timeRange, onTime
                             pointerStripColor: Colors.buttonAlternative,
                             pointerLabelComponent: (items: { value: number, date: string}[]) => {
                                 return (
-                                    <StyledView className="flex-row w-[100] mt-[-20] ml-8 p-2 rounded bg-popup">
-                                        <StyledText className="text-primary">
+                                    <View className="flex-row w-[100] mt-[-20] ml-8 p-2 rounded bg-popup">
+                                        <Text className="text-primary">
                                             {items[0].value}
-                                        </StyledText>
-                                        <StyledText className="text-primary">
+                                        </Text>
+                                        <Text className="text-primary">
                                             {" - "}
-                                        </StyledText>
-                                        <StyledText className="text-primary">
+                                        </Text>
+                                        <Text className="text-primary">
                                             {dayjs(items[0].date).format('ddd MMM D')}
-                                        </StyledText>
-                                    </StyledView>
+                                        </Text>
+                                    </View>
                                 )
                             }
                         }}
                     />
                 ) : (
-                    <StyledView className="flex-1 justify-center items-center">
-                        <StyledText className="text-lg text-secondary">No data available for this range.</StyledText>
-                    </StyledView>
+                    <View className="flex-1 justify-center items-center">
+                        <Text className="text-lg text-secondary">No data available for this range.</Text>
+                    </View>
                 )}
-            </StyledView>
+            </View>
 
-        </StyledView>
+        </View>
     );
 };
 

@@ -3,14 +3,14 @@
 import React from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { styled } from 'nativewind';
+//import { styled } from 'nativewind';
 import { FrequencyType, frequencyOptions } from '@/types';
 import {Colors} from "@/constants/Colors";
 
-const StyledView = styled(View);
-const StyledText = styled(Text);
-const StyledPicker = styled(Picker);
-const StyledInput = styled(TextInput);
+// const View = styled(View);
+// const Text = styled(Text);
+// const Picker = styled(Picker);
+// const StyledInput = styled(TextInput);
 
 interface FrequencySelectorProps {
     frequencyNumber: number;
@@ -26,13 +26,13 @@ const FrequencySelector: React.FC<FrequencySelectorProps> = ({
                                                                  setFrequencyType,
                                                              }) => {
     return (
-        <StyledView className="flex-row items-center justify-between py-1">
+        <View className="flex-row items-center justify-between py-1">
             {/* Label */}
-            <StyledText className={`min-w-[100] text-xl text-secondary`}>Frequency</StyledText>
-            <StyledView className="flex-1 flex-row items-center ml-2">
+            <Text className={`min-w-[100] text-xl text-secondary`}>Frequency</Text>
+            <View className="flex-1 flex-row items-center ml-2">
                 {/* Number Input */}
-                <StyledView className="flex-[35%] items-center">
-                    <StyledInput
+                <View className="flex-[35%] items-center">
+                    <TextInput
                         className={`pt-1 px-2 border-b border-gray-600 text-3xl text-primary`}
                         keyboardType="number-pad"
                         value={frequencyNumber.toString()}
@@ -50,11 +50,11 @@ const FrequencySelector: React.FC<FrequencySelectorProps> = ({
                         placeholder="1"
                         maxLength={3} // Limit to 3 digits (1-999)
                     />
-                </StyledView>
+                </View>
 
                 {/* Picker Container */}
-                <StyledView className="flex-[65%]">
-                    <StyledPicker
+                <View className="flex-[65%]">
+                    <Picker
                         selectedValue={frequencyType}
                         onValueChange={(value) => setFrequencyType(value as FrequencyType)}
                         mode={'dropdown'}
@@ -72,12 +72,12 @@ const FrequencySelector: React.FC<FrequencySelectorProps> = ({
                                 />
                             )
                         })}
-                    </StyledPicker>
-                </StyledView>
-            </StyledView>
+                    </Picker>
+                </View>
+            </View>
 
 
-        </StyledView>
+        </View>
     );
 };
 

@@ -1,13 +1,13 @@
 import React, { useCallback } from 'react';
 import { Text, TouchableOpacity, View} from 'react-native';
-import { styled } from 'nativewind';
+//import { styled } from 'nativewind';
 import { router } from "expo-router";
 import {AntDesign, Entypo} from "@expo/vector-icons";
 
 // Styled Components
-const StyledView = styled(View);
-const StyledText = styled(Text);
-const StyledTouchableOpacity = styled(TouchableOpacity);
+// const View = styled(View);
+// const Text = styled(Text);
+// const TouchableOpacity = styled(TouchableOpacity);
 
 // Props for the reusable component
 type ScreenNavHeaderProps = {
@@ -36,23 +36,23 @@ const ScreenNavHeader: React.FC<ScreenNavHeaderProps> = ({
     }, [onOptionsPress]);
 
     return (
-        <StyledView className={`flex-row justify-between items-center h-14 px-5`}>
-            <StyledView className='flex-shrink min-w-[40] items-start'>
+        <View className={`flex-row justify-between items-center h-14 px-5`}>
+            <View className='flex-shrink min-w-[40] items-start'>
                 {showNavButton && (
-                    <StyledTouchableOpacity onPress={handleBackPress}>
+                    <TouchableOpacity onPress={handleBackPress}>
                         <AntDesign name="arrowleft" size={24} color="white"/>
-                    </StyledTouchableOpacity>
+                    </TouchableOpacity>
                 )}
-            </StyledView>
-            <StyledText className="flex-grow text-center text-white text-lg font-bold">{title}</StyledText>
-            <StyledView className='flex-shrink min-w-[40] items-end'>
+            </View>
+            <Text className="flex-grow text-center text-white text-lg font-bold">{title}</Text>
+            <View className='flex-shrink min-w-[40] items-end'>
                 {showOptions && (
-                    <StyledTouchableOpacity onPress={handleOptionsPress}>
+                    <TouchableOpacity onPress={handleOptionsPress}>
                         <Entypo name="dots-three-horizontal" size={24} color="white"/>
-                    </StyledTouchableOpacity>
+                    </TouchableOpacity>
                 )}
-            </StyledView>
-        </StyledView>
+            </View>
+        </View>
     );
 };
 

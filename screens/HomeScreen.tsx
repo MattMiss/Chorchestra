@@ -1,6 +1,6 @@
 import React, {ReactNode, useEffect, useMemo, useState} from 'react';
 import { TouchableOpacity, View, Text } from 'react-native';
-import { styled } from 'nativewind';
+//import { styled } from 'nativewind';
 import ThemedScreen from '@/components/common/ThemedScreen';
 import { AntDesign, FontAwesome, FontAwesome6 } from '@expo/vector-icons';
 import ChoreSectionList from '@/components/chores/ChoreSectionList';
@@ -13,9 +13,9 @@ import AddEditEntryModal from "@/components/modals/AddEditEntryModal";
 import { useChoresContext } from "@/context/ChoresContext";
 import { useEntriesContext } from "@/context/EntriesContext";
 
-const StyledView = styled(View);
-const StyledText = styled(Text);
-const StyledTouchableOpacity = styled(TouchableOpacity);
+// const View = styled(View);
+// const Text = styled(Text);
+// const TouchableOpacity = styled(TouchableOpacity);
 
 type TabType = 'pastDue' | 'dueToday' | 'dueTomorrow' | 'dueInAWeek';
 
@@ -101,94 +101,94 @@ const HomeScreen = () => {
             showHeaderNavOptionButton={false}
             headerTitle={"Upcoming Chores"}
         >
-            <StyledView className="">
+            <View>
                 {/* Tab Navigation */}
-                <StyledView className="flex-row justify-around px-2">
-                    <StyledTouchableOpacity
+                <View className="flex-row justify-around px-2">
+                    <TouchableOpacity
                         className={`flex-1 flex-row items-center justify-center py-2 ${selectedTab === 'pastDue' ? 'border-b-2 border-accent' : ''}`}
                         onPress={() => setSelectedTab('pastDue')}
                     >
                         {sectionIcon.pastDue}
-                        <StyledText className={`ml-2 font-semibold ${selectedTab === 'pastDue' ? 'text-accent' : 'text-primary'}`}>
+                        <Text className={`ml-2 font-semibold ${selectedTab === 'pastDue' ? 'text-accent' : 'text-primary'}`}>
                             Past Due
-                        </StyledText>
-                        <StyledText className={`ml-1 font-semibold ${selectedTab === 'pastDue' ? 'text-accent' : 'text-primary'}`}>
+                        </Text>
+                        <Text className={`ml-1 font-semibold ${selectedTab === 'pastDue' ? 'text-accent' : 'text-primary'}`}>
                             {`(${pastDueCount.toString()})`}
-                        </StyledText>
-                    </StyledTouchableOpacity>
-                    <StyledTouchableOpacity
+                        </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
                         className={`flex-1 flex-row items-center justify-center py-2 ${selectedTab === 'dueToday' ? 'border-b-2 border-accent' : ''}`}
                         onPress={() => setSelectedTab('dueToday')}
                     >
                         {sectionIcon.dueToday}
-                        <StyledText className={`ml-2 font-semibold ${selectedTab === 'dueToday' ? 'text-accent' : 'text-primary'}`}>
+                        <Text className={`ml-2 font-semibold ${selectedTab === 'dueToday' ? 'text-accent' : 'text-primary'}`}>
                             Today
-                        </StyledText>
-                        <StyledText className={`ml-1 font-semibold ${selectedTab === 'dueToday' ? 'text-accent' : 'text-primary'}`}>
+                        </Text>
+                        <Text className={`ml-1 font-semibold ${selectedTab === 'dueToday' ? 'text-accent' : 'text-primary'}`}>
                             {`(${dueTodayCount.toString()})`}
-                        </StyledText>
-                    </StyledTouchableOpacity>
-                    <StyledTouchableOpacity
+                        </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
                         className={`flex-1 flex-row items-center justify-center py-2 ${selectedTab === 'dueInAWeek' ? 'border-b-2 border-accent' : ''}`}
                         onPress={() => setSelectedTab('dueInAWeek')}
                     >
                         {sectionIcon.dueInAWeek}
-                        <StyledText className={`ml-2 font-semibold ${selectedTab === 'dueInAWeek' ? 'text-accent' : 'text-primary'}`}>
+                        <Text className={`ml-2 font-semibold ${selectedTab === 'dueInAWeek' ? 'text-accent' : 'text-primary'}`}>
                             In A Week
-                        </StyledText>
-                        <StyledText className={`ml-1 font-semibold ${selectedTab === 'dueInAWeek' ? 'text-accent' : 'text-primary'}`}>
+                        </Text>
+                        <Text className={`ml-1 font-semibold ${selectedTab === 'dueInAWeek' ? 'text-accent' : 'text-primary'}`}>
                             {`(${dueInAWeekCount.toString()})`}
-                        </StyledText>
-                    </StyledTouchableOpacity>
-                </StyledView>
-            </StyledView>
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
 
             {/* Content Area */}
-            <StyledView className="flex-1">
+            <View className="flex-1">
                 {selectedTab === 'pastDue' ? (
-                    <StyledView className="flex-1">
+                    <View className="flex-1">
                         {/* Past Due Content */}
                         <ChoreSectionList
                             sectionTitle="Past Due"
                             groupedChores={groupedPastDueSection}
                         />
-                    </StyledView>
+                    </View>
                 ) : selectedTab === 'dueToday' ? (
-                    <StyledView className="flex-1">
+                    <View className="flex-1">
                         {/* Due Today Content */}
                         <ChoreSectionList
                             sectionTitle="Due Today"
                             groupedChores={groupedTodaySection}
                         />
-                    </StyledView>
+                    </View>
                 ) : selectedTab === 'dueTomorrow' ? (
-                    <StyledView className="flex-1">
+                    <View className="flex-1">
                         {/* Due Tomorrow Content */}
-                    </StyledView>
+                    </View>
                 ) : selectedTab === 'dueInAWeek' ? (
-                    <StyledView className="flex-1">
+                    <View className="flex-1">
                         {/* Due In A Week Content */}
                         <ChoreSectionList
                             sectionTitle="Due Within A Week"
                             groupedChores={groupedWithinAWeekSection}
                         />
-                    </StyledView>
+                    </View>
                 ) : (
-                    <StyledView className="flex-1">
+                    <View className="flex-1">
                         {/* Default Content */}
-                    </StyledView>
+                    </View>
                 )}
-            </StyledView>
+            </View>
 
-            <StyledView className="absolute right-4 bottom-4">
-                <StyledTouchableOpacity
+            <View className="absolute right-4 bottom-4">
+                <TouchableOpacity
                     className="items-center justify-center m-auto w-14 h-14 rounded-full"
                     onPress={handleSectionPress}
                     style={{ backgroundColor: Colors.iconGreen }}
                 >
                     <AntDesign name="check" size={30} color="white" />
-                </StyledTouchableOpacity>
-            </StyledView>
+                </TouchableOpacity>
+            </View>
 
             {/* Chore List Modal with grouped data */}
             <ChoreListModal

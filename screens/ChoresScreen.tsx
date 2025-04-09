@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, SectionList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { styled } from 'nativewind';
+//import { styled } from 'nativewind';
 import { router } from 'expo-router';
 import { ProcessedChore, Section, Tag } from '@/types';
 import ThemedScreen from '@/components/common/ThemedScreen';
@@ -12,6 +12,7 @@ import AddEditEntryModal from "@/components/modals/AddEditEntryModal";
 import dayjs from '@/utils/dayjsConfig';
 import { Picker } from "@react-native-picker/picker";
 import ChoreFiltersModal from "@/components/modals/ChoreFiltersModal";
+import OptionsModal from '@/components/modals/OptionsModal';
 import { Colors } from "@/constants/Colors";
 import { useChoresContext } from "@/context/ChoresContext";
 import { useEntriesContext } from "@/context/EntriesContext";
@@ -19,9 +20,9 @@ import { useTagsContext } from "@/context/TagsContext";
 import TextInputFloatingLabel from "@/components/common/TextInputFloatingLabel";
 import {useUserConfigContext} from "@/context/UserConfigContext";
 
-const StyledView = styled(View);
-const StyledText = styled(Text);
-const StyledTouchableOpacity = styled(TouchableOpacity);
+// const View = styled(View);
+// const Text = styled(Text);
+// const TouchableOpacity = styled(TouchableOpacity);
 
 const defaultChoreFilters = {
     priorities: { 1: true, 2: true, 3: true },
@@ -34,13 +35,14 @@ const defaultChoreFilters = {
 
 const ChoresScreen = () => {
     const { config, updateConfig } = useUserConfigContext();
-    const { chores, isChoresLoading } = useChoresContext();
-    const { entries } = useEntriesContext();
+    const { chores, deleteChore, isChoresLoading } = useChoresContext();
+    const { entries, deleteEntriesByChoreId } = useEntriesContext();
     const { tags, isTagsLoading } = useTagsContext();
 
     const [selectedChore, setSelectedChore] = useState<ProcessedChore | null>(null);
     const [addEditEntryModalVisible, setAddEditEntryModalVisible] = useState<boolean>(false);
     const [filtersModalVisible, setFiltersModalVisible] = useState<boolean>(false);
+    const [deleteChoreModalVisible, setDeleteChoreModalVisible] = useState<boolean>(false);
     const [sortOption, setSortOption] = useState<string>('');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
     const [filters, setFilters] = useState(defaultChoreFilters);
@@ -135,7 +137,7 @@ const ChoresScreen = () => {
     const renderChore = ({ item }: { item: ProcessedChore }) => {
         const tagsForChore = item.tagIds.map((tagId) => getTagById(tags, tagId)).filter(Boolean) as Tag[];
         return (
-            <StyledView className="px-2">
+            <View className="px-2">
                 <ChoreCard
                     chore={item}
                     tags={tagsForChore}
@@ -144,11 +146,15 @@ const ChoresScreen = () => {
                         setAddEditEntryModalVisible(true);
                     }}
                     onEditPress={() => handleEditChore(item.id)}
-                    onDeletePress={() => handleDeleteChore(item.id)}
+                    onDeletePress={() => {
+                        setSelectedChore(item);
+                        setDeleteChoreModalVisible(true);
+                        //handleDeleteChore(item.id)
+                    }}
                     lastCompleted={item.lastCompletedDisplay}
                     timeLeft={item.timeLeft}
                 />
-            </StyledView>
+            </View>
         );
     };
 
@@ -160,8 +166,8 @@ const ChoresScreen = () => {
     };
 
     const handleDeleteChore = (choreId: number) => {
-        console.log("Delete chore:", choreId);
-        // Implementation for deleting a chore
+        deleteEntriesByChoreId(choreId);
+        deleteChore(choreId);
     };
 
     const handleToggleSortOrder = (sortOrder : 'asc' | 'desc') => {
@@ -187,9 +193,9 @@ const ChoresScreen = () => {
                 showHeaderNavOptionButton={true}
                 headerTitle={"Chores"}
             >
-                <StyledView className="p-2 flex-grow">
+                <View className="p-2 flex-grow">
                     <ActivityIndicator size="large" color={Colors.accent} />
-                </StyledView>
+                </View>
             </ThemedScreen>
         );
     }
@@ -200,16 +206,16 @@ const ChoresScreen = () => {
             showHeaderNavOptionButton={false}
             headerTitle={"Chores"}
         >
-            <StyledView className="px-2 flex-1">
-                <StyledView className="flex w-full pt-2 pb-4 px-4 mb-4 rounded-lg bg-medium">
-                    <StyledView className="flex-row justify-between items-center">
-                        <StyledView className="flex-1 flex-row items-center">
-                            <StyledTouchableOpacity
+            <View className="px-2 flex-1">
+                <View className="flex w-full pt-2 pb-4 px-4 mb-4 rounded-lg bg-medium">
+                    <View className="flex-row justify-between items-center">
+                        <View className="flex-1 flex-row items-center">
+                            <TouchableOpacity
                                 onPress={() => handleToggleSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
                             >
                                 <AntDesign name={sortOrder === 'asc' ? 'arrowup' : 'arrowdown'} size={20} color="white" />
-                            </StyledTouchableOpacity>
-                            <StyledText className="ml-1 text-primary">Sort</StyledText>
+                            </TouchableOpacity>
+                            <Text className="ml-1 text-primary">Sort</Text>
                             <Picker
                                 selectedValue={sortOption}
                                 style={styles.picker}
@@ -221,19 +227,19 @@ const ChoresScreen = () => {
                                 <Picker.Item label="Due Next" value="timeLeft" style={styles.pickerItem} />
                                 <Picker.Item label="Priority" value="priority" style={styles.pickerItem} />
                             </Picker>
-                        </StyledView>
-                        <StyledTouchableOpacity
+                        </View>
+                        <TouchableOpacity
                             onPress={() => setFiltersModalVisible(true)}
                             className="ml-4 px-4 py-2 items-end"
                         >
-                            <StyledView className="flex-row">
+                            <View className="flex-row">
                                 <AntDesign name="filter" size={20} color="white" />
-                                <StyledText className="ml-1 text-primary">Filters</StyledText>
-                            </StyledView>
-                        </StyledTouchableOpacity>
-                    </StyledView>
+                                <Text className="ml-1 text-primary">Filters</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
                     <TextInputFloatingLabel label="Chore name" value={searchTerm} onChangeText={setSearchTerm}/>
-                </StyledView>
+                </View>
 
                 {sectionedChores.length > 0 ? (
                     <SectionList
@@ -241,29 +247,29 @@ const ChoresScreen = () => {
                         keyExtractor={(item) => item.id.toString()}
                         renderItem={renderChore}
                         renderSectionHeader={({ section: { title } }) => (
-                            <StyledView className="flex-row items-center mt-2 mb-6">
-                                <StyledView className="flex-grow bg-sectionTitle h-1 mr-2 mt-1"></StyledView>
-                                <StyledText className="font-bold text-lg text-primary text-center">{title}</StyledText>
-                                <StyledView className="flex-grow bg-sectionTitle h-1 ml-2 mt-1"></StyledView>
-                            </StyledView>
+                            <View className="flex-row items-center mt-2 mb-6">
+                                <View className="flex-grow bg-sectionTitle h-1 mr-2 mt-1"></View>
+                                <Text className="font-bold text-lg text-primary text-center">{title}</Text>
+                                <View className="flex-grow bg-sectionTitle h-1 ml-2 mt-1"></View>
+                            </View>
                         )}
                         contentContainerStyle={{ paddingBottom: 30 }}
                     />
                 ) : (
-                    <StyledView className="flex-1 justify-center items-center">
-                        <StyledText className="text-lg text-secondary">No chores found</StyledText>
-                    </StyledView>
+                    <View className="flex-1 justify-center items-center">
+                        <Text className="text-lg text-secondary">No chores found</Text>
+                    </View>
                 )}
-            </StyledView>
-            <StyledView className="absolute right-4 bottom-4">
-                <StyledTouchableOpacity
+            </View>
+            <View className="absolute right-4 bottom-4">
+                <TouchableOpacity
                     className="items-center justify-center m-auto w-14 h-14 rounded-full"
                     onPress={() => router.push('/chores/add-edit-chore')}
                     style={{ backgroundColor: Colors.buttonAlternative }}
                 >
                     <AntDesign name="plus" size={30} color="white" />
-                </StyledTouchableOpacity>
-            </StyledView>
+                </TouchableOpacity>
+            </View>
 
             <ChoreFiltersModal
                 visible={filtersModalVisible}
@@ -279,6 +285,26 @@ const ChoresScreen = () => {
                 visible={addEditEntryModalVisible}
                 choreId={selectedChore ? selectedChore.id : undefined}
                 onClose={() => setAddEditEntryModalVisible(false)}
+            />
+
+            <OptionsModal 
+                visible={deleteChoreModalVisible}
+                title={`Delete ${selectedChore?.name} permanently? This will remove all previous entries as well.`}
+                option1Text='Yes'
+                option2Text='Cancel'
+                onOption1Press={() => {
+                    if (selectedChore){
+                        handleDeleteChore(selectedChore.id);
+                    }
+                }}
+                onOption2Press={() => {
+                    setSelectedChore(null);
+                    setDeleteChoreModalVisible(false);
+                }}
+                onClose={() => {
+                    setSelectedChore(null);
+                    setDeleteChoreModalVisible(false);
+                }}
             />
         </ThemedScreen>
     );

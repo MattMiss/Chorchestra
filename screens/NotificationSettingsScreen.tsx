@@ -6,11 +6,11 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import dayjs from 'dayjs';
 import { useUserConfigContext } from '@/context/UserConfigContext';
 import ThemedScreen from "@/components/common/ThemedScreen";
-import { styled } from "nativewind";
+//import { styled } from "nativewind";
 
-const StyledView = styled(View);
-const StyledText = styled(Text);
-const StyledTouchableOpacity = styled(TouchableOpacity);
+// const View = styled(View);
+// const Text = styled(Text);
+// const TouchableOpacity = styled(TouchableOpacity);
 
 const NotificationSettingsScreen = () => {
     const { config, updateConfig } = useUserConfigContext();
@@ -68,28 +68,28 @@ const NotificationSettingsScreen = () => {
             showHeaderNavOptionButton={false}
             headerTitle={'Notification Settings'}
         >
-            <StyledView className="flex-1 p-8">
-                <StyledView className="flex-row justify-between items-center mb-4">
-                    <StyledText className="text-primary text-lg">
+            <View className="flex-1 p-8">
+                <View className="flex-row justify-between items-center mb-4">
+                    <Text className="text-primary text-lg">
                         Notifications Enabled
-                    </StyledText>
+                    </Text>
                     <Switch
                         value={notificationsEnabled}
                         onValueChange={handleToggleNotifications}
                     />
-                </StyledView>
+                </View>
 
-                {notificationsEnabled && <StyledView className="flex-row justify-between items-center mb-4">
-                    <StyledText className="flex-1 text-primary text-lg">Re-occurring Time</StyledText>
-                    <StyledTouchableOpacity
+                {notificationsEnabled && <View className="flex-row justify-between items-center mb-4">
+                    <Text className="flex-1 text-primary text-lg">Re-occurring Time</Text>
+                    <TouchableOpacity
                         className=""
                         onPress={() => setShowTimePicker(true)}
                     >
-                        <StyledText className="text-xl text-primary">
+                        <Text className="text-xl text-primary">
                             {formatTime(selectedTime)}
-                        </StyledText>
-                    </StyledTouchableOpacity>
-                </StyledView>}
+                        </Text>
+                    </TouchableOpacity>
+                </View>}
 
                 {showTimePicker && (
                     <DateTimePicker
@@ -100,7 +100,7 @@ const NotificationSettingsScreen = () => {
                         onChange={handleTimeChange}
                     />
                 )}
-            </StyledView>
+            </View>
         </ThemedScreen>
     );
 };

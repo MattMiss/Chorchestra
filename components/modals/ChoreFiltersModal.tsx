@@ -8,7 +8,7 @@ import {
     TouchableOpacity,
     TouchableWithoutFeedback, StyleSheet, Platform, ScrollView, ActivityIndicator,
 } from 'react-native';
-import { styled } from 'nativewind';
+//import { styled } from 'nativewind';
 import Checkbox from 'expo-checkbox';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -19,9 +19,9 @@ import TextInputFloatingLabel from "@/components/common/TextInputFloatingLabel";
 import {Colors} from "@/constants/Colors";
 import CheckboxItem from "@/components/common/CheckboxItem";
 
-const StyledView = styled(View);
-const StyledText = styled(Text);
-const StyledTouchableOpacity = styled(TouchableOpacity);
+// const View = styled(View);
+// const Text = styled(Text);
+// const TouchableOpacity = styled(TouchableOpacity);
 
 interface FiltersModalProps {
     visible: boolean;
@@ -115,21 +115,21 @@ const ChoreFiltersModal: React.FC<FiltersModalProps> = ({
     return (
         <Modal visible={visible} transparent animationType="fade">
             <TouchableWithoutFeedback onPress={onClose}>
-                <StyledView className="flex-1 justify-end items-center bg-transparent-70">
+                <View className="flex-1 justify-end items-center bg-transparent-70">
                     <TouchableWithoutFeedback>
-                        <StyledView className={`p-4 w-full max-w-md min-h-[300] max-h-[85%] rounded-t-3xl bg-medium`}>
-                            <StyledView className='flex-row'>
+                        <View className={`p-4 w-full max-w-md min-h-[300] max-h-[85%] rounded-t-3xl bg-medium`}>
+                            <View className='flex-row'>
                                 <AntDesign name="filter" size={20} color="white" />
-                                <StyledText className={`ml-1 mb-2 text-lg font-bold text-accent`}>Filters</StyledText>
-                            </StyledView>
+                                <Text className={`ml-1 mb-2 text-lg font-bold text-accent`}>Filters</Text>
+                            </View>
 
-                            <StyledView className='border-b-gray-500 border-b-2 mb-4'></StyledView>
+                            <View className='border-b-gray-500 border-b-2 mb-4'></View>
 
                             {/* Priority Filters */}
-                            <StyledView className='flex-row mt-2'>
-                                <StyledText className={`mr-10 mb-2 font-semibold text-primary`}>Priority</StyledText>
+                            <View className='flex-row mt-2'>
+                                <Text className={`mr-10 mb-2 font-semibold text-primary`}>Priority</Text>
                                 {priorityOptions.map((option)=> (
-                                    <StyledTouchableOpacity
+                                    <TouchableOpacity
                                         key={option.value}
                                         onPress={() => togglePriority(option.value)}
                                         className="flex-1 flex-row justify-center items-center mb-2"
@@ -138,16 +138,16 @@ const ChoreFiltersModal: React.FC<FiltersModalProps> = ({
                                             value={localFilters.priorities[option.value]}
                                             onValueChange={() => togglePriority(option.value)}
                                         />
-                                        <StyledText className="ml-2 font-bold" style={{color: option.color}}>{option.label}</StyledText>
-                                    </StyledTouchableOpacity>
+                                        <Text className="ml-2 font-bold" style={{color: option.color}}>{option.label}</Text>
+                                    </TouchableOpacity>
                                 ))}
-                            </StyledView>
+                            </View>
 
 
                             {/* Overdue Status Filter */}
-                            <StyledView className='flex-row mt-2 items-center'>
-                                <StyledText className={`flex-1 font-semibold text-primary`}>Overdue Status</StyledText>
-                                <StyledView className='flex-1'>
+                            <View className='flex-row mt-2 items-center'>
+                                <Text className={`flex-1 font-semibold text-primary`}>Overdue Status</Text>
+                                <View className='flex-1'>
                                     <Picker
                                         selectedValue={localFilters.overdueStatus}
                                         onValueChange={(itemValue) =>
@@ -160,24 +160,24 @@ const ChoreFiltersModal: React.FC<FiltersModalProps> = ({
                                         <Picker.Item label="Overdue" value="overdue" style={styles.pickerItem}/>
                                         <Picker.Item label="Not Overdue" value="notOverdue" style={styles.pickerItem}/>
                                     </Picker>
-                                </StyledView>
-                            </StyledView>
+                                </View>
+                            </View>
 
-                            <StyledView className='flex-row gap-4'>
+                            <View className='flex-row gap-4'>
                                 {/* Date Picker Section */}
-                                <StyledView className="flex-1">
-                                    <StyledTouchableOpacity
+                                <View className="flex-1">
+                                    <TouchableOpacity
                                         className="p-3 rounded-lg mb-4"
                                         onPress={() => setShowLastCompletedStartDatePicker(true)}
                                         style={{backgroundColor: Colors.buttonSecondary}}
                                     >
-                                        <StyledText className={`text-lg text-center font-bold text-primary`}>
+                                        <Text className={`text-lg text-center font-bold text-primary`}>
                                             Start Date:{' '}
                                             {localFilters.lastCompletedStartDate
                                                 ? dayjs(localFilters.lastCompletedStartDate).format('MMM D, YYYY')
                                                 : 'Any'}
-                                        </StyledText>
-                                    </StyledTouchableOpacity>
+                                        </Text>
+                                    </TouchableOpacity>
 
                                     {showLastCompletedStartDatePicker && (
                                         <DateTimePicker
@@ -196,22 +196,22 @@ const ChoreFiltersModal: React.FC<FiltersModalProps> = ({
                                             maximumDate={new Date()} // Optional: Prevent selecting future dates
                                         />
                                     )}
-                                </StyledView>
+                                </View>
 
                                 {/* Time Picker Section */}
-                                <StyledView className="flex-1">
-                                    <StyledTouchableOpacity
+                                <View className="flex-1">
+                                    <TouchableOpacity
                                         className="p-3 rounded-lg mb-4"
                                         onPress={() => setShowLastCompletedEndDatePicker(true)}
                                         style={{backgroundColor: Colors.buttonSecondary}}
                                     >
-                                        <StyledText className={`text-lg text-center font-bold text-primary`}>
+                                        <Text className={`text-lg text-center font-bold text-primary`}>
                                             End Date:{' '}
                                             {localFilters.lastCompletedEndDate
                                                 ? dayjs(localFilters.lastCompletedEndDate).format('MMM D, YYYY')
                                                 : 'Any'}
-                                        </StyledText>
-                                    </StyledTouchableOpacity>
+                                        </Text>
+                                    </TouchableOpacity>
 
                                     {showLastCompletedEndDatePicker && (
                                         <DateTimePicker
@@ -230,14 +230,14 @@ const ChoreFiltersModal: React.FC<FiltersModalProps> = ({
                                             is24Hour={false} // Optional: Set to true for 24-hour format
                                         />
                                     )}
-                                </StyledView>
-                            </StyledView>
+                                </View>
+                            </View>
 
                             {/* Time Left Range */}
-                            <StyledText className={`font-semibold mb-2 mt-4 text-primary`}>
+                            <Text className={`font-semibold mb-2 mt-4 text-primary`}>
                                 Time Left Range (Days)
-                            </StyledText>
-                            <StyledView className="flex-row items-center mb-2">
+                            </Text>
+                            <View className="flex-row items-center mb-2">
                                 <TextInputFloatingLabel
                                     label="Min"
                                     value={timeLeftMin}
@@ -252,11 +252,11 @@ const ChoreFiltersModal: React.FC<FiltersModalProps> = ({
                                     keyboardType="numeric"
                                     style={{width: 80}}
                                 />
-                            </StyledView>
+                            </View>
 
                             {/* Tags Filter */}
-                            <StyledText className={`font-semibold mb-2 mt-4 text-primary`}>Tags</StyledText>
-                            <StyledView className="max-h-[30%] pb-2">
+                            <Text className={`font-semibold mb-2 mt-4 text-primary`}>Tags</Text>
+                            <View className="max-h-[30%] pb-2">
                                 <ScrollView>
                                     {isTagsLoading ? (
                                         <ActivityIndicator size="large" color={Colors.accent} />
@@ -264,31 +264,31 @@ const ChoreFiltersModal: React.FC<FiltersModalProps> = ({
                                         memoizedTagList
                                     )}
                                 </ScrollView>
-                            </StyledView>
+                            </View>
 
                             {/* Buttons */}
-                            <StyledView className="flex-row gap-4 justify-between mt-4">
-                                <StyledTouchableOpacity
+                            <View className="flex-row gap-4 justify-between mt-4">
+                                <TouchableOpacity
                                     className="flex-1 px-4 py-2 rounded-full items-center"
                                     onPress={resetFilters}
                                     accessibilityLabel="Cancel color change"
                                     style={{backgroundColor: Colors.buttonSecondary}}
                                 >
-                                    <StyledText className={`text-primary`}>Reset</StyledText>
-                                </StyledTouchableOpacity>
+                                    <Text className={`text-primary`}>Reset</Text>
+                                </TouchableOpacity>
 
-                                <StyledTouchableOpacity
+                                <TouchableOpacity
                                     className={`flex-1 px-4 py-2 rounded-full items-center`}
                                     onPress={applyFilters}
                                     accessibilityLabel="Save color change"
                                     style={{backgroundColor: Colors.buttonPrimary}}
                                 >
-                                    <StyledText className={`text-primary`}>Apply</StyledText>
-                                </StyledTouchableOpacity>
-                            </StyledView>
-                        </StyledView>
+                                    <Text className={`text-primary`}>Apply</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
                     </TouchableWithoutFeedback>
-                </StyledView>
+                </View>
             </TouchableWithoutFeedback>
         </Modal>
     );

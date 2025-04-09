@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { styled } from 'nativewind';
+//import { styled } from 'nativewind';
 import { Tag } from '@/types';
 import TagListHorizontal from "@/components/tags/TagListHorizontal";
 import {Colors} from "@/constants/Colors";
 
-const StyledView = styled(View);
-const StyledText = styled(Text);
+// const View = styled(View);
+// const Text = styled(Text);
 
 const TagSelector = ({
                          canRemoveTags,
@@ -20,20 +20,20 @@ const TagSelector = ({
     onToggleModal: (showModal: boolean) => void;
 }) => {
     return (
-        <StyledView className="flex-grow ">
+        <View className="flex-grow ">
             {/* Label */}
-            <StyledText className={`mb-2 text-xl text-secondary`}>Tags</StyledText>
+            <Text className={`mb-2 text-xl text-secondary`}>Tags</Text>
 
             {/* Tag Container */}
-            <StyledView className="flex-grow">
+            <View className="flex-grow">
                 <TagListHorizontal
                     canRemoveTags={canRemoveTags}
                     tags={selectedTags}
                     onRemoveTag={onRemoveTag}
                     onAddTag={() => onToggleModal(true)}
                 />
-            </StyledView>
-        </StyledView>
+            </View>
+        </View>
     );
 };
 

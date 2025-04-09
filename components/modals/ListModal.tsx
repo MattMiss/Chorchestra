@@ -1,16 +1,16 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, ModalProps } from 'react-native';
 import Modal from 'react-native-modal';
-import { styled } from 'nativewind';
+//import { styled } from 'nativewind';
 import DraggableList from '@/components/common/DraggableList';
 import { DraggableListItem } from '@/types';
 import { AntDesign } from '@expo/vector-icons';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import {Colors} from "@/constants/Colors";
 
-const StyledView = styled(View);
-const StyledText = styled(Text);
-const StyledTouchableOpacity = styled(TouchableOpacity);
+// const View = styled(View);
+// const Text = styled(Text);
+// const TouchableOpacity = styled(TouchableOpacity);
 
 interface ListModalProps extends ModalProps  {
     visible: boolean;
@@ -44,10 +44,10 @@ const ListModal: React.FC<ListModalProps> = ({
             {...rest}
         >
 
-            <StyledView className={`p-4 w-full min-h-[500] bg-medium`}>
+            <View className={`p-4 w-full min-h-[500] bg-medium`}>
                 <GestureHandlerRootView style={{ flex: 1 }}>
                     {/* Title */}
-                    <StyledText className={`text-3xl text-secondary`}>{title}</StyledText>
+                    <Text className={`text-3xl text-secondary`}>{title}</Text>
 
                     {/* Draggable List */}
                     <DraggableList
@@ -58,12 +58,12 @@ const ListModal: React.FC<ListModalProps> = ({
                     />
 
                     {/* Add New Item Button */}
-                    <StyledTouchableOpacity onPress={onAddNewItem} className="flex flex-row items-center mt-4 pl-6">
+                    <TouchableOpacity onPress={onAddNewItem} className="flex flex-row items-center mt-4 pl-6">
                         <AntDesign name="plus" size={20} color="white" />
-                        <StyledText className={`ml-4 text-primary`}>{`Add ${addText}`}</StyledText>
-                    </StyledTouchableOpacity>
+                        <Text className={`ml-4 text-primary`}>{`Add ${addText}`}</Text>
+                    </TouchableOpacity>
                 </GestureHandlerRootView>
-            </StyledView>
+            </View>
         </Modal>
     );
 };

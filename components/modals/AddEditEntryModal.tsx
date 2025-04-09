@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Modal, TouchableWithoutFeedback, Platform } from 'react-native';
-import { styled } from 'nativewind';
+//import { styled } from 'nativewind';
 import { Entry } from '@/types';
 import { Picker } from "@react-native-picker/picker";
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -8,10 +8,10 @@ import { Colors } from "@/constants/Colors";
 import { useChoresContext } from "@/context/ChoresContext";
 import { useEntriesContext } from "@/context/EntriesContext";
 
-const StyledView = styled(View);
-const StyledText = styled(Text);
-const StyledTouchableOpacity = styled(TouchableOpacity);
-const StyledPicker = styled(Picker);
+// const View = styled(View);
+// const Text = styled(Text);
+// const TouchableOpacity = styled(TouchableOpacity);
+// const Picker = styled(Picker);
 
 interface EntryModalProps {
     selectedEntry?: Entry;
@@ -108,14 +108,14 @@ const AddEditEntryModal = ({ selectedEntry, choreId, visible, onClose }: EntryMo
     return (
         <Modal visible={visible} transparent animationType="fade">
             <TouchableWithoutFeedback onPress={onClose}>
-                <StyledView className="flex-1 justify-end items-center bg-transparent-70">
+                <View className="flex-1 justify-end items-center bg-transparent-70">
                     <TouchableWithoutFeedback>
-                        <StyledView className="p-4 w-full max-w-md min-h-[300] rounded-t-3xl bg-medium">
+                        <View className="p-4 w-full max-w-md min-h-[300] rounded-t-3xl bg-medium">
                             {/* Chore Dropdown Row */}
-                            <StyledView className="flex-row items-center mb-4">
-                                <StyledText className="mr-4 text-xl font-bold text-accent">Chore</StyledText>
-                                <StyledView className="flex-1">
-                                    <StyledPicker
+                            <View className="flex-row items-center mb-4">
+                                <Text className="mr-4 text-xl font-bold text-accent">Chore</Text>
+                                <View className="flex-1">
+                                    <Picker
                                         selectedValue={entryChoreId}
                                         onValueChange={(value) => setEntryChoreId(value as number)}
                                         mode={'dropdown'}
@@ -134,22 +134,22 @@ const AddEditEntryModal = ({ selectedEntry, choreId, visible, onClose }: EntryMo
                                                 }}
                                             />
                                         ))}
-                                    </StyledPicker>
-                                </StyledView>
-                            </StyledView>
+                                    </Picker>
+                                </View>
+                            </View>
 
-                            <StyledView className="flex-row gap-4">
+                            <View className="flex-row gap-4">
                                 {/* Date Picker Section */}
-                                <StyledView className="flex-1">
-                                    <StyledTouchableOpacity
+                                <View className="flex-1">
+                                    <TouchableOpacity
                                         className="p-3 rounded-lg mb-4"
                                         onPress={() => setShowDatePicker(true)}
                                         style={{ backgroundColor: Colors.buttonSecondary }}
                                     >
-                                        <StyledText className="text-lg text-center font-bold text-primary">
+                                        <Text className="text-lg text-center font-bold text-primary">
                                             {`${dateCompleted.toLocaleDateString()}`}
-                                        </StyledText>
-                                    </StyledTouchableOpacity>
+                                        </Text>
+                                    </TouchableOpacity>
 
                                     {showDatePicker && (
                                         <DateTimePicker
@@ -160,19 +160,19 @@ const AddEditEntryModal = ({ selectedEntry, choreId, visible, onClose }: EntryMo
                                             maximumDate={new Date()} // Prevent selecting future dates
                                         />
                                     )}
-                                </StyledView>
+                                </View>
 
                                 {/* Time Picker Section */}
-                                <StyledView className="flex-1">
-                                    <StyledTouchableOpacity
+                                <View className="flex-1">
+                                    <TouchableOpacity
                                         className="p-3 rounded-lg mb-4"
                                         onPress={() => setShowTimePicker(true)}
                                         style={{ backgroundColor: Colors.buttonSecondary }}
                                     >
-                                        <StyledText className="text-lg text-center font-bold text-primary">
+                                        <Text className="text-lg text-center font-bold text-primary">
                                             {`${dateCompleted.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`}
-                                        </StyledText>
-                                    </StyledTouchableOpacity>
+                                        </Text>
+                                    </TouchableOpacity>
 
                                     {showTimePicker && (
                                         <DateTimePicker
@@ -183,24 +183,24 @@ const AddEditEntryModal = ({ selectedEntry, choreId, visible, onClose }: EntryMo
                                             is24Hour={false} // Set to true for 24-hour format
                                         />
                                     )}
-                                </StyledView>
-                            </StyledView>
+                                </View>
+                            </View>
 
                             {/* Save Button */}
-                            <StyledView>
-                                <StyledTouchableOpacity
+                            <View>
+                                <TouchableOpacity
                                     onPress={handleSaveEntry}
                                     className="my-4 p-3 rounded-lg"
                                     style={{ backgroundColor: Colors.buttonPrimary }}
                                 >
-                                    <StyledText className="text-white text-center">
+                                    <Text className="text-white text-center">
                                         {selectedEntry ? 'Save' : 'Add Entry'}
-                                    </StyledText>
-                                </StyledTouchableOpacity>
-                            </StyledView>
-                        </StyledView>
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
                     </TouchableWithoutFeedback>
-                </StyledView>
+                </View>
             </TouchableWithoutFeedback>
         </Modal>
     );

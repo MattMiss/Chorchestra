@@ -1,7 +1,7 @@
 import React from "react";
 import {TouchableOpacity, View, Text, Alert} from "react-native";
 import ThemedScreen from "@/components/common/ThemedScreen";
-import {styled} from "nativewind";
+//import {styled} from "nativewind";
 import {exportData, importData} from "@/utils/dataBackup";
 import Container from "@/components/common/Container";
 import {FontAwesome5} from "@expo/vector-icons";
@@ -9,9 +9,9 @@ import {useChoresContext} from "@/context/ChoresContext";
 import {useTagsContext} from "@/context/TagsContext";
 import {useEntriesContext} from "@/context/EntriesContext";
 
-const StyledView = styled(View);
-const StyledText = styled(Text);
-const StyledTouchableOpacity = styled(TouchableOpacity);
+// const View = styled(View);
+// const Text = styled(Text);
+// const TouchableOpacity = styled(TouchableOpacity);
 
 const ImportExportDataScreen = () => {
     // Access chores, tags, and entries contexts
@@ -49,37 +49,37 @@ const ImportExportDataScreen = () => {
             showHeaderNavOptionButton={false}
             headerTitle={'Import/Export Data'}
         >
-            <StyledView className='flex-1 p-2'>
+            <View className='flex-1 p-2'>
                 {/* Import Data Button */}
                 <Container>
-                    <StyledTouchableOpacity
+                    <TouchableOpacity
                         className="flex-row items-center min-h-[50]"
                         onPress={handleImportData}
                     >
-                        <StyledText className={`flex-grow text-xl text-primary`}>
+                        <Text className={`flex-grow text-xl text-primary`}>
                             Import Data
-                        </StyledText>
-                        <StyledView className="pr-2">
+                        </Text>
+                        <View className="pr-2">
                             <FontAwesome5 name="file-import" size={24} color="white" />
-                        </StyledView>
-                    </StyledTouchableOpacity>
+                        </View>
+                    </TouchableOpacity>
                 </Container>
 
                 {/* Export Data Button */}
                 <Container>
-                    <StyledTouchableOpacity
+                    <TouchableOpacity
                         className="flex-row items-center min-h-[50]"
                         onPress={handleExportData}
                     >
-                        <StyledText className={`flex-grow text-xl text-primary`}>
+                        <Text className={`flex-grow text-xl text-primary`}>
                             Export Data
-                        </StyledText>
-                        <StyledView className="">
+                        </Text>
+                        <View className="">
                             <FontAwesome5 name="file-export" size={24} color="white" />
-                        </StyledView>
-                    </StyledTouchableOpacity>
+                        </View>
+                    </TouchableOpacity>
                 </Container>
-            </StyledView>
+            </View>
         </ThemedScreen>
     );
 };

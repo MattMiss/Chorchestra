@@ -1,5 +1,5 @@
 import React, {ReactNode, useCallback} from "react";
-import { styled } from "nativewind";
+//import { styled } from "nativewind";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ScreenNavHeader from "@/components/common/ScreenNavHeader";
 import {router} from "expo-router";
@@ -18,7 +18,7 @@ interface ThemedScreenProps {
 }
 
 // Create a styled version of SafeAreaView using NativeWind
-const StyledView = styled(View);
+// const View = styled(View);
 
 const ThemedScreen: React.FC<ThemedScreenProps> = ({
                                                        children,
@@ -49,7 +49,7 @@ const ThemedScreen: React.FC<ThemedScreenProps> = ({
     return (
         <SafeAreaView style={{flex: 1}}>
             <StatusBar style={'light'} backgroundColor={Colors.backgroundStatusBar}/>
-            <StyledView className={`flex-1 bg-dark`}>
+            <View className={`flex-1 bg-dark`}>
                 <ScreenNavHeader
                     showNavButton={showHeaderNavButton}
                     showOptions={showHeaderNavOptionButton}
@@ -57,10 +57,10 @@ const ThemedScreen: React.FC<ThemedScreenProps> = ({
                     onBackPress={handleBackPress}
                     onOptionsPress={handleOptionsPress}
                 />
-                <StyledView className='flex-grow'>
+                <View className='flex-grow'>
                     {children}
-                </StyledView>
-            </StyledView>
+                </View>
+            </View>
         </SafeAreaView>
     );
 };

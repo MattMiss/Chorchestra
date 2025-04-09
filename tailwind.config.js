@@ -10,13 +10,12 @@ module.exports = {
     "./types/**/*.{js,jsx,ts,tsx}",
     "./utils/**/*.{js,jsx,ts,tsx}",
   ],
+  presets: [require("nativewind/preset")],
   theme: {
     extend: {
       colors: {
-        transparent: {
-          50: 'rgba(0, 0, 0, 0.5)',
-          70: 'rgba(0, 0, 0, 0.7)'
-        },
+        transparent50: 'rgba(0, 0, 0, 0.5)',
+        transparent70: 'rgba(0, 0, 0, 0.7)',
         primary: '#F7FAFF',
         secondary: '#858E9F',
         accent:'#14A8CC',

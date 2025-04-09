@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import {View, Text, ActivityIndicator, TouchableOpacity, StyleSheet} from 'react-native';
-import { styled } from 'nativewind';
+//import { styled } from 'nativewind';
 import {AntDesign, FontAwesome} from '@expo/vector-icons';
 import { useChoresContext } from '@/context/ChoresContext';
 import { useEntriesContext } from '@/context/EntriesContext';
@@ -20,9 +20,9 @@ import {getChoreNameById} from "@/utils/helpers";
 import dayjs from "dayjs";
 import EntryFiltersModal from "@/components/modals/EntryFiltersModal";
 
-const StyledView = styled(View);
-const StyledText = styled(Text);
-const StyledTouchableOpacity = styled(TouchableOpacity);
+// const View = styled(View);
+// const Text = styled(Text);
+// const TouchableOpacity = styled(TouchableOpacity);
 
 const defaultEntryFilters = {
     completedStartDate: null as Date | null,
@@ -154,51 +154,51 @@ const EntriesScreen = () => {
     if (isChoresLoading || isEntriesLoading) {
         return (
             <ThemedScreen headerTitle="Entries">
-                <StyledView className="p-2 flex-grow">
+                <View className="p-2 flex-grow">
                     <ActivityIndicator size="large" color={Colors.accent} />
-                </StyledView>
+                </View>
             </ThemedScreen>
         );
     }
 
     return (
         <ThemedScreen headerTitle="Entries">
-            <StyledView className="flex-1">
+            <View className="flex-1">
                 {/* Tab Navigation */}
-                <StyledView className="flex-row justify-around px-6">
-                    <StyledTouchableOpacity
+                <View className="flex-row justify-around px-6">
+                    <TouchableOpacity
                         className={`flex-1 flex-row items-center justify-center py-2 ${selectedTab === 'chart' ? 'border-b-2 border-accent' : ''}`}
                         onPress={() => setSelectedTab('chart')}
                     >
                         <FontAwesome name="area-chart" size={20} color={selectedTab === 'chart' ? Colors.accent : Colors.textPrimary} />
-                        <StyledText className={`ml-2 text-lg font-semibold ${selectedTab === 'chart' ? 'text-accent' : 'text-primary'}`}>
+                        <Text className={`ml-2 text-lg font-semibold ${selectedTab === 'chart' ? 'text-accent' : 'text-primary'}`}>
                             Chart View
-                        </StyledText>
-                    </StyledTouchableOpacity>
-                    <StyledTouchableOpacity
+                        </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
                         className={`flex-1 flex-row items-center justify-center py-2 ${selectedTab === 'list' ? 'border-b-2 border-accent' : ''}`}
                         onPress={() => setSelectedTab('list')}
                     >
                         <FontAwesome name="list" size={20} color={selectedTab === 'list' ? Colors.accent : Colors.textPrimary} />
-                        <StyledText className={`ml-2 text-lg font-semibold ${selectedTab === 'list' ? 'text-accent' : 'text-primary'}`}>
+                        <Text className={`ml-2 text-lg font-semibold ${selectedTab === 'list' ? 'text-accent' : 'text-primary'}`}>
                             List View
-                        </StyledText>
-                    </StyledTouchableOpacity>
-                </StyledView>
+                        </Text>
+                    </TouchableOpacity>
+                </View>
 
                 {/* Content Area */}
-                <StyledView className="flex-1">
+                <View className="flex-1">
                     {selectedTab === 'list' ? (
-                        <StyledView className="p-4">
-                            <StyledView className="flex w-full py-2 px-4 mb-4 rounded-lg bg-medium">
-                                <StyledView className="flex-row justify-between items-center">
-                                    <StyledView className="flex-1 flex-row items-center">
-                                        <StyledTouchableOpacity
+                        <View className="p-4">
+                            <View className="flex w-full py-2 px-4 mb-4 rounded-lg bg-medium">
+                                <View className="flex-row justify-between items-center">
+                                    <View className="flex-1 flex-row items-center">
+                                        <TouchableOpacity
                                             onPress={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
                                         >
                                             <AntDesign name={sortOrder === 'asc' ? 'arrowup' : 'arrowdown'} size={20} color="white" />
-                                        </StyledTouchableOpacity>
-                                        <StyledText className="ml-1 font-bold text-primary">Sort By</StyledText>
+                                        </TouchableOpacity>
+                                        <Text className="ml-1 font-bold text-primary">Sort By</Text>
                                         <Picker
                                             selectedValue={sortOption}
                                             style={styles.picker}
@@ -209,18 +209,18 @@ const EntriesScreen = () => {
                                             <Picker.Item label="Name" value="choreName" style={styles.pickerItem} />
                                             <Picker.Item label="Date" value="dateCompleted" style={styles.pickerItem} />
                                         </Picker>
-                                        <StyledTouchableOpacity
+                                        <TouchableOpacity
                                             onPress={() => setFiltersModalVisible(true)}
                                             className="ml-4 px-4 py-2 items-end"
                                         >
-                                            <StyledView className="flex-row">
+                                            <View className="flex-row">
                                                 <AntDesign name="filter" size={20} color="white" />
-                                                <StyledText className="ml-1 text-primary">Filters</StyledText>
-                                            </StyledView>
-                                        </StyledTouchableOpacity>
-                                    </StyledView>
-                                </StyledView>
-                            </StyledView>
+                                                <Text className="ml-1 text-primary">Filters</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            </View>
 
                             {/* Swipeable List for Tags */}
                             <SwipeListView
@@ -240,39 +240,39 @@ const EntriesScreen = () => {
                                 disableRightSwipe
                                 contentContainerStyle={{ paddingBottom: 100 }}
                                 ListEmptyComponent={
-                                    <StyledView className="flex-1 justify-center items-center">
-                                        <StyledText className="text-secondary">No entries have been made.</StyledText>
-                                    </StyledView>
+                                    <View className="flex-1 justify-center items-center">
+                                        <Text className="text-secondary">No entries have been made.</Text>
+                                    </View>
                                 }
                             />
-                        </StyledView>
+                        </View>
                     ) : (
-                        <StyledView className="p-2 flex-1">
+                        <View className="p-2 flex-1">
                             <Container>
                                 {/* Chore Picker */}
-                                <StyledView className="flex-row items-center">
+                                <View className="flex-row items-center">
                                     {/* Label */}
-                                    <StyledText className="text-xl text-secondary">Chore</StyledText>
-                                    <StyledTouchableOpacity
+                                    <Text className="text-xl text-secondary">Chore</Text>
+                                    <TouchableOpacity
                                         onPress={() => changeChore("decrease")}
                                         disabled={chores[0] && selectedChoreId === chores[0].id}
                                         className="my-4 p-2 rounded-lg ml-4"
                                         style={{ backgroundColor: selectedChoreId === chores[0].id ? Colors.buttonSecondary : Colors.buttonPrimary }}
                                     >
                                         <FontAwesome name="minus" size={20} color={Colors.textPrimary} />
-                                    </StyledTouchableOpacity>
-                                    <StyledTouchableOpacity
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
                                         disabled={selectedChoreId === chores[chores.length - 1]?.id}
                                         onPress={() => changeChore("increase")}
                                         className="my-4 p-2 rounded-lg ml-2"
                                         style={{ backgroundColor: selectedChoreId === chores[chores.length - 1].id ? Colors.buttonSecondary : Colors.buttonPrimary }}
                                     >
                                         <FontAwesome name="plus" size={20} color={Colors.textPrimary} />
-                                    </StyledTouchableOpacity>
-                                </StyledView>
+                                    </TouchableOpacity>
+                                </View>
 
                                 {/* Picker Container */}
-                                <StyledView className="flex-row items-center pl-1">
+                                <View className="flex-row items-center pl-1">
                                     <Picker
                                         selectedValue={selectedChoreId}
                                         onValueChange={(value) => setSelectedChoreId(value as number)}
@@ -289,27 +289,27 @@ const EntriesScreen = () => {
                                             />
                                         ))}
                                     </Picker>
-                                </StyledView>
+                                </View>
                             </Container>
 
-                            <StyledView className={`h-[400] w-full mb-4 rounded-lg bg-medium`}>
+                            <View className={`h-[400] w-full mb-4 rounded-lg bg-medium`}>
                                 {/* Chart Component */}
                                 <ChartComponent data={filteredChartEntries} timeRange={timeRange} onTimeRangeChange={setTimeRange} />
-                            </StyledView>
-                        </StyledView>
+                            </View>
+                        </View>
                     )}
-                </StyledView>
+                </View>
 
                 {/* Add Entry Button */}
-                <StyledView className="absolute right-4 bottom-4">
-                    <StyledTouchableOpacity
+                <View className="absolute right-4 bottom-4">
+                    <TouchableOpacity
                         onPress={handleAddEntryPressed}
                         style={{ backgroundColor: Colors.buttonAlternative }}
                         className="items-center justify-center w-14 h-14 rounded-full"
                     >
                         <AntDesign name="plus" size={30} color="white" />
-                    </StyledTouchableOpacity>
-                </StyledView>
+                    </TouchableOpacity>
+                </View>
 
                 {/* Add/Edit Entry Modal */}
                 <AddEditEntryModal selectedEntry={selectedEntry} visible={isEntryModalVisible} onClose={handleCloseEntryModal} />
@@ -335,7 +335,7 @@ const EntriesScreen = () => {
                     isChoresLoading={isChoresLoading}
                 />
 
-            </StyledView>
+            </View>
         </ThemedScreen>
     );
 };

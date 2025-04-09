@@ -1,14 +1,14 @@
 import React from 'react';
 import {View, Text} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { styled } from 'nativewind';
+//import { styled } from 'nativewind';
 import { PriorityLevel, priorityOptions } from '@/types';
 import {getPriorityLevelColor} from "@/utils/helpers";
 import {Colors} from "@/constants/Colors";
 
-const StyledView = styled(View);
-const StyledText = styled(Text);
-const StyledPicker = styled(Picker);
+// const View = styled(View);
+// const Text = styled(Text);
+// const Picker = styled(Picker);
 
 const PrioritySelector = ({
                               priority,
@@ -19,14 +19,14 @@ const PrioritySelector = ({
 }) => {
     const selectedTextColor = getPriorityLevelColor(priority);
     return (
-        <StyledView className="flex-row items-center justify-between py-1">
+        <View className="flex-row items-center justify-between py-1">
             {/* Label */}
-            <StyledText className="min-w-[100] text-xl text-secondary">Priority</StyledText>
-            <StyledView className='flex-[35%]'></StyledView>
+            <Text className="min-w-[100] text-xl text-secondary">Priority</Text>
+            <View className='flex-[35%]'></View>
 
             {/* Picker Container */}
-            <StyledView className="flex-[65%] pl-1">
-                <StyledPicker
+            <View className="flex-[65%] pl-1">
+                <Picker
                     className=""
                     selectedValue={priority}
                     onValueChange={(value) => setPriority(value as PriorityLevel)}
@@ -50,9 +50,9 @@ const PrioritySelector = ({
                             />
                         );
                     })}
-                </StyledPicker>
-            </StyledView>
-        </StyledView>
+                </Picker>
+            </View>
+        </View>
     );
 };
 
